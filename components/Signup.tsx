@@ -52,16 +52,12 @@ const Signup = () => {
       <form onSubmit={handleSubmit} className="flex items-center justify-center min-w-[24rem] m-auto">
         {error && <span className="absolute text-red-500 -bottom-8">Something went wrong. Please try again.</span>}
         {success ? (
-          <CheckIcon className="h-8 w-8 text-green-500" />
+          <CheckIcon className="h-8 w-8 text-green-800" />
         ) : loading ? (
           <Loader />
         ) : (
           <div className="inline-flex items-end">
-            <ChevronRightIcon
-              className={`h-8 w-8 text-white transition hover:translate-x-0.5 inline ${
-                email ? 'motion-safe:animate-none' : 'motion-safe:animate-pulse'
-              }`}
-            />
+            <ChevronRightIcon className={`h-8 w-8 text-white inline ${email ? 'motion-safe:animate-none' : 'motion-safe:animate-pulse'}`} />
           </div>
         )}
         <input
@@ -70,7 +66,7 @@ const Signup = () => {
           required
           disabled={success}
           value={email}
-          placeholder={success ? '  Subscribed ⌐◨-◨' : 'Enter Email Address'}
+          placeholder={success ? ' Subscribed ⌐◨-◨' : 'Enter Email Address'}
           className={`bg-transparent uppercase ${
             error ? 'border-b border-red-500 focus:border-red-500' : ''
           } block w-6/12 text-lg text-white placeholder-gray-600 focus:text-white focus:outline-none outline-none`}

@@ -9,6 +9,10 @@ module.exports = {
       colors: {
         gray: colors.gray,
       },
+      fontFamily: {
+        sans: ['Space Mono', 'sans-serif'],
+        title: ['Space Mono'],
+      },
       animation: {
         marquee: 'marquee 200s linear infinite',
         marquee2: 'marquee2 200s linear infinite',

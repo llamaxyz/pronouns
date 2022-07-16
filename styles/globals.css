@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    @font-face {
+        font-family: 'SpaceMono';
+        font-display: fallback;
+        font-weight: 400;
+        src: url('/fonts/SpaceMono-Regular.ttf');
+    }
+
+    @font-face {
+        font-family: 'SpaceMono';
+        font-display: fallback;
+        font-weight: 500;
+        src: url('/fonts/SpaceMono-Bold.ttf');
+    }
+}
