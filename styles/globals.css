@@ -1,16 +1,19 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+@layer base {
+    @font-face {
+        font-family: 'SpaceMono';
+        font-display: fallback;
+        font-weight: 400;
+        src: url('/fonts/SpaceMono-Regular.ttf');
+    }
 
-* {
-  box-sizing: border-box;
+    @font-face {
+        font-family: 'SpaceMono';
+        font-display: fallback;
+        font-weight: 500;
+        src: url('/fonts/SpaceMono-Bold.ttf');
+    }
 }
