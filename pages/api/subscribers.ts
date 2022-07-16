@@ -24,7 +24,7 @@ const subscribe = async (req: NextApiRequest, res: NextApiResponse) => {
     method: 'POST',
     data: {
       email_address: email,
-      status: 'pending',
+      status: 'subscribed',
     },
   })
     .then(() => res.status(200).json({}))
