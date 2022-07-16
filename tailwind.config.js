@@ -1,11 +1,17 @@
 /** @type {import('tailwindcss').Config} */
+
+const colors = require('tailwindcss/colors')
+
 module.exports = {
   content: ['./pages/**/*.{js,ts,jsx,tsx,mx,mdx}', './components/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      colors: {
+        gray: colors.gray,
+      },
       animation: {
-        marquee: 'marquee 160s linear infinite',
-        marquee2: 'marquee2 160s linear infinite',
+        marquee: 'marquee 200s linear infinite',
+        marquee2: 'marquee2 200s linear infinite',
       },
       keyframes: {
         marquee: {

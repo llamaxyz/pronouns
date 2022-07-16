@@ -33,7 +33,7 @@ const Signup = () => {
     setLoading(false)
     setSuccess(true)
     setEmail('')
-    await delay(3000)
+    await delay(6000)
     setSuccess(false)
   }
 
@@ -48,29 +48,35 @@ const Signup = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center justify-center text-transform-uppercase">
-      <input
-        onChange={handleChange}
-        type="email"
-        required
-        disabled={success}
-        value={email}
-        placeholder={success ? 'Subscribed!' : 'Enter Email Address'}
-        className={`bg-transparent border-b ${
-          error ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-white'
-        } block w-6/12 px-4 py-3 text-lg text-white placeholder-gray-200 focus:text-white focus:outline-none outline-none`}
-      />
-      {error && <span className="absolute text-red-500 -bottom-8">Something went wrong. Please try again.</span>}
-      {success ? (
-        <CheckIcon className="h-8 w-8 text-green-500" />
-      ) : loading ? (
-        <Loader />
-      ) : (
-        <button type="submit">
-          <ChevronRightIcon className="h-8 w-8 text-white transition hover:translate-x-0.5" />
-        </button>
-      )}
-    </form>
+    <div className="w-full flex">
+      <form onSubmit={handleSubmit} className="flex items-center justify-center min-w-[24rem] m-auto">
+        {error && <span className="absolute text-red-500 -bottom-8">Something went wrong. Please try again.</span>}
+        {success ? (
+          <CheckIcon className="h-8 w-8 text-green-500" />
+        ) : loading ? (
+          <Loader />
+        ) : (
+          <div className="inline-flex items-end">
+            <ChevronRightIcon
+              className={`h-8 w-8 text-white transition hover:translate-x-0.5 inline ${
+                email ? 'motion-safe:animate-none' : 'motion-safe:animate-pulse'
+              }`}
+            />
+          </div>
+        )}
+        <input
+          onChange={handleChange}
+          type="email"
+          required
+          disabled={success}
+          value={email}
+          placeholder={success ? '  Subscribed ⌐◨-◨' : 'Enter Email Address'}
+          className={`bg-transparent uppercase ${
+            error ? 'border-b border-red-500 focus:border-red-500' : ''
+          } block w-6/12 text-lg text-white placeholder-gray-600 focus:text-white focus:outline-none outline-none`}
+        />
+      </form>
+    </div>
   )
 }
 
