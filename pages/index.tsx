@@ -13,7 +13,7 @@ const Home: NextPage = () => (
       <Paragraph>A Nouns Experience for Power Users</Paragraph>
     </div>
     <Signup />
-    <Marquee text="A Llama/Vector/Nouns Interaction" />
+    <Marquee text="A Llama X Vector Collaboration" />
   </div>
 )
 
