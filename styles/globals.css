@@ -16,4 +16,8 @@
         font-weight: 400;
         src: url('/fonts/VCR-OSD-MONO.ttf');
     }
+
+    html {
+        background-color: #000;
+    }
 }
