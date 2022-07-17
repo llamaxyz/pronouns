@@ -8,12 +8,12 @@ type MarqueeProps = {
 }
 
 const Marquee = ({ text, position = 'bottom' }: MarqueeProps) => (
-  <div className={`fixed text-green-800 uppercase flex py-2 ${position === 'top' ? 'top-0' : 'bottom-0'} overflow-x-hidden`}>
+  <div className={`fixed text-avocado uppercase flex py-2 ${position === 'top' ? 'top-0' : 'bottom-0'} overflow-x-hidden`}>
     <div className="animate-marquee whitespace-nowrap">
       {[...Array(30)].map(i => (
         <span key={i} className="inline-flex items-center">
           <span className="mx-4">{text}</span>
-          <ChevronDoubleRightIcon className="h-4 w-4 text-green-800 inline transition hover:translate-x-0.5" />
+          <ChevronDoubleRightIcon className="h-4 w-4 text-avocado inline transition hover:translate-x-0.5" />
         </span>
       ))}
     </div>
@@ -21,7 +21,7 @@ const Marquee = ({ text, position = 'bottom' }: MarqueeProps) => (
       {[...Array(30)].map(i => (
         <span key={i} className="inline-flex items-center">
           <span className="mx-4">{text}</span>
-          <ChevronDoubleRightIcon className="h-4 w-4 text-green-800 inline transition hover:translate-x-0.5" />
+          <ChevronDoubleRightIcon className="h-4 w-4 text-avocado inline transition hover:translate-x-0.5" />
         </span>
       ))}
     </div>

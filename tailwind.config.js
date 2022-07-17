@@ -1,17 +1,24 @@
 /** @type {import('tailwindcss').Config} */
 
 const colors = require('tailwindcss/colors')
+const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
   content: ['./pages/**/*.{js,ts,jsx,tsx,mx,mdx}', './components/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
-        gray: colors.gray,
+        // Using https://color-name.com to generate color names
+        neutral: colors.neutral,
+        avocado: '#56850D',
+        'malachite-green': '#4BFB9C',
+      },
+      screens: {
+        xs: '520px',
       },
       fontFamily: {
-        sans: ['Space Mono', 'sans-serif'],
-        title: ['Space Mono'],
+        sans: ['VCR-OSD-MONO', ...defaultTheme.fontFamily.sans],
+        heading: ['"Judera-Ring"', ...defaultTheme.fontFamily.sans],
       },
       animation: {
         marquee: 'marquee 200s linear infinite',

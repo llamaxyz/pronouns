@@ -16,10 +16,12 @@ const App = ({ Component, pageProps }: AppProps) => (
       <meta property="og:url" content="https://pronouns.gg/" />
       <meta property="og:title" content="Pronouns | Nouns for Power Users" />
       <meta property="og:description" content="The Nouns interface for power users." />
+      <meta property="og:image" content="https://pronouns.gg/pronouns-header.png" />
       <meta property="twitter:card" content="summary_large_image" />
       <meta property="twitter:url" content="https://pronouns.gg/" />
       <meta property="twitter:title" content="The Nouns interface for power users." />
       <meta property="twitter:description" content="The Nouns interface for power users." />
+      <meta property="twitter:image" content="https://pronouns.gg/pronouns-header.png" />
       <title>Pronouns | Nouns for Power Users</title>
       <link rel="shortcut icon" href="/favicon.ico" />
     </Head>

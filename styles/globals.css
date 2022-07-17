@@ -4,16 +4,16 @@
 
 @layer base {
     @font-face {
-        font-family: 'SpaceMono';
+        font-family: 'Judera-Ring';
         font-display: fallback;
         font-weight: 400;
-        src: url('/fonts/SpaceMono-Regular.ttf');
+        src: url('/fonts/Judera-Ring.ttf');
     }
 
     @font-face {
-        font-family: 'SpaceMono';
+        font-family: 'VCR-OSD-MONO';
         font-display: fallback;
-        font-weight: 500;
-        src: url('/fonts/SpaceMono-Bold.ttf');
+        font-weight: 400;
+        src: url('/fonts/VCR-OSD-MONO.ttf');
     }
 }
