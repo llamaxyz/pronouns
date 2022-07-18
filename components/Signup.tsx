@@ -70,7 +70,7 @@ const Signup = ({ className }: { className?: string }) => {
         placeholder={success ? 'Subscribed ⌐◨-◨' : 'Enter Email Address'}
         className={`bg-transparent uppercase ${
           error ? 'border-b border-red-500 focus:border-red-500' : ''
-        } block text-2xl md:text-3xl text-white placeholder-neutral-500 focus:text-white focus:outline-none outline-none`}
+        } block text-2xl md:text-3xl text-white placeholder-neutral-500 disabled:opacity-100 focus:text-white focus:outline-none outline-none`}
       />
     </form>
   )
