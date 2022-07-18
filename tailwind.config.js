@@ -23,6 +23,8 @@ module.exports = {
       animation: {
         marquee: 'marquee 200s linear infinite',
         marquee2: 'marquee2 200s linear infinite',
+        'fade-in-1': '0.5s ease 0.05s 1 normal forwards running fadeIn',
+        'fade-in-2': '0.5s ease 0.15s 1 normal forwards running fadeIn',
       },
       keyframes: {
         marquee: {
@@ -32,6 +34,10 @@ module.exports = {
         marquee2: {
           '0%': { transform: 'translateX(100%)' },
           '100%': { transform: 'translateX(0%)' },
+        },
+        fadeIn: {
+          '0%': { opacity: '0', transform: 'translateY(8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         },
       },
     },

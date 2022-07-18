@@ -10,9 +10,9 @@ const Home: NextPage = () => (
       <Title level={1} className="text-malachite-green">
         Pronouns
       </Title>
-      <Paragraph className="text-center">A Nouns Experience for Power Users</Paragraph>
+      <Paragraph className="text-center translate-y-2 animate-fade-in-1 opacity-0">A Nouns Experience for Power Users</Paragraph>
     </div>
-    <Signup />
+    <Signup className="translate-y-2 animate-fade-in-2 opacity-0" />
     <Marquee text="A Llama X Vector Collaboration" />
   </div>
 )

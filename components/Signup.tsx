@@ -7,7 +7,7 @@ function delay(time: number) {
   return new Promise(resolve => setTimeout(resolve, time))
 }
 
-const Signup = () => {
+const Signup = ({ className }: { className?: string }) => {
   const [email, setEmail] = React.useState('')
   const [loading, setLoading] = React.useState(false)
   const [success, setSuccess] = React.useState(false)
@@ -48,7 +48,7 @@ const Signup = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex">
+    <form onSubmit={handleSubmit} className={`${className} flex`}>
       {error && <span className="absolute text-red-500 -bottom-8">Something went wrong. Please try again.</span>}
       {success ? (
         <CheckIcon className="h-8 w-8 text-avocado mr-2" />
@@ -70,7 +70,7 @@ const Signup = () => {
         placeholder={success ? 'Subscribed ⌐◨-◨' : 'Enter Email Address'}
         className={`bg-transparent uppercase ${
           error ? 'border-b border-red-500 focus:border-red-500' : ''
-        } block text-2xl md:text-3xl text-white placeholder-neutral-700 focus:text-white focus:outline-none outline-none`}
+        } block text-2xl md:text-3xl text-white placeholder-neutral-500 focus:text-white focus:outline-none outline-none`}
       />
     </form>
   )
