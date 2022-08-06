@@ -25,7 +25,7 @@ const Title = ({ level = 3, children, className }: TitleProps) => {
   const Heading = `h${level}` as const
   // avoiding string concatenation to create class names because of tailwind optimization
   return (
-    <Heading className={`${className ? className + ' ' : ''}font-heading font-medium mb-6 text-white ${generateTextSize(level)}`}>
+    <Heading className={`${className ? className + ' ' : ''}font-heading font-medium text-white ${generateTextSize(level)}`}>
       {children}
     </Heading>
   )
