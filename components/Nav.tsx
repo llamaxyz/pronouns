@@ -1,5 +1,5 @@
 import Title from 'components/Title'
-import Button from 'components/Button'
+import Connect from 'components/Connect'
 
 const Nav = () => {
   return (
@@ -7,7 +7,7 @@ const Nav = () => {
       <Title level={6} className="text-malachite-green uppercase">
         Pronouns
       </Title>
-      <Button>Connect</Button>
+      <Connect />
     </div>
   )
 }

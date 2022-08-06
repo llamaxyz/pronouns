@@ -22,6 +22,7 @@ const Button = ({
         className ?? ''
       } px-3 py-2.5 rounded-full text-sm border border-white/10 inline-block transition-colors bg-white text-ui-black hover:bg-neutral-200 focus:bg-neutral-200 focus:ring-white group font-bold`}
       onClick={() => onClick()}
+      type="button"
     >
       {children}
     </ButtonElement>

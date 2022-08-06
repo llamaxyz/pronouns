@@ -1,6 +1,32 @@
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
+import { RainbowKitProvider, getDefaultWallets, darkTheme } from '@rainbow-me/rainbowkit'
+import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
+import { alchemyProvider } from 'wagmi/providers/alchemy'
+import { publicProvider } from 'wagmi/providers/public'
+import resolveConfig from 'tailwindcss/resolveConfig'
+import tailwindConfig from '../tailwind.config.js'
 import 'styles/globals.css'
+import '@rainbow-me/rainbowkit/styles.css'
+
+const styleConfig = resolveConfig(tailwindConfig)
+
+const { chains, provider, webSocketProvider } = configureChains(
+  [chain.mainnet],
+  [alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY }), publicProvider()]
+)
+
+const { connectors } = getDefaultWallets({
+  appName: 'Pronouns',
+  chains,
+})
+
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors,
+  provider,
+  webSocketProvider,
+})
 
 const App = ({ Component, pageProps }: AppProps) => (
   <>
@@ -25,7 +51,20 @@ const App = ({ Component, pageProps }: AppProps) => (
       <title>Auction | Pronouns</title>
       <link rel="shortcut icon" href="/favicon.ico" />
     </Head>
-    <Component {...pageProps} />
+    <WagmiConfig client={wagmiClient}>
+      <RainbowKitProvider
+        theme={darkTheme({
+          // @ts-ignore
+          accentColor: styleConfig?.theme?.colors?.white,
+          // @ts-ignore
+          accentColorForeground: styleConfig?.theme?.colors?.ui?.black,
+          fontStack: 'system',
+        })}
+        chains={chains}
+      >
+        <Component {...pageProps} />
+      </RainbowKitProvider>
+    </WagmiConfig>
   </>
 )
 
