@@ -20,7 +20,7 @@ module.exports = {
         xs: '520px',
       },
       fontFamily: {
-        sans: ['VCR-OSD-MONO', ...defaultTheme.fontFamily.sans],
+        sans: ['Aeonik', ...defaultTheme.fontFamily.sans],
         heading: ['"Judera-Ring"', ...defaultTheme.fontFamily.sans],
       },
       animation: {

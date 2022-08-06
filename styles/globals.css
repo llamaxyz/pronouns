@@ -11,10 +11,24 @@
     }
 
     @font-face {
-        font-family: 'VCR-OSD-MONO';
+        font-family: 'Aeonik';
         font-display: fallback;
         font-weight: 400;
-        src: url('/fonts/VCR-OSD-MONO.ttf');
+        src: url('/fonts/Aeonik-Regular.otf');
+    }
+    
+    @font-face {
+        font-family: 'Aeonik';
+        font-display: fallback;
+        font-weight: 500;
+        src: url('/fonts/Aeonik-Medium.otf');
+    }
+
+    @font-face {
+        font-family: 'Aeonik';
+        font-display: fallback;
+        font-weight: 600;
+        src: url('/fonts/Aeonik-Bold.otf');
     }
 
     html {
