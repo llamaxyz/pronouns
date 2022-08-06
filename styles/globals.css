@@ -18,6 +18,6 @@
     }
 
     html {
-        background-color: #000;
+        background-color: theme('colors.ui.black');
     }
 }

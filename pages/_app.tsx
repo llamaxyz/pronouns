@@ -10,11 +10,11 @@ const App = ({ Component, pageProps }: AppProps) => (
       <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
       <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       <meta name="theme-color" content="#ffffff" />
-      <meta name="title" content="Pronouns | Nouns for Power Users" />
+      <meta name="title" content="Auction | Pronouns" />
       <meta name="description" content="The Nouns interface for power users." />
       <meta property="og:type" content="website" />
       <meta property="og:url" content="https://pronouns.gg/" />
-      <meta property="og:title" content="Pronouns | Nouns for Power Users" />
+      <meta property="og:title" content="Auction | Pronouns" />
       <meta property="og:description" content="The Nouns interface for power users." />
       <meta property="og:image" content="https://pronouns.gg/pronouns-header.png" />
       <meta property="twitter:card" content="summary_large_image" />
@@ -22,7 +22,7 @@ const App = ({ Component, pageProps }: AppProps) => (
       <meta property="twitter:title" content="The Nouns interface for power users." />
       <meta property="twitter:description" content="The Nouns interface for power users." />
       <meta property="twitter:image" content="https://pronouns.gg/pronouns-header.png" />
-      <title>Pronouns | Nouns for Power Users</title>
+      <title>Auction | Pronouns</title>
       <link rel="shortcut icon" href="/favicon.ico" />
     </Head>
     <Component {...pageProps} />

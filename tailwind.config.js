@@ -12,6 +12,9 @@ module.exports = {
         neutral: colors.neutral,
         avocado: '#56850D',
         'malachite-green': '#4BFB9C',
+        ui: {
+          black: '#111813',
+        },
       },
       screens: {
         xs: '520px',
