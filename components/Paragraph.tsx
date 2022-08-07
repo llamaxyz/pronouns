@@ -4,7 +4,7 @@ type ParagraphProps = {
 }
 
 const Paragraph = ({ className, children }: ParagraphProps) => {
-  return <p className={`${className ? className + ' ' : ''}text-white text-base sm:text-lg md:text-xl`}>{children}</p>
+  return <p className={`text-white tracking-wide text-base${className ? ' ' + className : ''}`}>{children}</p>
 }
 
 export default Paragraph
