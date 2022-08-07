@@ -2,16 +2,49 @@ import type { NextPage } from 'next'
 import { ChevronLeftIcon } from '@heroicons/react/outline'
 import { ChevronRightIcon } from '@heroicons/react/outline'
 import Head from 'next/head'
+import axios from 'axios'
 import Button from 'components/Button'
 import React from 'react'
 import Nav from 'components/Nav'
 import Paragraph from 'components/Paragraph'
 import Tag from 'components/Tag'
 import Title from 'components/Title'
+import { formatDate } from 'utils/index'
 
 const Home: NextPage = () => {
-  const [id, setId] = React.useState(401)
+  const [id, setId] = React.useState(0)
+  const [nouns, setNouns] = React.useState([])
+  const [nounDetails, setDetails] = React.useState({})
 
+  React.useEffect(() => {
+    const getData = async () => {
+      await axios
+        .post('https://api.thegraph.com/subgraphs/name/nounsdao/nouns-subgraph', {
+          query:
+            '{\n  auctions(orderBy: startTime, orderDirection: desc, first: 1000) {\n    id\n    amount\n    settled\n    bidder {\n      id\n      __typename\n    }\n    startTime\n    endTime\n    noun {\n      id\n      owner {\n        id\n        __typename\n      }\n      __typename\n    }\n    bids {\n      id\n      amount\n      blockNumber\n      blockTimestamp\n      txIndex\n      bidder {\n        id\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n',
+        })
+        .then(response => {
+          setNouns(response?.data?.data?.auctions)
+          setId(Number(response?.data?.data?.auctions[0].id))
+        })
+    }
+    getData()
+  }, [])
+
+  React.useEffect(() => {
+    const getData = async () => {
+      await axios
+        .post('https://api.thegraph.com/subgraphs/name/nounsdao/nouns-subgraph', {
+          query: `{\n  noun(id: ${id}) {\n    id\n    seed {\n      background\n      body\n      accessory\n      head\n      glasses\n      __typename\n    }\n    owner {\n      id\n      __typename\n    }\n    __typename\n  }\n}\n`,
+        })
+        .then(response => {
+          setDetails(response?.data?.data?.noun)
+        })
+    }
+    getData()
+  }, [id])
+
+  const currentNoun = nouns.find(noun => Number(noun.id) === id)
   return (
     <div className="bg-ui-black text-white">
       <Head>
@@ -26,19 +59,21 @@ const Home: NextPage = () => {
             <Button onClick={() => setId(id - 1)} disabled={id === 0} type="secondary">
               <ChevronLeftIcon className="h-6 w-6" />
             </Button>
-            <Button onClick={() => setId(id + 1)} disabled={id === 401} type="secondary">
+            <Button onClick={() => setId(id + 1)} disabled={id === Number(nouns?.[0]?.id)} type="secondary">
               <ChevronRightIcon className="h-6 w-6" />
             </Button>
           </div>
           <div className="px-1 w-[124px] whitespace-nowrap">
-            <Paragraph className="text-ui-silver">July 22, 2022</Paragraph>
+            <Paragraph className="text-ui-silver">{`${formatDate(currentNoun?.endTime * 1000)}`}</Paragraph>
             <Title isBold level={6}>
               Noun {id}
             </Title>
           </div>
-          <Tag className="mt-auto">{id === 401 ? 'Live Auction' : id % 10 === 0 ? 'Nounder Reward' : 'Settled'}</Tag>
+          <Tag className="mt-auto">{id % 10 === 0 ? 'Nounder Reward' : !currentNoun?.settled ? 'Live Auction' : 'Settled'}</Tag>
         </div>
-        <div className="bg-white rounded-lg w-[50%] h-64">hi</div>
+        <div className="bg-white rounded-lg w-[50%] h-64 text-black">
+          <pre>{JSON.stringify(nounDetails.seed)}</pre>
+        </div>
       </div>
     </div>
   )
