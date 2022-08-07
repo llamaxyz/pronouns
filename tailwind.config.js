@@ -14,14 +14,16 @@ module.exports = {
         'malachite-green': '#4BFB9C',
         ui: {
           black: '#111813',
+          onyx: '#3B3835',
+          silver: '#AFAFAF',
         },
       },
       screens: {
         xs: '520px',
       },
       fontFamily: {
-        sans: ['VCR-OSD-MONO', ...defaultTheme.fontFamily.sans],
-        heading: ['"Judera-Ring"', ...defaultTheme.fontFamily.sans],
+        sans: ['Aeonik', ...defaultTheme.fontFamily.sans],
+        logo: ['"Judera-Ring"', ...defaultTheme.fontFamily.sans],
       },
       animation: {
         marquee: 'marquee 200s linear infinite',
