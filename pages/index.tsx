@@ -20,7 +20,7 @@ const Home: NextPage = () => {
         <title>Auction | Pronouns</title>
       </Head>
       <Nav />
-      <div className="py-6 px-10">
+      <div className="py-6 px-10 flex flex-col gap-4">
         <div className="flex items-center gap-4">
           <div className="flex gap-2">
             <Button onClick={() => setId(id - 1)} disabled={id === 0} type="secondary">
@@ -38,6 +38,7 @@ const Home: NextPage = () => {
           </div>
           <Tag className="mt-auto">{id === 401 ? 'Live Auction' : id % 10 === 0 ? 'Nounder Reward' : 'Settled'}</Tag>
         </div>
+        <div className="bg-white rounded-lg w-[50%] h-64">hi</div>
       </div>
     </div>
   )
