@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@heroicons/react': ^1.0.6
   '@rainbow-me/rainbowkit': ^0.4.5
+  '@tanstack/react-query': ^4.0.10
   '@types/node': 18.0.5
   '@types/react': 18.0.15
   '@types/react-dom': 18.0.6
@@ -26,6 +27,7 @@ specifiers:
 dependencies:
   '@heroicons/react': 1.0.6_react@18.2.0
   '@rainbow-me/rainbowkit': 0.4.5_e3l36fg5yiuaj75b7ktzipa75a
+  '@tanstack/react-query': 4.0.10_biqbaboplfbrettd7655fr4n2y
   autoprefixer: 10.4.7_postcss@8.4.14
   axios: 0.27.2
   ethers: 5.6.9
@@ -742,6 +744,29 @@ packages:
     resolution: {integrity: sha512-556Az0VX7WR6UdoTn4htt/l3zPQ7bsQWK+HqdG4swV7beUCxo/BqmvbOpUkTIm/9ih86LIf1qsUnywNL3obGHw==}
     dependencies:
       tslib: 2.4.0
+    dev: false
+
+  /@tanstack/query-core/4.0.10:
+    resolution: {integrity: sha512-9LsABpZXkWZHi4P1ozRETEDXQocLAxVzQaIhganxbNuz/uA3PsCAJxJTiQrknG5htLMzOF5MqM9G10e6DCxV1A==}
+    dev: false
+
+  /@tanstack/react-query/4.0.10_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-Wn5QhZUE5wvr6rGClV7KeQIUsdTmYR9mgmMZen7DSRWauHW2UTynFg3Kkf6pw+XlxxOLsyLWwz/Q6q1lSpM3TQ==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-native: '*'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+    dependencies:
+      '@tanstack/query-core': 4.0.10
+      '@types/use-sync-external-store': 0.0.3
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      use-sync-external-store: 1.2.0_react@18.2.0
     dev: false
 
   /@types/bn.js/4.11.6:

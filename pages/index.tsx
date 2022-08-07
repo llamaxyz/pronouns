@@ -1,8 +1,8 @@
 import type { NextPage } from 'next'
+import { useQuery } from '@tanstack/react-query'
 import { ChevronLeftIcon } from '@heroicons/react/outline'
 import { ChevronRightIcon } from '@heroicons/react/outline'
 import Head from 'next/head'
-import axios from 'axios'
 import Button from 'components/Button'
 import React from 'react'
 import Nav from 'components/Nav'
@@ -10,46 +10,36 @@ import Paragraph from 'components/Paragraph'
 import Skeleton from 'components/Skeleton'
 import Tag from 'components/Tag'
 import Title from 'components/Title'
-import { formatDate } from 'utils/index'
+import { formatDate, getAllNouns, getNounSeed } from 'utils/index'
+
+interface Noun {
+  id: string
+  settled: boolean
+}
 
 const Home: NextPage = () => {
-  const [id, setId] = React.useState(0)
-  const [nouns, setNouns] = React.useState([])
-  const [nounDetails, setDetails] = React.useState({})
-  const [loading, setLoading] = React.useState(true)
+  const [id, setId] = React.useState<number>()
+  const {
+    isLoading: nounsLoading,
+    data: nouns,
+    status: nounsStatus,
+  } = useQuery(['nouns'], getAllNouns, {
+    refetchOnWindowFocus: false,
+    retry: 1,
+  })
+  const { data: seed, status: seedStatus } = useQuery(['noun', id], () => getNounSeed(id), {
+    refetchOnWindowFocus: false,
+    retry: 1,
+  })
 
   React.useEffect(() => {
-    const getData = async () => {
-      setLoading(true)
-      await axios
-        .post('https://api.thegraph.com/subgraphs/name/nounsdao/nouns-subgraph', {
-          query:
-            '{\n  auctions(orderBy: startTime, orderDirection: desc, first: 1000) {\n    id\n    amount\n    settled\n    bidder {\n      id\n      __typename\n    }\n    startTime\n    endTime\n    noun {\n      id\n      owner {\n        id\n        __typename\n      }\n      __typename\n    }\n    bids {\n      id\n      amount\n      blockNumber\n      blockTimestamp\n      txIndex\n      bidder {\n        id\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n',
-        })
-        .then(response => {
-          setNouns(response?.data?.data?.auctions)
-          setId(Number(response?.data?.data?.auctions[0].id))
-        })
-      setLoading(false)
+    if (nounsStatus === 'success') {
+      setId(Number(nouns[0].id))
     }
-    getData()
-  }, [])
+  }, [nounsStatus, nouns])
 
-  React.useEffect(() => {
-    const getData = async () => {
-      await axios
-        .post('https://api.thegraph.com/subgraphs/name/nounsdao/nouns-subgraph', {
-          query: `{\n  noun(id: ${id}) {\n    id\n    seed {\n      background\n      body\n      accessory\n      head\n      glasses\n      __typename\n    }\n    owner {\n      id\n      __typename\n    }\n    __typename\n  }\n}\n`,
-        })
-        .then(response => {
-          setDetails(response?.data?.data?.noun)
-        })
-    }
-    getData()
-  }, [id])
-
-  const currentNoun = nouns.find(noun => Number(noun.id) === id)
-  const currentNounPlusOne = nouns.find(noun => Number(noun.id) === id + 1)
+  const getNounDetails = (nounId = id) => nouns?.find((noun: Noun) => Number(noun.id) === nounId)
+  const isNounderNoun = id && id % 10 === 0
   return (
     <div className="bg-ui-black text-white">
       <Head>
@@ -61,17 +51,17 @@ const Home: NextPage = () => {
       <div className="py-6 px-10 flex flex-col gap-4">
         <div className="flex items-center gap-4">
           <div className="flex gap-2">
-            <Button onClick={() => setId(id - 1)} disabled={id === 0} type="secondary">
+            <Button onClick={() => id && setId(id - 1)} disabled={id === 0} type="secondary">
               <ChevronLeftIcon className="h-6 w-6" />
             </Button>
-            <Button onClick={() => setId(id + 1)} disabled={id === Number(nouns?.[0]?.id)} type="secondary">
+            <Button onClick={() => id && setId(id + 1)} disabled={id === Number(nouns?.[0]?.id)} type="secondary">
               <ChevronRightIcon className="h-6 w-6" />
             </Button>
           </div>
           <Skeleton
             className="px-1 w-[124px] whitespace-nowrap"
             hasParentElement
-            loading={loading}
+            loading={nounsLoading}
             loadingElement={
               <>
                 <div className="h-5 mb-1 bg-ui-silver rounded col-span-2" />
@@ -79,26 +69,24 @@ const Home: NextPage = () => {
               </>
             }
           >
-            <Paragraph className="text-ui-silver">{`${
-              id % 10 === 0 ? formatDate(currentNounPlusOne?.startTime * 1000) : formatDate(currentNoun?.startTime * 1000)
-            }`}</Paragraph>
+            <Paragraph className="text-ui-silver">{formatDate(getNounDetails(isNounderNoun ? id + 1 : id)?.startTime * 1000)}</Paragraph>
             <Title isBold level={6}>
               Noun {id}
             </Title>
           </Skeleton>
           <Skeleton
-            loading={loading}
+            loading={nounsLoading}
             loadingElement={
               <div className="w-[108px] animate-pulse mt-auto h-8 text-ui-silver bg-ui-silver py-1.5 px-3 tracking-wider text-sm rounded-full">
                 Live Auction
               </div>
             }
           >
-            <Tag className="mt-auto">{id % 10 === 0 ? 'Nounder Reward' : !currentNoun?.settled ? 'Live Auction' : 'Settled'}</Tag>
+            <Tag className="mt-auto">{isNounderNoun ? 'Nounder Reward' : getNounDetails()?.settled ? 'Settled' : 'Live Auction'}</Tag>
           </Skeleton>
         </div>
         <div className="bg-white rounded-lg w-[50%] h-64 text-black">
-          <pre>{JSON.stringify(nounDetails.seed, undefined, 2)}</pre>
+          <pre>{seedStatus === 'success' ? JSON.stringify(seed?.seed, undefined, 2) : 'Loading...'}</pre>
         </div>
       </div>
     </div>

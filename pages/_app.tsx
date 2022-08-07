@@ -1,5 +1,6 @@
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { RainbowKitProvider, getDefaultWallets, darkTheme } from '@rainbow-me/rainbowkit'
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
@@ -9,18 +10,16 @@ import tailwindConfig from '../tailwind.config.js'
 import 'styles/globals.css'
 import '@rainbow-me/rainbowkit/styles.css'
 
+const queryClient = new QueryClient()
 const styleConfig = resolveConfig(tailwindConfig)
-
 const { chains, provider, webSocketProvider } = configureChains(
   [chain.mainnet],
   [alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY }), publicProvider()]
 )
-
 const { connectors } = getDefaultWallets({
   appName: 'Pronouns',
   chains,
 })
-
 const wagmiClient = createClient({
   autoConnect: true,
   connectors,
@@ -51,20 +50,22 @@ const App = ({ Component, pageProps }: AppProps) => (
       <title>Pronouns | The Nouns interface for power users</title>
       <link rel="shortcut icon" href="/favicon.ico" />
     </Head>
-    <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider
-        theme={darkTheme({
-          // @ts-ignore
-          accentColor: styleConfig?.theme?.colors?.white,
-          // @ts-ignore
-          accentColorForeground: styleConfig?.theme?.colors?.ui?.black,
-          fontStack: 'system',
-        })}
-        chains={chains}
-      >
-        <Component {...pageProps} />
-      </RainbowKitProvider>
-    </WagmiConfig>
+    <QueryClientProvider client={queryClient}>
+      <WagmiConfig client={wagmiClient}>
+        <RainbowKitProvider
+          theme={darkTheme({
+            // @ts-ignore
+            accentColor: styleConfig?.theme?.colors?.white,
+            // @ts-ignore
+            accentColorForeground: styleConfig?.theme?.colors?.ui?.black,
+            fontStack: 'system',
+          })}
+          chains={chains}
+        >
+          <Component {...pageProps} />
+        </RainbowKitProvider>
+      </WagmiConfig>
+    </QueryClientProvider>
   </>
 )
 
