@@ -7,6 +7,7 @@ import Button from 'components/Button'
 import React from 'react'
 import Nav from 'components/Nav'
 import Paragraph from 'components/Paragraph'
+import Skeleton from 'components/Skeleton'
 import Tag from 'components/Tag'
 import Title from 'components/Title'
 import { formatDate } from 'utils/index'
@@ -15,9 +16,11 @@ const Home: NextPage = () => {
   const [id, setId] = React.useState(0)
   const [nouns, setNouns] = React.useState([])
   const [nounDetails, setDetails] = React.useState({})
+  const [loading, setLoading] = React.useState(true)
 
   React.useEffect(() => {
     const getData = async () => {
+      setLoading(true)
       await axios
         .post('https://api.thegraph.com/subgraphs/name/nounsdao/nouns-subgraph', {
           query:
@@ -27,6 +30,7 @@ const Home: NextPage = () => {
           setNouns(response?.data?.data?.auctions)
           setId(Number(response?.data?.data?.auctions[0].id))
         })
+      setLoading(false)
     }
     getData()
   }, [])
@@ -45,6 +49,7 @@ const Home: NextPage = () => {
   }, [id])
 
   const currentNoun = nouns.find(noun => Number(noun.id) === id)
+  const currentNounPlusOne = nouns.find(noun => Number(noun.id) === id + 1)
   return (
     <div className="bg-ui-black text-white">
       <Head>
@@ -63,16 +68,37 @@ const Home: NextPage = () => {
               <ChevronRightIcon className="h-6 w-6" />
             </Button>
           </div>
-          <div className="px-1 w-[124px] whitespace-nowrap">
-            <Paragraph className="text-ui-silver">{`${formatDate(currentNoun?.endTime * 1000)}`}</Paragraph>
+          <Skeleton
+            className="px-1 w-[124px] whitespace-nowrap"
+            hasParentElement
+            loading={loading}
+            loadingElement={
+              <>
+                <div className="h-5 mb-1 bg-ui-silver rounded col-span-2" />
+                <div className="h-8 bg-ui-silver rounded col-span-2" />
+              </>
+            }
+          >
+            <Paragraph className="text-ui-silver">{`${
+              id % 10 === 0 ? formatDate(currentNounPlusOne?.startTime * 1000) : formatDate(currentNoun?.startTime * 1000)
+            }`}</Paragraph>
             <Title isBold level={6}>
               Noun {id}
             </Title>
-          </div>
-          <Tag className="mt-auto">{id % 10 === 0 ? 'Nounder Reward' : !currentNoun?.settled ? 'Live Auction' : 'Settled'}</Tag>
+          </Skeleton>
+          <Skeleton
+            loading={loading}
+            loadingElement={
+              <div className="w-[108px] animate-pulse mt-auto h-8 text-ui-silver bg-ui-silver py-1.5 px-3 tracking-wider text-sm rounded-full">
+                Live Auction
+              </div>
+            }
+          >
+            <Tag className="mt-auto">{id % 10 === 0 ? 'Nounder Reward' : !currentNoun?.settled ? 'Live Auction' : 'Settled'}</Tag>
+          </Skeleton>
         </div>
         <div className="bg-white rounded-lg w-[50%] h-64 text-black">
-          <pre>{JSON.stringify(nounDetails.seed)}</pre>
+          <pre>{JSON.stringify(nounDetails.seed, undefined, 2)}</pre>
         </div>
       </div>
     </div>
