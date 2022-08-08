@@ -7,9 +7,9 @@ type TitleProps = {
 }
 
 // avoiding string concatenation to create class names because of tailwind optimization
-const smTextSize = ['sm:text-7xl', 'sm:text-6xl', 'sm:text-5xl', 'sm:text-4xl', 'sm:text-3xl', 'sm:text-2xl']
+const xxsTextSize = ['xxs:text-7xl', 'xxs:text-6xl', 'xxs:text-5xl', 'xxs:text-4xl', 'xxs:text-3xl', 'xxs:text-2xl']
 const textSize = ['text-6xl', 'text-5xl', 'text-4xl', 'text-3xl', 'text-2xl', 'text-xl']
-const generateTextSize = (level: number) => `${textSize[level - 1]} ${smTextSize[level - 1]}`
+const generateTextSize = (level: number) => `${textSize[level - 1]} ${xxsTextSize[level - 1]}`
 
 const Title = ({ level = 3, children, className, isLogo = false, isBold = false }: TitleProps) => {
   const Heading = `h${level}` as const
