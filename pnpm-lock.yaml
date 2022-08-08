@@ -2,6 +2,8 @@ lockfileVersion: 5.4
 
 specifiers:
   '@heroicons/react': ^1.0.6
+  '@nouns/assets': ^0.4.0
+  '@nouns/sdk': ^0.2.0
   '@rainbow-me/rainbowkit': ^0.4.5
   '@tanstack/react-query': ^4.0.10
   '@types/node': 18.0.5
@@ -26,6 +28,8 @@ specifiers:
 
 dependencies:
   '@heroicons/react': 1.0.6_react@18.2.0
+  '@nouns/assets': 0.4.0
+  '@nouns/sdk': 0.2.0
   '@rainbow-me/rainbowkit': 0.4.5_e3l36fg5yiuaj75b7ktzipa75a
   '@tanstack/react-query': 4.0.10_biqbaboplfbrettd7655fr4n2y
   autoprefixer: 10.4.7_postcss@8.4.14
@@ -708,6 +712,32 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.13.0
+
+  /@nouns/assets/0.4.0:
+    resolution: {integrity: sha512-Ze8Odtq5vqU2Xyge6x7evjpEs9q36V97eKFWu6d6mn9JZb0nqopffcwT1uYdhbmzkbtDpiCrghYeL+QlZxAD5Q==}
+    dependencies:
+      '@ethersproject/bignumber': 5.6.2
+      '@ethersproject/solidity': 5.6.1
+    dev: false
+
+  /@nouns/contracts/0.1.3:
+    resolution: {integrity: sha512-OrsgbXhFdoQqVXjscG4Y7e11i6RgvZb1fTd9O5RVr1MUR/1V9iqbCf3rMuZeLdHEqkh96309OnMCFq7V3vjq0g==}
+    dependencies:
+      ethers: 5.6.9
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
+
+  /@nouns/sdk/0.2.0:
+    resolution: {integrity: sha512-gRXRUVjJsie/3cJSQRxRwuY3iH5ekxACPJDcrH4NTuT5I+anyCW082+20uAq3Tx9t1CYLHBk02tDZFFPm7S51w==}
+    dependencies:
+      '@nouns/contracts': 0.1.3
+      ethers: 5.6.9
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
 
   /@pedrouid/environment/1.0.1:
     resolution: {integrity: sha512-HaW78NszGzRZd9SeoI3JD11JqY+lubnaOx7Pewj5pfjqWXOEATpeKIFb9Z4t2WBUK2iryiXX3lzWwmYWgUL0Ug==}

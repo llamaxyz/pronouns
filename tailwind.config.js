@@ -17,6 +17,8 @@ module.exports = {
           onyx: '#3B3835',
           silver: '#AFAFAF',
         },
+        warm: '#e1d7d5',
+        cool: '#d5d7e1',
       },
       screens: {
         xxs: '475px',

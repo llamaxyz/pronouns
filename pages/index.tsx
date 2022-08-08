@@ -1,7 +1,10 @@
 import type { NextPage } from 'next'
+import Image from 'next/future/image'
 import { useQuery } from '@tanstack/react-query'
 import { ChevronLeftIcon } from '@heroicons/react/outline'
 import { ChevronRightIcon } from '@heroicons/react/outline'
+import { ImageData, getNounData } from '@nouns/assets'
+import { buildSVG } from '@nouns/sdk'
 import Head from 'next/head'
 import Button from 'components/Button'
 import React from 'react'
@@ -10,11 +13,20 @@ import Paragraph from 'components/Paragraph'
 import Skeleton from 'components/Skeleton'
 import Tag from 'components/Tag'
 import Title from 'components/Title'
+import loadingNoun from 'public/loading-skull-noun.gif'
 import { formatDate, getAllNouns, getNounSeed } from 'utils/index'
 
 interface Noun {
   id: string
   settled: boolean
+}
+
+interface NounSeed {
+  accessory: number
+  background: number
+  body: number
+  glasses: number
+  head: number
 }
 
 const Home: NextPage = () => {
@@ -39,6 +51,12 @@ const Home: NextPage = () => {
   }, [nounsStatus, nouns])
 
   const getNounDetails = (nounId = id) => nouns?.find((noun: Noun) => Number(noun.id) === nounId)
+
+  const renderNoun = (seed: NounSeed) => {
+    const { parts, background } = getNounData(seed)
+    return `data:image/svg+xml;base64,${window.btoa(buildSVG(parts, ImageData.palette, background))}`
+  }
+
   const isNounderNoun = id && id % 10 === 0
   return (
     <div className="bg-ui-black text-white">
@@ -86,8 +104,14 @@ const Home: NextPage = () => {
               <Tag className="mt-auto">{isNounderNoun ? 'Nounder Reward' : getNounDetails()?.settled ? 'Settled' : 'Live Auction'}</Tag>
             </Skeleton>
           </div>
-          <div className="bg-white rounded-lg h-64 text-black">
-            <pre>{seedStatus === 'success' ? JSON.stringify(seed?.seed, undefined, 2) : 'Loading...'}</pre>
+          <div className={`${seed?.seed?.background === '0' ? 'bg-cool' : 'bg-warm'} rounded-lg h-64 text-black`}>
+            <Image
+              alt={`Noun ${id}`}
+              className="mx-auto"
+              width={256}
+              height={256}
+              src={seedStatus === 'success' ? renderNoun(seed.seed) : loadingNoun}
+            />
           </div>
         </div>
         <div className="col-span-full lg:col-span-3 py-6">Column 2</div>
