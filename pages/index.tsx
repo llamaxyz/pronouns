@@ -48,46 +48,50 @@ const Home: NextPage = () => {
         <title>Auction | Pronouns</title>
       </Head>
       <Nav />
-      <div className="py-6 px-10 flex flex-col gap-4">
-        <div className="flex items-center gap-4">
-          <div className="flex gap-2">
-            <Button onClick={() => id && setId(id - 1)} disabled={id === 0} type="secondary">
-              <ChevronLeftIcon className="h-6 w-6" />
-            </Button>
-            <Button onClick={() => id && setId(id + 1)} disabled={id === Number(nouns?.[0]?.id)} type="secondary">
-              <ChevronRightIcon className="h-6 w-6" />
-            </Button>
+      <div className="grid grid-cols-12 gap-6 px-10">
+        <div className="flex flex-col gap-4 col-span-full lg:col-span-5 py-6">
+          <div className="flex items-center gap-4">
+            <div className="flex gap-2">
+              <Button onClick={() => id && setId(id - 1)} disabled={id === 0} type="secondary">
+                <ChevronLeftIcon className="h-6 w-6" />
+              </Button>
+              <Button onClick={() => id && setId(id + 1)} disabled={id === Number(nouns?.[0]?.id)} type="secondary">
+                <ChevronRightIcon className="h-6 w-6" />
+              </Button>
+            </div>
+            <Skeleton
+              className="px-1 w-[124px] whitespace-nowrap"
+              hasParentElement
+              loading={nounsLoading}
+              loadingElement={
+                <>
+                  <div className="h-5 mb-1 bg-ui-silver rounded col-span-2" />
+                  <div className="h-8 bg-ui-silver rounded col-span-2" />
+                </>
+              }
+            >
+              <Paragraph className="text-ui-silver">{formatDate(getNounDetails(isNounderNoun ? id + 1 : id)?.startTime * 1000)}</Paragraph>
+              <Title isBold level={6}>
+                Noun {id}
+              </Title>
+            </Skeleton>
+            <Skeleton
+              loading={nounsLoading}
+              loadingElement={
+                <div className="w-[108px] animate-pulse mt-auto h-8 text-ui-silver bg-ui-silver py-1.5 px-3 tracking-wider text-sm rounded-full">
+                  Live Auction
+                </div>
+              }
+            >
+              <Tag className="mt-auto">{isNounderNoun ? 'Nounder Reward' : getNounDetails()?.settled ? 'Settled' : 'Live Auction'}</Tag>
+            </Skeleton>
           </div>
-          <Skeleton
-            className="px-1 w-[124px] whitespace-nowrap"
-            hasParentElement
-            loading={nounsLoading}
-            loadingElement={
-              <>
-                <div className="h-5 mb-1 bg-ui-silver rounded col-span-2" />
-                <div className="h-8 bg-ui-silver rounded col-span-2" />
-              </>
-            }
-          >
-            <Paragraph className="text-ui-silver">{formatDate(getNounDetails(isNounderNoun ? id + 1 : id)?.startTime * 1000)}</Paragraph>
-            <Title isBold level={6}>
-              Noun {id}
-            </Title>
-          </Skeleton>
-          <Skeleton
-            loading={nounsLoading}
-            loadingElement={
-              <div className="w-[108px] animate-pulse mt-auto h-8 text-ui-silver bg-ui-silver py-1.5 px-3 tracking-wider text-sm rounded-full">
-                Live Auction
-              </div>
-            }
-          >
-            <Tag className="mt-auto">{isNounderNoun ? 'Nounder Reward' : getNounDetails()?.settled ? 'Settled' : 'Live Auction'}</Tag>
-          </Skeleton>
+          <div className="bg-white rounded-lg h-64 text-black">
+            <pre>{seedStatus === 'success' ? JSON.stringify(seed?.seed, undefined, 2) : 'Loading...'}</pre>
+          </div>
         </div>
-        <div className="bg-white rounded-lg w-[50%] h-64 text-black">
-          <pre>{seedStatus === 'success' ? JSON.stringify(seed?.seed, undefined, 2) : 'Loading...'}</pre>
-        </div>
+        <div className="col-span-full lg:col-span-3 py-6">Column 2</div>
+        <div className="col-span-full lg:col-span-3 py-6">Column 3</div>
       </div>
     </div>
   )
