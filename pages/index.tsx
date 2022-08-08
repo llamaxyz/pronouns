@@ -96,12 +96,14 @@ const Home: NextPage = () => {
             <Skeleton
               loading={nounsLoading}
               loadingElement={
-                <div className="w-[108px] animate-pulse mt-auto h-8 text-ui-silver bg-ui-silver py-1.5 px-3 tracking-wider text-sm rounded-full">
+                <div className="w-[108px] overflow-hidden animate-pulse mt-auto h-8 text-ui-silver bg-ui-silver py-1.5 px-3 tracking-wider text-xs xxs:text-sm rounded-full">
                   Live Auction
                 </div>
               }
             >
-              <Tag className="mt-auto">{isNounderNoun ? 'Nounder Reward' : getNounDetails()?.settled ? 'Settled' : 'Live Auction'}</Tag>
+              <Tag className="mt-auto hidden xxxs:block">
+                {isNounderNoun ? 'Nounders' : getNounDetails()?.settled ? 'Settled' : 'Live Auction'}
+              </Tag>
             </Skeleton>
           </div>
           <div className={`${seed?.seed?.background === '0' ? 'bg-cool' : 'bg-warm'} rounded-lg h-64 text-black`}>
@@ -114,8 +116,8 @@ const Home: NextPage = () => {
             />
           </div>
         </div>
-        <div className="col-span-full lg:col-span-3 py-6">Column 2</div>
-        <div className="col-span-full lg:col-span-3 py-6">Column 3</div>
+        <div className="col-span-full lg:col-span-3 py-6" />
+        <div className="col-span-full lg:col-span-3 py-6" />
       </div>
     </div>
   )

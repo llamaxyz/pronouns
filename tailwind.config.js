@@ -21,6 +21,7 @@ module.exports = {
         cool: '#d5d7e1',
       },
       screens: {
+        xxxs: '425px',
         xxs: '475px',
         xs: '520px',
       },
