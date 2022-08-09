@@ -31,7 +31,7 @@ const nounQuery = (id: number) => `{
       }
       __typename
     }
-    bids {
+    bids(orderBy: amount, orderDirection: desc) {
           id
           amount
           blockNumber
@@ -66,7 +66,7 @@ const latestNounQuery = `{
       }
       __typename
     }
-    bids {
+    bids(orderBy: amount, orderDirection: desc) {
           id
           amount
           blockNumber

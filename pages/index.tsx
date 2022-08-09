@@ -1,8 +1,7 @@
 import type { NextPage } from 'next'
 import Image from 'next/future/image'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { ChevronLeftIcon } from '@heroicons/react/outline'
-import { ChevronRightIcon } from '@heroicons/react/outline'
+import { ChevronLeftIcon, ChevronRightIcon, ExternalLinkIcon } from '@heroicons/react/outline'
 import { ImageData, getNounData } from '@nouns/assets'
 import { buildSVG } from '@nouns/sdk'
 import Head from 'next/head'
@@ -17,7 +16,7 @@ import Title from 'components/Title'
 import loadingNoun from 'public/loading-skull-noun.gif'
 import { formatDate, getNoun, getNounSeed } from 'utils/index'
 
-const truncateAddress = (address: string) => `${address.slice(0, 4)}...${address.slice(-4)}`
+const truncateAddress = (address: string) => (address ? `${address.slice(0, 4)}...${address.slice(-4)}` : '0x00...0000')
 
 interface NounSeed {
   accessory: number
@@ -25,6 +24,14 @@ interface NounSeed {
   body: number
   glasses: number
   head: number
+}
+
+interface Bid {
+  id: string
+  bidder: {
+    id: string
+  }
+  amount: string
 }
 
 const Home: NextPage = () => {
@@ -137,7 +144,7 @@ const Home: NextPage = () => {
             <Skeleton
               loading={nounStatus === 'loading'}
               loadingElement={
-                <div className="w-[108px] overflow-hidden animate-pulse mt-auto h-8 text-ui-silver bg-ui-silver py-1.5 px-3 tracking-wider text-xs xxs:text-sm   rounded-full">
+                <div className="w-[108px] overflow-hidden animate-pulse mt-auto h-8 text-ui-silver bg-ui-silver py-1.5 px-3 tracking-wider text-xs xxs:text-sm rounded-full">
                   Live Auction
                 </div>
               }
@@ -156,7 +163,7 @@ const Home: NextPage = () => {
           </div>
         </div>
         <div className="col-span-full lg:col-span-4 py-6">
-          <div className="border border-white/10 rounded-xl p-4">
+          <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">
             <div className="flex gap-4">
               <div className="bg-ui-sulphur xl:px-8 py-2 w-[50%] text-center rounded-lg">
                 <div>
@@ -190,6 +197,30 @@ const Home: NextPage = () => {
                   </div>
                 </Skeleton>
               </div>
+            </div>
+            {!noun?.settled && (
+              <div className="bg-white/10 rounded-lg py-2 px-3">
+                <Paragraph className="xxs:text-sm text-xs opacity-60">Highest Bidder</Paragraph>
+                <Paragraph className="flex items-center justify-between">
+                  {truncateAddress(noun?.bidder?.id)}{' '}
+                  <a rel="noopener noreferer noreferrer" target="_blank" href={`https://etherscan.io/tx/${noun?.bids?.[0]?.id}`}>
+                    <ExternalLinkIcon className="opacity-60 h-4 w-4" />
+                  </a>
+                </Paragraph>
+              </div>
+            )}
+            <div className="py-2 px-3 flex flex-col gap-y-4">
+              {noun?.bids?.map((bid: Bid) => (
+                <Paragraph key={bid.id} className="flex items-center justify-between opacity-60">
+                  {truncateAddress(bid?.bidder?.id)}
+                  <span className="flex items-center gap-x-4">
+                    <span>Ξ {ethers.utils.formatEther(bid?.amount || 0)}</span>
+                    <a rel="noopener noreferer noreferrer" target="_blank" href={`https://etherscan.io/tx/${bid?.id}`}>
+                      <ExternalLinkIcon className="opacity-60 h-4 w-4" />
+                    </a>
+                  </span>
+                </Paragraph>
+              ))}
             </div>
           </div>
         </div>
