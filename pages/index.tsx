@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Image from 'next/future/image'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ChevronLeftIcon } from '@heroicons/react/outline'
 import { ChevronRightIcon } from '@heroicons/react/outline'
 import { ImageData, getNounData } from '@nouns/assets'
@@ -15,12 +15,9 @@ import Skeleton from 'components/Skeleton'
 import Tag from 'components/Tag'
 import Title from 'components/Title'
 import loadingNoun from 'public/loading-skull-noun.gif'
-import { formatDate, getAllNouns, getNounSeed } from 'utils/index'
+import { formatDate, getNoun, getNounSeed } from 'utils/index'
 
-interface Noun {
-  id: string
-  settled: boolean
-}
+const truncateAddress = (address: string) => `${address.slice(0, 4)}...${address.slice(-4)}`
 
 interface NounSeed {
   accessory: number
@@ -31,10 +28,17 @@ interface NounSeed {
 }
 
 const Home: NextPage = () => {
+  const queryClient = useQueryClient()
   const [id, setId] = React.useState<number>()
+  const [latestId, setLatestId] = React.useState<number>()
   const [time, setTime] = React.useState<number>(Date.now())
-  const { data: nouns, status: nounsStatus } = useQuery(['nouns'], getAllNouns, {
+  const isNounderNoun = id && id % 10 === 0
+  const validityTime = id === latestId ? 0 : Infinity
+
+  const { data: noun, status: nounStatus } = useQuery(['nounDetails', id, isNounderNoun], () => getNoun(isNounderNoun ? id + 1 : id), {
     refetchOnWindowFocus: false,
+    staleTime: validityTime,
+    cacheTime: id === latestId ? 100 : Infinity,
     retry: 1,
   })
   const { data: seed, status: seedStatus } = useQuery(['noun', id], () => getNounSeed(id), {
@@ -43,20 +47,37 @@ const Home: NextPage = () => {
   })
 
   React.useEffect(() => {
+    const prefetchNextNouns = async (nounId: number) => {
+      await queryClient.prefetchQuery(
+        ['nounDetails', nounId, nounId && nounId % 10 === 0],
+        () => getNoun(nounId && nounId % 10 === 0 ? nounId + 1 : nounId),
+        {
+          staleTime: validityTime,
+        }
+      )
+    }
+    if (id) {
+      const nextNouns = Array.from({ length: 2 }, (_, i) => id - 1 - i)
+      nextNouns.map(nextId => prefetchNextNouns(nextId))
+    }
+  }, [id])
+
+  React.useEffect(() => {
     const interval = setInterval(() => {
       setTime(Date.now())
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [nouns])
+  }, [noun])
 
   React.useEffect(() => {
-    if (nounsStatus === 'success') {
-      setId(Number(nouns[0].id))
+    if (nounStatus === 'success') {
+      if (id === undefined) {
+        setLatestId(Number(noun?.id))
+      }
+      setId(isNounderNoun ? Number(noun?.id) - 1 : Number(noun?.id))
     }
-  }, [nounsStatus, nouns])
-
-  const getNounDetails = (nounId = id) => nouns?.find((noun: Noun) => Number(noun.id) === nounId)
+  }, [nounStatus, noun])
 
   const renderNoun = (seed: NounSeed) => {
     const { parts, background } = getNounData(seed)
@@ -78,7 +99,6 @@ const Home: NextPage = () => {
     )
   }
 
-  const isNounderNoun = id && id % 10 === 0
   return (
     <div className="bg-ui-black text-white">
       <Head>
@@ -94,14 +114,14 @@ const Home: NextPage = () => {
               <Button onClick={() => id && setId(id - 1)} disabled={id === 0} type="secondary">
                 <ChevronLeftIcon className="h-6 w-6" />
               </Button>
-              <Button onClick={() => id && setId(id + 1)} disabled={id === Number(nouns?.[0]?.id)} type="secondary">
+              <Button onClick={() => id && setId(id + 1)} disabled={id === latestId} type="secondary">
                 <ChevronRightIcon className="h-6 w-6" />
               </Button>
             </div>
             <Skeleton
               className="px-1 w-[124px] whitespace-nowrap"
               hasParentElement
-              loading={nounsStatus === 'loading'}
+              loading={nounStatus === 'loading'}
               loadingElement={
                 <>
                   <div className="h-5 mb-1 bg-ui-silver rounded col-span-2" />
@@ -109,22 +129,20 @@ const Home: NextPage = () => {
                 </>
               }
             >
-              <Paragraph className="text-ui-silver">{formatDate(getNounDetails(isNounderNoun ? id + 1 : id)?.startTime * 1000)}</Paragraph>
+              <Paragraph className="text-ui-silver">{formatDate(noun?.startTime * 1000)}</Paragraph>
               <Title isBold level={6}>
                 Noun {id}
               </Title>
             </Skeleton>
             <Skeleton
-              loading={nounsStatus === 'loading'}
+              loading={nounStatus === 'loading'}
               loadingElement={
                 <div className="w-[108px] overflow-hidden animate-pulse mt-auto h-8 text-ui-silver bg-ui-silver py-1.5 px-3 tracking-wider text-xs xxs:text-sm   rounded-full">
                   Live Auction
                 </div>
               }
             >
-              <Tag className="mt-auto hidden xxxs:block">
-                {isNounderNoun ? 'Nounders' : getNounDetails()?.settled ? 'Settled' : 'Live Auction'}
-              </Tag>
+              <Tag className="mt-auto hidden xxxs:block">{isNounderNoun ? 'Nounders' : noun?.settled ? 'Settled' : 'Live Auction'}</Tag>
             </Skeleton>
           </div>
           <div className={`${seed?.seed?.background === '0' ? 'bg-cool' : 'bg-warm'} rounded-lg h-64 text-black`}>
@@ -142,32 +160,32 @@ const Home: NextPage = () => {
             <div className="flex gap-4">
               <div className="bg-ui-sulphur xl:px-8 py-2 w-[50%] text-center rounded-lg">
                 <div>
-                  <Paragraph className="text-ui-black opacity-60 font-medium text-sm">Time Left</Paragraph>
+                  <Paragraph className="text-ui-black opacity-60 font-medium text-sm">{id === latestId ? 'Time Left' : 'Winner'}</Paragraph>
                 </div>
                 <Skeleton
                   hasParentElement
-                  loading={nounsStatus === 'loading'}
+                  loading={nounStatus === 'loading'}
                   loadingElement={<div className="h-8 bg-ui-silver rounded tracking-wide" />}
                 >
                   <div>
                     <Title level={6} className="text-ui-black tracking-wide tabular-nums">
-                      {getTimer(nouns?.[0].endTime)}
+                      {id === latestId ? getTimer(noun?.endTime) : truncateAddress(noun.bidder.id)}
                     </Title>
                   </div>
                 </Skeleton>
               </div>
               <div className="bg-ui-space xl:px-8 py-2 w-[50%] text-center rounded-lg">
                 <div>
-                  <Paragraph className="text-sm opacity-60 font-medium">Top Bid</Paragraph>
+                  <Paragraph className="text-sm opacity-60 font-medium">{id === latestId ? 'Top Bid' : 'Winning Bid'}</Paragraph>
                 </div>
                 <Skeleton
                   hasParentElement
-                  loading={nounsStatus === 'loading'}
+                  loading={nounStatus === 'loading'}
                   loadingElement={<div className="h-8 bg-ui-silver rounded tracking-wide" />}
                 >
                   <div>
                     <Title level={6} className="tracking-wide">
-                      Ξ {ethers.utils.formatEther(nouns?.[0].amount || 0)}
+                      Ξ {ethers.utils.formatEther(noun?.amount || 0)}
                     </Title>
                   </div>
                 </Skeleton>

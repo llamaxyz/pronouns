@@ -12,8 +12,43 @@ const subgraphClient = axios.create({
   baseURL: 'https://api.thegraph.com/subgraphs/name/nounsdao/nouns-subgraph',
 })
 
-const allNounsQuery = `{
-      auctions(orderBy: startTime, orderDirection: desc, first: 1000) {
+const nounQuery = (id: number) => `{
+    auction(id: ${id}) {
+        id
+        amount
+        settled
+        bidder {
+          id
+          __typename
+    }
+    startTime
+    endTime
+    noun {
+          id
+          owner {
+            id
+            __typename
+      }
+      __typename
+    }
+    bids {
+          id
+          amount
+          blockNumber
+          blockTimestamp
+          txIndex
+          bidder {
+            id
+            __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}`
+
+const latestNounQuery = `{
+    auctions(orderBy: startTime, orderDirection: desc, first: 1) {
         id
         amount
         settled
@@ -66,14 +101,14 @@ const nounSeedQuery = (id: number) => `{
   }
 }`
 
-export const getAllNouns = async () => {
+export const getNoun = async (id: number | undefined) => {
   const response = await subgraphClient({
     method: 'post',
     data: {
-      query: allNounsQuery,
+      query: id ? nounQuery(id) : latestNounQuery,
     },
   })
-  return response.data?.data?.auctions
+  return id ? response.data?.data?.auction : response.data?.data?.auctions[0]
 }
 
 export const getNounSeed = async (id: number | undefined) => {
