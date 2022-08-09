@@ -30,15 +30,9 @@ interface NounSeed {
   head: number
 }
 
-interface AuctionData {
-  amount: string
-  endTime: string
-  bidder: string
-}
-
 const Home: NextPage = () => {
   const [id, setId] = React.useState<number>()
-  const [auction, setAuction] = React.useState<AuctionData>({} as AuctionData)
+  const [time, setTime] = React.useState<number>(Date.now())
   const { data: nouns, status: nounsStatus } = useQuery(['nouns'], getAllNouns, {
     refetchOnWindowFocus: false,
     retry: 1,
@@ -50,16 +44,15 @@ const Home: NextPage = () => {
 
   React.useEffect(() => {
     const interval = setInterval(() => {
-      setAuction({ ...auction, endTime: auction.endTime })
+      setTime(Date.now())
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [auction?.endTime])
+  }, [nouns])
 
   React.useEffect(() => {
     if (nounsStatus === 'success') {
       setId(Number(nouns[0].id))
-      setAuction({ bidder: nouns[0].bidder.id, endTime: nouns[0].endTime, amount: nouns[0].amount })
     }
   }, [nounsStatus, nouns])
 
@@ -71,9 +64,9 @@ const Home: NextPage = () => {
   }
 
   const getTimer = (endTime: string) => {
-    const hours = Math.floor(((Number(endTime) * 1000 - Date.now()) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-    const minutes = Math.floor(((Number(endTime) * 1000 - Date.now()) % (1000 * 60 * 60)) / (1000 * 60))
-    const seconds = Math.floor(((Number(endTime) * 1000 - Date.now()) % (1000 * 60)) / 1000)
+    const hours = Math.floor(((Number(endTime) * 1000 - time) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+    const minutes = Math.floor(((Number(endTime) * 1000 - time) % (1000 * 60 * 60)) / (1000 * 60))
+    const seconds = Math.floor(((Number(endTime) * 1000 - time) % (1000 * 60)) / 1000)
     return (
       <>
         {hours < 10 ? `0${hours}` : hours}
@@ -157,8 +150,8 @@ const Home: NextPage = () => {
                   loadingElement={<div className="h-8 bg-ui-silver rounded tracking-wide" />}
                 >
                   <div>
-                    <Title level={6} className="text-ui-black tracking-wide">
-                      {getTimer(auction.endTime)}
+                    <Title level={6} className="text-ui-black tracking-wide tabular-nums">
+                      {getTimer(nouns?.[0].endTime)}
                     </Title>
                   </div>
                 </Skeleton>
@@ -174,7 +167,7 @@ const Home: NextPage = () => {
                 >
                   <div>
                     <Title level={6} className="tracking-wide">
-                      Ξ {ethers.utils.formatEther(auction.amount || 0)}
+                      Ξ {ethers.utils.formatEther(nouns?.[0].amount || 0)}
                     </Title>
                   </div>
                 </Skeleton>
