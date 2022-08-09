@@ -15,9 +15,9 @@ const Title = ({ level = 3, children, className, isLogo = false, isBold = false 
   const Heading = `h${level}` as const
   return (
     <Heading
-      className={`${className ? className + ' ' : ''} text-white ${isLogo ? 'font-logo' : ''} ${
-        isBold ? 'font-semibold tracking-wide' : 'font-medium'
-      } ${generateTextSize(level)}`}
+      className={`text-white ${isLogo ? 'font-logo' : ''} ${isBold ? 'font-semibold tracking-wide' : 'font-medium'} ${generateTextSize(
+        level
+      )}${className ? ' ' + className : ''} `}
     >
       {children}
     </Heading>

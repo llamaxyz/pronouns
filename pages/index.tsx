@@ -6,6 +6,7 @@ import { ChevronRightIcon } from '@heroicons/react/outline'
 import { ImageData, getNounData } from '@nouns/assets'
 import { buildSVG } from '@nouns/sdk'
 import Head from 'next/head'
+import { ethers } from 'ethers'
 import Button from 'components/Button'
 import React from 'react'
 import Nav from 'components/Nav'
@@ -29,13 +30,16 @@ interface NounSeed {
   head: number
 }
 
+interface AuctionData {
+  amount: string
+  endTime: string
+  bidder: string
+}
+
 const Home: NextPage = () => {
   const [id, setId] = React.useState<number>()
-  const {
-    isLoading: nounsLoading,
-    data: nouns,
-    status: nounsStatus,
-  } = useQuery(['nouns'], getAllNouns, {
+  const [auction, setAuction] = React.useState<AuctionData>({} as AuctionData)
+  const { data: nouns, status: nounsStatus } = useQuery(['nouns'], getAllNouns, {
     refetchOnWindowFocus: false,
     retry: 1,
   })
@@ -45,8 +49,17 @@ const Home: NextPage = () => {
   })
 
   React.useEffect(() => {
+    const interval = setInterval(() => {
+      setAuction({ ...auction, endTime: auction.endTime })
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [auction?.endTime])
+
+  React.useEffect(() => {
     if (nounsStatus === 'success') {
       setId(Number(nouns[0].id))
+      setAuction({ bidder: nouns[0].bidder.id, endTime: nouns[0].endTime, amount: nouns[0].amount })
     }
   }, [nounsStatus, nouns])
 
@@ -55,6 +68,21 @@ const Home: NextPage = () => {
   const renderNoun = (seed: NounSeed) => {
     const { parts, background } = getNounData(seed)
     return `data:image/svg+xml;base64,${window.btoa(buildSVG(parts, ImageData.palette, background))}`
+  }
+
+  const getTimer = (endTime: string) => {
+    const hours = Math.floor(((Number(endTime) * 1000 - Date.now()) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+    const minutes = Math.floor(((Number(endTime) * 1000 - Date.now()) % (1000 * 60 * 60)) / (1000 * 60))
+    const seconds = Math.floor(((Number(endTime) * 1000 - Date.now()) % (1000 * 60)) / 1000)
+    return (
+      <>
+        {hours < 10 ? `0${hours}` : hours}
+        <span className="px-0.5 opacity-60 relative bottom-0.5">:</span>
+        {minutes < 10 ? `0${minutes}` : minutes}
+        <span className="px-0.5 opacity-60 relative bottom-0.5">:</span>
+        {seconds < 10 ? `0${seconds}` : seconds}
+      </>
+    )
   }
 
   const isNounderNoun = id && id % 10 === 0
@@ -80,7 +108,7 @@ const Home: NextPage = () => {
             <Skeleton
               className="px-1 w-[124px] whitespace-nowrap"
               hasParentElement
-              loading={nounsLoading}
+              loading={nounsStatus === 'loading'}
               loadingElement={
                 <>
                   <div className="h-5 mb-1 bg-ui-silver rounded col-span-2" />
@@ -94,9 +122,9 @@ const Home: NextPage = () => {
               </Title>
             </Skeleton>
             <Skeleton
-              loading={nounsLoading}
+              loading={nounsStatus === 'loading'}
               loadingElement={
-                <div className="w-[108px] overflow-hidden animate-pulse mt-auto h-8 text-ui-silver bg-ui-silver py-1.5 px-3 tracking-wider text-xs xxs:text-sm rounded-full">
+                <div className="w-[108px] overflow-hidden animate-pulse mt-auto h-8 text-ui-silver bg-ui-silver py-1.5 px-3 tracking-wider text-xs xxs:text-sm   rounded-full">
                   Live Auction
                 </div>
               }
@@ -116,7 +144,44 @@ const Home: NextPage = () => {
             />
           </div>
         </div>
-        <div className="col-span-full lg:col-span-3 py-6" />
+        <div className="col-span-full lg:col-span-4 py-6">
+          <div className="border border-white/10 rounded-xl p-4">
+            <div className="flex gap-4">
+              <div className="bg-ui-sulphur xl:px-8 py-2 w-[50%] text-center rounded-lg">
+                <div>
+                  <Paragraph className="text-ui-black opacity-60 font-medium text-sm">Time Left</Paragraph>
+                </div>
+                <Skeleton
+                  hasParentElement
+                  loading={nounsStatus === 'loading'}
+                  loadingElement={<div className="h-8 bg-ui-silver rounded tracking-wide" />}
+                >
+                  <div>
+                    <Title level={6} className="text-ui-black tracking-wide">
+                      {getTimer(auction.endTime)}
+                    </Title>
+                  </div>
+                </Skeleton>
+              </div>
+              <div className="bg-ui-space xl:px-8 py-2 w-[50%] text-center rounded-lg">
+                <div>
+                  <Paragraph className="text-sm opacity-60 font-medium">Top Bid</Paragraph>
+                </div>
+                <Skeleton
+                  hasParentElement
+                  loading={nounsStatus === 'loading'}
+                  loadingElement={<div className="h-8 bg-ui-silver rounded tracking-wide" />}
+                >
+                  <div>
+                    <Title level={6} className="tracking-wide">
+                      Ξ {ethers.utils.formatEther(auction.amount || 0)}
+                    </Title>
+                  </div>
+                </Skeleton>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="col-span-full lg:col-span-3 py-6" />
       </div>
     </div>

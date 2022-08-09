@@ -16,6 +16,8 @@ module.exports = {
           black: '#111813',
           onyx: '#3B3835',
           silver: '#AFAFAF',
+          space: '#414642',
+          sulphur: '#FBDF4B',
         },
         warm: '#e1d7d5',
         cool: '#d5d7e1',
