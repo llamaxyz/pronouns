@@ -17,16 +17,24 @@ const Connect = () => (
         >
           {(() => {
             if (!mounted || !account || !chain) {
-              return <Button onClick={openConnectModal}>Connect</Button>
+              return (
+                <Button isBold onClick={openConnectModal}>
+                  Connect
+                </Button>
+              )
             }
 
             if (chain.unsupported) {
-              return <Button onClick={openChainModal}>Wrong network</Button>
+              return (
+                <Button isBold onClick={openChainModal}>
+                  Wrong network
+                </Button>
+              )
             }
 
             return (
               <div className="flex gap-6">
-                <Button onClick={openAccountModal}>
+                <Button isBold onClick={openAccountModal}>
                   {account.displayName}
                   {account.displayBalance ? ` (${account.displayBalance})` : ''}
                 </Button>

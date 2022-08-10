@@ -1,38 +1,21 @@
+import React from 'react'
 import type { NextPage } from 'next'
-import Image from 'next/future/image'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { ChevronLeftIcon, ChevronRightIcon, ExternalLinkIcon } from '@heroicons/react/outline'
-import { ImageData, getNounData } from '@nouns/assets'
-import { buildSVG } from '@nouns/sdk'
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline'
 import Head from 'next/head'
 import { ethers } from 'ethers'
+import { Address } from 'components/Address'
 import Button from 'components/Button'
-import React from 'react'
+import Input from 'components/Input'
 import Nav from 'components/Nav'
 import Paragraph from 'components/Paragraph'
+import { Layout } from 'components/Layout'
+import Noun from 'components/Noun'
 import Skeleton from 'components/Skeleton'
+import Statistic from 'components/Statistic'
 import Tag from 'components/Tag'
 import Title from 'components/Title'
-import loadingNoun from 'public/loading-skull-noun.gif'
-import { formatDate, getNoun, getNounSeed } from 'utils/index'
-
-const truncateAddress = (address: string) => (address ? `${address.slice(0, 4)}...${address.slice(-4)}` : '0x00...0000')
-
-interface NounSeed {
-  accessory: number
-  background: number
-  body: number
-  glasses: number
-  head: number
-}
-
-interface Bid {
-  id: string
-  bidder: {
-    id: string
-  }
-  amount: string
-}
+import { formatDate, getNoun, getNounSeed, truncateAddress } from 'utils/index'
 
 const Home: NextPage = () => {
   const queryClient = useQueryClient()
@@ -40,12 +23,11 @@ const Home: NextPage = () => {
   const [latestId, setLatestId] = React.useState<number>()
   const [time, setTime] = React.useState<number>(Date.now())
   const isNounderNoun = id && id % 10 === 0
-  const validityTime = id === latestId ? 0 : Infinity
 
   const { data: noun, status: nounStatus } = useQuery(['nounDetails', id, isNounderNoun], () => getNoun(isNounderNoun ? id + 1 : id), {
     refetchOnWindowFocus: false,
-    staleTime: validityTime,
-    cacheTime: id === latestId ? 100 : Infinity,
+    staleTime: Infinity,
+    cacheTime: Infinity,
     retry: 1,
   })
   const { data: seed, status: seedStatus } = useQuery(['noun', id], () => getNounSeed(id), {
@@ -59,7 +41,7 @@ const Home: NextPage = () => {
         ['nounDetails', nounId, nounId && nounId % 10 === 0],
         () => getNoun(nounId && nounId % 10 === 0 ? nounId + 1 : nounId),
         {
-          staleTime: validityTime,
+          staleTime: Infinity,
         }
       )
     }
@@ -86,11 +68,6 @@ const Home: NextPage = () => {
     }
   }, [nounStatus, noun])
 
-  const renderNoun = (seed: NounSeed) => {
-    const { parts, background } = getNounData(seed)
-    return `data:image/svg+xml;base64,${window.btoa(buildSVG(parts, ImageData.palette, background))}`
-  }
-
   const getTimer = (endTime: string) => {
     const hours = Math.floor(((Number(endTime) * 1000 - time) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
     const minutes = Math.floor(((Number(endTime) * 1000 - time) % (1000 * 60 * 60)) / (1000 * 60))
@@ -114,14 +91,14 @@ const Home: NextPage = () => {
         <title>Auction | Pronouns</title>
       </Head>
       <Nav />
-      <div className="grid grid-cols-12 gap-6 px-10">
-        <div className="flex flex-col gap-4 col-span-full lg:col-span-5 py-6">
+      <Layout>
+        <Layout.Section width={5} className="flex flex-col gap-4">
           <div className="flex items-center gap-4">
             <div className="flex gap-2">
-              <Button onClick={() => id && setId(id - 1)} disabled={id === 0} type="secondary">
+              <Button isBold onClick={() => id && setId(id - 1)} disabled={id === 0} type="secondary">
                 <ChevronLeftIcon className="h-6 w-6" />
               </Button>
-              <Button onClick={() => id && setId(id + 1)} disabled={id === latestId} type="secondary">
+              <Button isBold onClick={() => id && setId(id + 1)} disabled={id === latestId} type="secondary">
                 <ChevronRightIcon className="h-6 w-6" />
               </Button>
             </div>
@@ -152,80 +129,41 @@ const Home: NextPage = () => {
               <Tag className="mt-auto hidden xxxs:block">{isNounderNoun ? 'Nounders' : noun?.settled ? 'Settled' : 'Live Auction'}</Tag>
             </Skeleton>
           </div>
-          <div className={`${seed?.seed?.background === '0' ? 'bg-cool' : 'bg-warm'} rounded-lg h-64 text-black`}>
-            <Image
-              alt={`Noun ${id}`}
-              className="mx-auto"
-              width={256}
-              height={256}
-              src={seedStatus === 'success' ? renderNoun(seed.seed) : loadingNoun}
-            />
-          </div>
-        </div>
-        <div className="col-span-full lg:col-span-4 py-6">
+          <Noun seed={seed?.seed} status={seedStatus} id={id} />
+        </Layout.Section>
+        <Layout.Section width={4}>
           <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">
             <div className="flex gap-4">
-              <div className="bg-ui-sulphur xl:px-8 py-2 w-[50%] text-center rounded-lg">
-                <div>
-                  <Paragraph className="text-ui-black opacity-60 font-medium text-sm">{id === latestId ? 'Time Left' : 'Winner'}</Paragraph>
-                </div>
-                <Skeleton
-                  hasParentElement
-                  loading={nounStatus === 'loading'}
-                  loadingElement={<div className="h-8 bg-ui-silver rounded tracking-wide" />}
-                >
-                  <div>
-                    <Title level={6} className="text-ui-black tracking-wide tabular-nums">
-                      {id === latestId ? getTimer(noun?.endTime) : truncateAddress(noun.bidder.id)}
-                    </Title>
-                  </div>
-                </Skeleton>
-              </div>
-              <div className="bg-ui-space xl:px-8 py-2 w-[50%] text-center rounded-lg">
-                <div>
-                  <Paragraph className="text-sm opacity-60 font-medium">{id === latestId ? 'Top Bid' : 'Winning Bid'}</Paragraph>
-                </div>
-                <Skeleton
-                  hasParentElement
-                  loading={nounStatus === 'loading'}
-                  loadingElement={<div className="h-8 bg-ui-silver rounded tracking-wide" />}
-                >
-                  <div>
-                    <Title level={6} className="tracking-wide">
-                      Ξ {ethers.utils.formatEther(noun?.amount || 0)}
-                    </Title>
-                  </div>
-                </Skeleton>
-              </div>
+              <Statistic
+                status={nounStatus}
+                titleClass="text-ui-black"
+                contentClass="text-ui-black tabular-nums"
+                className="bg-ui-sulphur"
+                title={id === latestId ? 'Time Left' : 'Winner'}
+                content={Number(id) === latestId ? getTimer(noun?.endTime) : truncateAddress(noun?.bidder?.id)}
+              />
+              <Statistic
+                status={nounStatus}
+                className="bg-ui-space"
+                title={id === latestId ? 'Top Bid' : 'Winning Bid'}
+                content={`Ξ ${ethers.utils.formatEther(noun?.amount || 0)}`}
+              />
             </div>
-            {!noun?.settled && (
-              <div className="bg-white/10 rounded-lg py-2 px-3">
-                <Paragraph className="xxs:text-sm text-xs opacity-60">Highest Bidder</Paragraph>
-                <Paragraph className="flex items-center justify-between">
-                  {truncateAddress(noun?.bidder?.id)}{' '}
-                  <a rel="noopener noreferer noreferrer" target="_blank" href={`https://etherscan.io/tx/${noun?.bids?.[0]?.id}`}>
-                    <ExternalLinkIcon className="opacity-60 h-4 w-4" />
-                  </a>
-                </Paragraph>
-              </div>
-            )}
-            <div className="py-2 px-3 flex flex-col gap-y-4">
-              {noun?.bids?.map((bid: Bid) => (
-                <Paragraph key={bid.id} className="flex items-center justify-between opacity-60">
-                  {truncateAddress(bid?.bidder?.id)}
-                  <span className="flex items-center gap-x-4">
-                    <span>Ξ {ethers.utils.formatEther(bid?.amount || 0)}</span>
-                    <a rel="noopener noreferer noreferrer" target="_blank" href={`https://etherscan.io/tx/${bid?.id}`}>
-                      <ExternalLinkIcon className="opacity-60 h-4 w-4" />
-                    </a>
-                  </span>
-                </Paragraph>
-              ))}
+            {!noun?.settled && <Address.Header address={noun?.bidder?.id} txHash={noun?.bids?.[0]?.id} />}
+            <Address.List items={noun?.bids} />
+          </div>
+        </Layout.Section>
+        <Layout.Section width={3}>
+          <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">
+            <Paragraph>Bid controls</Paragraph>
+            <Input placeholder={`Ξ ${(Number(ethers.utils.formatEther(noun?.amount || 0)) * 1.02).toFixed(2)} or more`} />
+            <div className="flex flex-col gap-y-2">
+              <Button type="action">Place Bid</Button>
+              <Button type="action-secondary">Min Bid</Button>
             </div>
           </div>
-        </div>
-        <div className="col-span-full lg:col-span-3 py-6" />
-      </div>
+        </Layout.Section>
+      </Layout>
     </div>
   )
 }
