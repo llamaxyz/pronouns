@@ -32,11 +32,13 @@ const Button = ({
 }: ButtonProps) => {
   const buttonClsMap: ButtonTypeMapping = {
     primary:
-      'bg-white text-ui-black hover:bg-neutral-200 focus:bg-neutral-200 focus:ring-white border border-white/10 rounded-full px-3 py-2.5',
-    secondary: 'bg-ui-onyx border border-transparent hover:bg-neutral-600 rounded-[100%] p-2 disabled:opacity-40',
+      'bg-white disabled:cursor-not-allowed text-ui-black hover:bg-neutral-200 focus:bg-neutral-200 focus:ring-white border border-white/10 rounded-full px-3 py-2.5',
+    secondary:
+      'bg-ui-onyx disabled:cursor-not-allowed border border-transparent hover:bg-neutral-600 rounded-[100%] p-2 disabled:opacity-40',
     action:
-      'font-medium tracking-wide text-ui-black rounded-lg border-transparent bg-malachite-green hover:bg-malachite-green/50 disabled:bg-malachite-green/50 py-4',
-    'action-secondary': 'font-medium tracking-wide rounded-lg bg-white/20 border-0 hover:bg-white/10 disabled:bg-white/10 text-white py-4',
+      'font-medium tracking-wide text-ui-black rounded-lg border-transparent bg-malachite-green hover:bg-malachite-green/50 disabled:cursor-not-allowed disabled:bg-malachite-green/50 py-4',
+    'action-secondary':
+      'font-medium tracking-wide rounded-lg bg-white/20 border-0 hover:bg-white/10 disabled:bg-white/10 disabled:cursor-not-allowed text-white py-4',
   }
   const ButtonElement = href ? 'a' : 'button'
   return (

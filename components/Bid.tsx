@@ -64,6 +64,12 @@ const Bid = ({ minAmount, id }: BidProps) => {
 
   const { write: createMinBid } = useContractWrite(minBidConfig)
 
+  const onClick = (isMinBid: boolean) => () => {
+    if (isConnected) {
+      isMinBid ? createMinBid?.() : createBid?.()
+    }
+  }
+
   return (
     <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">
       <div className="flex justify-between">
@@ -72,10 +78,10 @@ const Bid = ({ minAmount, id }: BidProps) => {
       </div>
       <Input onChange={changeAmount} placeholder={`Ξ ${minBidEth(minBid)} or more`} />
       <div className="flex flex-col gap-y-2">
-        <Button onClick={() => createBid?.()} disabled={!isConnected} type="action">
+        <Button onClick={onClick(false)} type="action">
           Place Bid
         </Button>
-        <Button onClick={() => createMinBid?.()} disabled={!isConnected} type="action-secondary">
+        <Button onClick={onClick(true)} type="action-secondary">
           Min Bid
         </Button>
       </div>

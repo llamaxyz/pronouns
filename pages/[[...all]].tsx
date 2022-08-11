@@ -27,29 +27,32 @@ const Home: NextPage = () => {
   const isNounder = id && id % 10 === 0
 
   const { data: noun, status: nounStatus } = useQuery(['nounDetails', id, isNounder], () => getNoun(isNounder ? id + 1 : id), {
+    refetchOnWindowFocus: id === latestId,
+    refetchInterval: id === latestId && 10000,
+    staleTime: id === latestId ? 0 : Infinity,
+    cacheTime: id === latestId ? 300000 : Infinity,
+    retry: 1,
+  })
+  const { data: seed, status: seedStatus } = useQuery(['noun', id], () => getNounSeed(id), {
     refetchOnWindowFocus: false,
     staleTime: Infinity,
     cacheTime: Infinity,
     retry: 1,
   })
-  const { data: seed, status: seedStatus } = useQuery(['noun', id], () => getNounSeed(id), {
-    refetchOnWindowFocus: false,
-    retry: 1,
-  })
 
   React.useEffect(() => {
     const prefetchNextNouns = async (nounId: number) => {
-      await queryClient.prefetchQuery(
-        ['nounDetails', nounId, nounId && nounId % 10 === 0],
-        () => getNoun(nounId && nounId % 10 === 0 ? nounId + 1 : nounId),
-        {
-          staleTime: Infinity,
-        }
-      )
+      const nounder = nounId && nounId % 10 === 0
+      await queryClient.prefetchQuery(['nounDetails', nounId, nounder], () => getNoun(nounder ? nounId + 1 : nounId), {
+        staleTime: Infinity,
+      })
     }
-    if (id) {
-      const nextNouns = Array.from({ length: 2 }, (_, i) => id - 1 - i)
-      nextNouns.map(nextId => prefetchNextNouns(nextId))
+
+    if (id !== undefined) {
+      const prevNouns = Array.from({ length: 2 }, (_, i) => id - 1 - i)
+      const nextNouns = Array.from({ length: 2 }, (_, i) => id + 1 + i)
+      prevNouns.map(nextId => prefetchNextNouns(nextId))
+      nextNouns.map(nextId => latestId && latestId > nextId && prefetchNextNouns(nextId))
     }
   }, [id])
 
@@ -62,6 +65,10 @@ const Home: NextPage = () => {
   React.useEffect(() => {
     const interval = setInterval(() => {
       setTime(Date.now())
+
+      if (id === latestId && latestId && noun?.endTime && Date.now() > Number(noun?.endTime) * 1000) {
+        setLatestId(latestId + 1)
+      }
     }, 1000)
 
     return () => clearInterval(interval)
@@ -69,15 +76,16 @@ const Home: NextPage = () => {
 
   React.useEffect(() => {
     if (nounStatus === 'success') {
+      const nounId = Number(noun?.id)
       if (id === undefined) {
-        setLatestId(Number(noun?.id))
+        setLatestId(nounId)
       }
-      setId(isNounder ? Number(noun?.id) - 1 : Number(noun?.id))
+      setId(isNounder ? nounId - 1 : nounId)
     }
   }, [nounStatus, noun])
 
-  const getAuctionStatus = () => {
-    if (Number(id) === latestId && !isNounder) {
+  const renderAuctionStatus = () => {
+    if (id === latestId && !isNounder && Date.now() < Number(noun?.endTime) * 1000) {
       const hours = Math.floor(((Number(noun?.endTime) * 1000 - time) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
       const minutes = Math.floor(((Number(noun?.endTime) * 1000 - time) % (1000 * 60 * 60)) / (1000 * 60))
       const seconds = Math.floor(((Number(noun?.endTime) * 1000 - time) % (1000 * 60)) / 1000)
@@ -95,7 +103,7 @@ const Home: NextPage = () => {
     return isNounder ? 'nounders.eth' : truncateAddress(noun?.bidder?.id)
   }
 
-  const getTopBid = () => (isNounder ? 'N/A' : `Ξ ${ethers.utils.formatEther(noun?.amount || 0)}`)
+  const renderTopBid = () => (isNounder ? 'N/A' : `Ξ ${ethers.utils.formatEther(noun?.amount || 0)}`)
 
   return (
     <div className="bg-ui-black text-white">
@@ -151,23 +159,26 @@ const Home: NextPage = () => {
               <Statistic
                 status={nounStatus}
                 titleClass="text-ui-black"
-                contentClass="text-ui-black tabular-nums"
+                contentClass="text-ui-black tabular-nums animate-fade-in-1 opacity-0 ease-in-out"
                 className="bg-ui-sulphur"
-                title={id === latestId ? 'Time Left' : 'Winner'}
-                content={getAuctionStatus()}
+                title={id === latestId && noun?.endTime && Date.now() < Number(noun?.endTime) * 1000 ? 'Time Left' : 'Winner'}
+                content={renderAuctionStatus()}
               />
               <Statistic
                 status={nounStatus}
+                contentClass="animate-fade-in-2 opacity-0 ease-in-out"
                 className="bg-ui-space"
-                title={id === latestId ? 'Top Bid' : 'Winning Bid'}
-                content={getTopBid()}
+                title={id === latestId && noun?.endTime && Date.now() < Number(noun?.endTime) * 1000 ? 'Top Bid' : 'Winning Bid'}
+                content={renderTopBid()}
               />
             </div>
             {!noun?.settled && <Address.Header address={noun?.bidder?.id} txHash={noun?.bids?.[0]?.id} />}
             {!isNounder && <Address.List items={noun?.bids} />}
           </div>
         </Layout.Section>
-        <Layout.Section width={3}>{noun?.amount && latestId && <Bid minAmount={noun.amount} id={latestId} />}</Layout.Section>
+        <Layout.Section width={3}>
+          {noun?.amount && id === latestId && latestId && <Bid minAmount={noun.amount} id={latestId} />}
+        </Layout.Section>
       </Layout>
     </div>
   )
