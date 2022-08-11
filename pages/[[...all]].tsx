@@ -3,10 +3,11 @@ import type { NextPage } from 'next'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import { ethers } from 'ethers'
 import { Address } from 'components/Address'
+import Bid from 'components/Bid'
 import Button from 'components/Button'
-import Input from 'components/Input'
 import Nav from 'components/Nav'
 import Paragraph from 'components/Paragraph'
 import { Layout } from 'components/Layout'
@@ -19,12 +20,13 @@ import { formatDate, getNoun, getNounSeed, truncateAddress } from 'utils/index'
 
 const Home: NextPage = () => {
   const queryClient = useQueryClient()
+  const { query } = useRouter()
   const [id, setId] = React.useState<number>()
   const [latestId, setLatestId] = React.useState<number>()
   const [time, setTime] = React.useState<number>(Date.now())
-  const isNounderNoun = id && id % 10 === 0
+  const isNounder = id && id % 10 === 0
 
-  const { data: noun, status: nounStatus } = useQuery(['nounDetails', id, isNounderNoun], () => getNoun(isNounderNoun ? id + 1 : id), {
+  const { data: noun, status: nounStatus } = useQuery(['nounDetails', id, isNounder], () => getNoun(isNounder ? id + 1 : id), {
     refetchOnWindowFocus: false,
     staleTime: Infinity,
     cacheTime: Infinity,
@@ -52,6 +54,12 @@ const Home: NextPage = () => {
   }, [id])
 
   React.useEffect(() => {
+    if (query?.all?.[0] === 'noun' && query?.all?.[1]) {
+      setId(Number(query?.all?.[1]))
+    }
+  }, [query])
+
+  React.useEffect(() => {
     const interval = setInterval(() => {
       setTime(Date.now())
     }, 1000)
@@ -64,24 +72,30 @@ const Home: NextPage = () => {
       if (id === undefined) {
         setLatestId(Number(noun?.id))
       }
-      setId(isNounderNoun ? Number(noun?.id) - 1 : Number(noun?.id))
+      setId(isNounder ? Number(noun?.id) - 1 : Number(noun?.id))
     }
   }, [nounStatus, noun])
 
-  const getTimer = (endTime: string) => {
-    const hours = Math.floor(((Number(endTime) * 1000 - time) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-    const minutes = Math.floor(((Number(endTime) * 1000 - time) % (1000 * 60 * 60)) / (1000 * 60))
-    const seconds = Math.floor(((Number(endTime) * 1000 - time) % (1000 * 60)) / 1000)
-    return (
-      <>
-        {hours < 10 ? `0${hours}` : hours}
-        <span className="px-0.5 opacity-60 relative bottom-0.5">:</span>
-        {minutes < 10 ? `0${minutes}` : minutes}
-        <span className="px-0.5 opacity-60 relative bottom-0.5">:</span>
-        {seconds < 10 ? `0${seconds}` : seconds}
-      </>
-    )
+  const getAuctionStatus = () => {
+    if (Number(id) === latestId && !isNounder) {
+      const hours = Math.floor(((Number(noun?.endTime) * 1000 - time) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+      const minutes = Math.floor(((Number(noun?.endTime) * 1000 - time) % (1000 * 60 * 60)) / (1000 * 60))
+      const seconds = Math.floor(((Number(noun?.endTime) * 1000 - time) % (1000 * 60)) / 1000)
+      return (
+        <>
+          {hours < 10 ? `0${hours}` : hours}
+          <span className="px-0.5 opacity-60 relative bottom-0.5">:</span>
+          {minutes < 10 ? `0${minutes}` : minutes}
+          <span className="px-0.5 opacity-60 relative bottom-0.5">:</span>
+          {seconds < 10 ? `0${seconds}` : seconds}
+        </>
+      )
+    }
+
+    return isNounder ? 'nounders.eth' : truncateAddress(noun?.bidder?.id)
   }
+
+  const getTopBid = () => (isNounder ? 'N/A' : `Ξ ${ethers.utils.formatEther(noun?.amount || 0)}`)
 
   return (
     <div className="bg-ui-black text-white">
@@ -126,7 +140,7 @@ const Home: NextPage = () => {
                 </div>
               }
             >
-              <Tag className="mt-auto hidden xxxs:block">{isNounderNoun ? 'Nounders' : noun?.settled ? 'Settled' : 'Live Auction'}</Tag>
+              <Tag className="mt-auto hidden xxxs:block">{isNounder ? 'Nounders' : noun?.settled ? 'Settled' : 'Live Auction'}</Tag>
             </Skeleton>
           </div>
           <Noun seed={seed?.seed} status={seedStatus} id={id} />
@@ -140,29 +154,20 @@ const Home: NextPage = () => {
                 contentClass="text-ui-black tabular-nums"
                 className="bg-ui-sulphur"
                 title={id === latestId ? 'Time Left' : 'Winner'}
-                content={Number(id) === latestId ? getTimer(noun?.endTime) : truncateAddress(noun?.bidder?.id)}
+                content={getAuctionStatus()}
               />
               <Statistic
                 status={nounStatus}
                 className="bg-ui-space"
                 title={id === latestId ? 'Top Bid' : 'Winning Bid'}
-                content={`Ξ ${ethers.utils.formatEther(noun?.amount || 0)}`}
+                content={getTopBid()}
               />
             </div>
             {!noun?.settled && <Address.Header address={noun?.bidder?.id} txHash={noun?.bids?.[0]?.id} />}
-            <Address.List items={noun?.bids} />
+            {!isNounder && <Address.List items={noun?.bids} />}
           </div>
         </Layout.Section>
-        <Layout.Section width={3}>
-          <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">
-            <Paragraph>Bid controls</Paragraph>
-            <Input placeholder={`Ξ ${(Number(ethers.utils.formatEther(noun?.amount || 0)) * 1.02).toFixed(2)} or more`} />
-            <div className="flex flex-col gap-y-2">
-              <Button type="action">Place Bid</Button>
-              <Button type="action-secondary">Min Bid</Button>
-            </div>
-          </div>
-        </Layout.Section>
+        <Layout.Section width={3}>{noun?.amount && latestId && <Bid minAmount={noun.amount} id={latestId} />}</Layout.Section>
       </Layout>
     </div>
   )

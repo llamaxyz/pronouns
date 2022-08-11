@@ -1,5 +1,8 @@
+type htmlButtonType = 'button' | 'submit' | 'reset' | undefined
+
 type ButtonProps = {
   type?: 'primary' | 'secondary' | 'action' | 'action-secondary'
+  htmlType?: htmlButtonType
   children: React.ReactNode
   href?: string
   className?: string
@@ -20,6 +23,7 @@ const Button = ({
   children,
   href = undefined,
   isBold = false,
+  htmlType = 'button',
   className,
   disabled = false,
   onClick = () => {
@@ -31,8 +35,8 @@ const Button = ({
       'bg-white text-ui-black hover:bg-neutral-200 focus:bg-neutral-200 focus:ring-white border border-white/10 rounded-full px-3 py-2.5',
     secondary: 'bg-ui-onyx border border-transparent hover:bg-neutral-600 rounded-[100%] p-2 disabled:opacity-40',
     action:
-      'font-medium tracking-wide text-ui-black rounded-lg border-transparent bg-malachite-green hover:bg-malachite-green/50 disabled:opacity-40 py-4',
-    'action-secondary': 'font-medium tracking-wide rounded-lg bg-white/20 border-0 hover:bg-white/10 text-white py-4',
+      'font-medium tracking-wide text-ui-black rounded-lg border-transparent bg-malachite-green hover:bg-malachite-green/50 disabled:bg-malachite-green/50 py-4',
+    'action-secondary': 'font-medium tracking-wide rounded-lg bg-white/20 border-0 hover:bg-white/10 disabled:bg-white/10 text-white py-4',
   }
   const ButtonElement = href ? 'a' : 'button'
   return (
@@ -44,7 +48,7 @@ const Button = ({
         buttonClsMap[type]
       } ${className ?? ''}`}
       onClick={() => onClick()}
-      type="button"
+      type={htmlType}
     >
       {children}
     </ButtonElement>
