@@ -14,9 +14,8 @@ type BidProps = {
   id: number
 }
 
-const computeMinimumNextBid = (currentBid: BigNumber): BigNumber => {
-  return currentBid.times(new BigNumber(0.02).div(100).plus(1)).decimalPlaces(0, BigNumber.ROUND_UP)
-}
+const computeMinimumNextBid = (currentBid: BigNumber): BigNumber =>
+  currentBid.times(new BigNumber(0.02).plus(1)).decimalPlaces(0, BigNumber.ROUND_UP)
 
 const minBidEth = (minBid: BigNumber): string => {
   if (minBid.isZero()) {
@@ -76,7 +75,7 @@ const Bid = ({ minAmount, id }: BidProps) => {
         <Paragraph>Bid controls</Paragraph>
         {isConnected && <span className="text-white/40">Ξ {(+(data?.formatted || 0)).toFixed(2)} available</span>}
       </div>
-      <Input onChange={changeAmount} placeholder={`Ξ ${minBidEth(minBid)} or more`} />
+      <Input min="0" type="number" onChange={changeAmount} placeholder={`Ξ ${minBidEth(minBid)} or more`} />
       <div className="flex flex-col gap-y-2">
         <Button onClick={onClick(false)} type="action">
           Place Bid

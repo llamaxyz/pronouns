@@ -1,7 +1,6 @@
 import { ethers } from 'ethers'
 import { ExternalLinkIcon } from '@heroicons/react/outline'
 import Paragraph from 'components/Paragraph'
-import Title from 'components/Title'
 import { truncateAddress } from 'utils/index'
 
 interface Bid {
@@ -22,9 +21,9 @@ type ListProps = {
 }
 
 const Header = ({ address, txHash }: HeaderProps) => (
-  <div className="bg-white/10 rounded-lg py-2 px-3">
+  <div className="bg-white/10 rounded-lg py-3 px-4">
     <Paragraph className="xxs:text-sm text-xs opacity-60 mb-2">Highest Bidder</Paragraph>
-    <Paragraph className="flex items-center justify-between mb-4">
+    <Paragraph className="flex items-center justify-between">
       <span className="flex items-center">
         <img className="h-6 w-6 mr-2 rounded-full" src={`https://cdn.stamp.fyi/avatar/${address}`} />
         <span>{truncateAddress(address)}</span>
@@ -33,38 +32,6 @@ const Header = ({ address, txHash }: HeaderProps) => (
         <ExternalLinkIcon className="opacity-60 h-4 w-4" />
       </a>
     </Paragraph>
-    <div className="flex justify-between">
-      <div>
-        <div>
-          <Paragraph className={`xxs:text-sm text-xs opacity-60 mb-1`}>Wallet Balance</Paragraph>
-        </div>
-        <div>
-          <Title level={6} className={`tracking-wide font-normal text-base`}>
-            Ξ 0.‍68
-          </Title>
-        </div>
-      </div>
-      <div>
-        <div>
-          <Paragraph className={`xxs:text-sm text-xs opacity-60 mb-1`}>Bids (Current)</Paragraph>
-        </div>
-        <div>
-          <Title level={6} className={`tracking-wide font-normal text-base`}>
-            1
-          </Title>
-        </div>
-      </div>
-      <div>
-        <div>
-          <Paragraph className={`xxs:text-sm text-xs opacity-60 mb-1`}>Bids (All Time)</Paragraph>
-        </div>
-        <div>
-          <Title level={6} className={`tracking-wide font-normal text-base`}>
-            1
-          </Title>
-        </div>
-      </div>
-    </div>
   </div>
 )
 

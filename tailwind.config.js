@@ -18,7 +18,6 @@ module.exports = {
           silver: '#AFAFAF',
           space: '#414642',
           sulphur: '#FBDF4B',
-          jungle: '#1D241F',
         },
         warm: '#e1d7d5',
         cool: '#d5d7e1',
