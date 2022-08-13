@@ -73,9 +73,13 @@ const Bid = ({ minAmount, id }: BidProps) => {
     <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">
       <div className="flex justify-between">
         <Paragraph>Bid controls</Paragraph>
-        {isConnected && <span className="text-white/40">Ξ {(+(data?.formatted || 0)).toFixed(2)} available</span>}
+        {isConnected && (
+          <Button type="link" onClick={() => setAmount((+(data?.formatted || 0)).toFixed(3).toString())}>
+            Ξ {(+(data?.formatted || 0)).toFixed(2)} available
+          </Button>
+        )}
       </div>
-      <Input min="0" type="number" onChange={changeAmount} placeholder={`Ξ ${minBidEth(minBid)} or more`} />
+      <Input value={amount} min="0" type="number" onChange={changeAmount} placeholder={`Ξ ${minBidEth(minBid)} or more`} />
       <div className="flex flex-col gap-y-2">
         <Button onClick={onClick(false)} type="action">
           Place Bid

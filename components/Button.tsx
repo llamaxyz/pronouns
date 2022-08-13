@@ -1,7 +1,7 @@
 type htmlButtonType = 'button' | 'submit' | 'reset' | undefined
 
 type ButtonProps = {
-  type?: 'primary' | 'secondary' | 'action' | 'action-secondary'
+  type?: 'primary' | 'secondary' | 'action' | 'action-secondary' | 'link'
   htmlType?: htmlButtonType
   children: React.ReactNode
   href?: string
@@ -16,6 +16,7 @@ type ButtonTypeMapping = {
   secondary: string
   action: string
   'action-secondary': string
+  link: string
 }
 
 const Button = ({
@@ -39,6 +40,7 @@ const Button = ({
       'font-medium tracking-wide text-ui-black rounded-lg border-transparent bg-malachite-green hover:bg-malachite-green/50 disabled:cursor-not-allowed disabled:bg-malachite-green/50 py-4',
     'action-secondary':
       'font-medium tracking-wide rounded-lg bg-white/20 border-0 hover:bg-white/10 disabled:bg-white/10 disabled:cursor-not-allowed text-white py-4',
+    link: 'p-0 text-white/40 hover:text-white/80 tracking-wide font-normal text-base',
   }
   const ButtonElement = href ? 'a' : 'button'
   return (
