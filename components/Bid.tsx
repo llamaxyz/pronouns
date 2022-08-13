@@ -27,9 +27,11 @@ const minBidEth = (minBid: BigNumber): string => {
 }
 
 const Bid = ({ minAmount, id }: BidProps) => {
-  const [amount, setAmount] = React.useState('0')
+  const [amount, setAmount] = React.useState<string>()
   const { isConnected, address } = useAccount()
-  const changeAmount = (e: React.ChangeEvent<HTMLInputElement>) => setAmount(e.target.value)
+  const changeAmount = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setAmount(e.target.value.slice(0, 10))
+  }, [])
   const minBid = computeMinimumNextBid(new BigNumber(minAmount))
   const { data } = useBalance({
     addressOrName: address,
@@ -79,7 +81,15 @@ const Bid = ({ minAmount, id }: BidProps) => {
           </Button>
         )}
       </div>
-      <Input value={amount} min="0" type="number" onChange={changeAmount} placeholder={`Ξ ${minBidEth(minBid)} or more`} />
+      <Input
+        prefix={<span className="text-white/60">Ξ</span>}
+        prefixPadding="pl-8"
+        value={amount}
+        min="0"
+        type="number"
+        onChange={changeAmount}
+        placeholder={`${minBidEth(minBid)} or more`}
+      />
       <div className="flex flex-col gap-y-2">
         <Button onClick={onClick(false)} type="action">
           Place Bid
@@ -92,4 +102,4 @@ const Bid = ({ minAmount, id }: BidProps) => {
   )
 }
 
-export default Bid
+export default React.memo(Bid)
