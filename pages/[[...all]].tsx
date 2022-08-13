@@ -100,7 +100,14 @@ const Home: NextPage = () => {
       )
     }
 
-    return isNounder ? 'nounders.eth' : truncateAddress(noun?.bidder?.id)
+    return isNounder ? (
+      'nounders.eth'
+    ) : (
+      <span className="flex items-center justify-center">
+        <img className="h-6 w-6 mr-2 rounded-full" src={`https://cdn.stamp.fyi/avatar/${noun?.bidder?.id}`} />
+        <span>{truncateAddress(noun?.bidder?.id, 2)}</span>
+      </span>
+    )
   }
 
   const renderTopBid = () => (isNounder ? 'N/A' : `Ξ ${ethers.utils.formatEther(noun?.amount || 0)}`)

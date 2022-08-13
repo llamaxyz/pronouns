@@ -123,4 +123,5 @@ export const getNounSeed = async (id: number | undefined) => {
   }
 }
 
-export const truncateAddress = (address: string) => (address ? `${address.slice(0, 4)}...${address.slice(-4)}` : '0x00...0000')
+export const truncateAddress = (address: string, endingChars: number = 4) =>
+  address ? `${address.slice(0, 4)}...${address.slice(-endingChars)}` : '0x00...0000'
