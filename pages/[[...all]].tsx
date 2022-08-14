@@ -6,6 +6,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { ethers } from 'ethers'
 import { Address } from 'components/Address'
+import Account from 'components/Account'
 import Bid from 'components/Bid'
 import Button from 'components/Button'
 import Nav from 'components/Nav'
@@ -16,7 +17,7 @@ import Skeleton from 'components/Skeleton'
 import Statistic from 'components/Statistic'
 import Tag from 'components/Tag'
 import Title from 'components/Title'
-import { formatDate, getNoun, getNounSeed, truncateAddress } from 'utils/index'
+import { formatDate, getNoun, getNounSeed } from 'utils/index'
 
 const Home: NextPage = () => {
   const queryClient = useQueryClient()
@@ -100,14 +101,7 @@ const Home: NextPage = () => {
       )
     }
 
-    return isNounder ? (
-      'nounders.eth'
-    ) : (
-      <span className="flex items-center justify-center">
-        <img className="h-6 w-6 mr-2 rounded-full" src={`https://cdn.stamp.fyi/avatar/${noun?.bidder?.id}`} />
-        <span>{truncateAddress(noun?.bidder?.id, 2)}</span>
-      </span>
-    )
+    return isNounder ? 'nounders.eth' : <Account address={noun?.bidder?.id} length={2} />
   }
 
   const renderTopBid = () => (isNounder ? 'N/A' : `Ξ ${ethers.utils.formatEther(noun?.amount || 0)}`)
@@ -166,7 +160,7 @@ const Home: NextPage = () => {
               <Statistic
                 status={nounStatus}
                 titleClass="text-ui-black"
-                contentClass="text-ui-black tabular-nums animate-fade-in-1 opacity-0 ease-in-out"
+                contentClass="text-ui-black tabular-nums animate-fade-in-1 opacity-0 ease-in-out truncate"
                 className="bg-ui-sulphur"
                 title={id === latestId && noun?.endTime && Date.now() < Number(noun?.endTime) * 1000 ? 'Time Left' : 'Winner'}
                 content={renderAuctionStatus()}
