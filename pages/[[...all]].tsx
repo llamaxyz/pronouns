@@ -27,7 +27,7 @@ const Home: NextPage = () => {
   const [time, setTime] = React.useState<number>(Date.now())
   const isNounder = Boolean(id && id % 10 === 0)
 
-  const { data: noun, status: nounStatus } = useQuery(['nounDetails', id, isNounder], () => getNoun(isNounder ? id + 1 : id), {
+  const { data: noun, status: nounStatus } = useQuery(['nounDetails', id, isNounder], () => getNoun(isNounder ? id && id + 1 : id), {
     refetchOnWindowFocus: id === latestId,
     refetchInterval: id === latestId && 10000,
     staleTime: id === latestId ? 0 : Infinity,
@@ -156,7 +156,7 @@ const Home: NextPage = () => {
         </Layout.Section>
         <Layout.Section width={4}>
           <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">
-            <div className="flex gap-4">
+            <div className="flex gap-4 sticky">
               <Statistic
                 status={nounStatus}
                 titleClass="text-ui-black"
