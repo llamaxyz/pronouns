@@ -14,7 +14,7 @@ type StatisticProps = {
 
 const Statistic = ({ className = '', title, status, contentClass = '', content, titleClass }: StatisticProps) => {
   return (
-    <div className={`xl:px-2 py-2 w-[50%] text-center rounded-lg ${className}`}>
+    <div className={`py-2 px-1 w-[50%] text-center rounded-lg ${className}`}>
       <div>
         <Paragraph className={`opacity-60 font-medium text-sm ${titleClass}`}>{title}</Paragraph>
       </div>

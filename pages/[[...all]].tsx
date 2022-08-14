@@ -25,7 +25,7 @@ const Home: NextPage = () => {
   const [id, setId] = React.useState<number>()
   const [latestId, setLatestId] = React.useState<number>()
   const [time, setTime] = React.useState<number>(Date.now())
-  const isNounder = id && id % 10 === 0
+  const isNounder = Boolean(id && id % 10 === 0)
 
   const { data: noun, status: nounStatus } = useQuery(['nounDetails', id, isNounder], () => getNoun(isNounder ? id + 1 : id), {
     refetchOnWindowFocus: id === latestId,
@@ -101,7 +101,7 @@ const Home: NextPage = () => {
       )
     }
 
-    return isNounder ? 'nounders.eth' : <Account address={noun?.bidder?.id} length={2} />
+    return <Account address={isNounder ? 'nounders.eth' : noun?.bidder?.id} isEns={isNounder} length={2} />
   }
 
   const renderTopBid = () => (isNounder ? 'N/A' : `Ξ ${ethers.utils.formatEther(noun?.amount || 0)}`)
@@ -113,7 +113,7 @@ const Home: NextPage = () => {
         <meta property="og:title" content="Auction | Pronouns" />
         <title>Auction | Pronouns</title>
       </Head>
-      <Nav />
+      <Nav latestId={latestId} />
       <Layout>
         <Layout.Section width={5} className="flex flex-col gap-4">
           <div className="flex items-center gap-4">
