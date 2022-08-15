@@ -101,6 +101,10 @@ const nounSeedQuery = (id: number) => `{
   }
 }`
 
+const latestNounIdQuery = `{
+    auctions(orderBy: startTime, orderDirection: desc, first: 1) { id }
+}`
+
 export const getNoun = async (id: number | undefined) => {
   const response = await subgraphClient({
     method: 'post',
@@ -121,6 +125,17 @@ export const getNounSeed = async (id: number | undefined) => {
     })
     return response.data?.data?.noun
   }
+}
+
+export const getLatestNounId = async () => {
+  const response = await subgraphClient({
+    method: 'post',
+    data: {
+      query: latestNounIdQuery,
+    },
+  })
+
+  return response?.data?.data?.auctions?.[0]?.id
 }
 
 export const truncateAddress = (address: string, endingChars: number = 4) =>

@@ -8,6 +8,7 @@ type InputProps = {
   type: string
   min?: string
   onChange: (_e: React.ChangeEvent<HTMLInputElement>) => void
+  onFocus?: (_e: React.ChangeEvent<HTMLInputElement>) => void
   prefix?: React.ReactNode
   prefixPadding?: string
   suffix?: React.ReactNode
@@ -21,6 +22,7 @@ const Input = ({
   type,
   min,
   onChange,
+  onFocus,
   prefix,
   prefixPadding = 'pl-10',
   suffix,
@@ -33,6 +35,7 @@ const Input = ({
       {prefix && <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">{prefix}</div>}
       <input
         onChange={onChange}
+        onFocus={onFocus}
         placeholder={placeholder}
         className={`${inputClass} py-2.5 ${prefix ? prefixPadding : 'pl-2.5'} ${suffix ? 'pr-14' : 'pr-2.5'} ${className}`}
         type={type}
@@ -44,6 +47,7 @@ const Input = ({
   ) : (
     <input
       onChange={onChange}
+      onFocus={onFocus}
       placeholder={placeholder}
       className={`${inputClass} px-4 py-3 ${className}`}
       type={type}

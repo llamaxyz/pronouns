@@ -17,7 +17,7 @@ import Skeleton from 'components/Skeleton'
 import Statistic from 'components/Statistic'
 import Tag from 'components/Tag'
 import Title from 'components/Title'
-import { formatDate, getNoun, getNounSeed } from 'utils/index'
+import { formatDate, getNoun, getNounSeed, getLatestNounId } from 'utils/index'
 
 const Home: NextPage = () => {
   const queryClient = useQueryClient()
@@ -25,9 +25,9 @@ const Home: NextPage = () => {
   const [id, setId] = React.useState<number>()
   const [latestId, setLatestId] = React.useState<number>()
   const [time, setTime] = React.useState<number>(Date.now())
-  const isNounder = id && id % 10 === 0
+  const isNounder = Boolean(id && id % 10 === 0)
 
-  const { data: noun, status: nounStatus } = useQuery(['nounDetails', id, isNounder], () => getNoun(isNounder ? id + 1 : id), {
+  const { data: noun, status: nounStatus } = useQuery(['nounDetails', id, isNounder], () => getNoun(isNounder ? id && id + 1 : id), {
     refetchOnWindowFocus: id === latestId,
     refetchInterval: id === latestId && 10000,
     staleTime: id === latestId ? 0 : Infinity,
@@ -38,6 +38,9 @@ const Home: NextPage = () => {
     refetchOnWindowFocus: false,
     staleTime: Infinity,
     cacheTime: Infinity,
+    retry: 1,
+  })
+  const { data: latestNounId, status: latestNounStatus } = useQuery(['latestNounId'], () => getLatestNounId(), {
     retry: 1,
   })
 
@@ -78,12 +81,15 @@ const Home: NextPage = () => {
   React.useEffect(() => {
     if (nounStatus === 'success') {
       const nounId = Number(noun?.id)
-      if (id === undefined) {
-        setLatestId(nounId)
-      }
       setId(isNounder ? nounId - 1 : nounId)
     }
   }, [nounStatus, noun])
+
+  React.useEffect(() => {
+    if (latestNounStatus === 'success') {
+      setLatestId(Number(latestNounId))
+    }
+  }, [latestNounId, latestNounStatus])
 
   const renderAuctionStatus = () => {
     if (id === latestId && !isNounder && Date.now() < Number(noun?.endTime) * 1000) {
@@ -101,7 +107,7 @@ const Home: NextPage = () => {
       )
     }
 
-    return isNounder ? 'nounders.eth' : <Account address={noun?.bidder?.id} length={2} />
+    return <Account address={isNounder ? 'nounders.eth' : noun?.bidder?.id} isEns={isNounder} length={2} />
   }
 
   const renderTopBid = () => (isNounder ? 'N/A' : `Ξ ${ethers.utils.formatEther(noun?.amount || 0)}`)
@@ -113,7 +119,7 @@ const Home: NextPage = () => {
         <meta property="og:title" content="Auction | Pronouns" />
         <title>Auction | Pronouns</title>
       </Head>
-      <Nav />
+      <Nav latestId={latestId} />
       <Layout>
         <Layout.Section width={5} className="flex flex-col gap-4">
           <div className="flex items-center gap-4">
@@ -156,7 +162,7 @@ const Home: NextPage = () => {
         </Layout.Section>
         <Layout.Section width={4}>
           <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">
-            <div className="flex gap-4">
+            <div className="flex gap-4 sticky">
               <Statistic
                 status={nounStatus}
                 titleClass="text-ui-black"
