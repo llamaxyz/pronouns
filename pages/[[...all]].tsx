@@ -17,7 +17,7 @@ import Skeleton from 'components/Skeleton'
 import Statistic from 'components/Statistic'
 import Tag from 'components/Tag'
 import Title from 'components/Title'
-import { formatDate, getNoun, getNounSeed } from 'utils/index'
+import { formatDate, getNoun, getNounSeed, getLatestNounId } from 'utils/index'
 
 const Home: NextPage = () => {
   const queryClient = useQueryClient()
@@ -38,6 +38,9 @@ const Home: NextPage = () => {
     refetchOnWindowFocus: false,
     staleTime: Infinity,
     cacheTime: Infinity,
+    retry: 1,
+  })
+  const { data: latestNounId, status: latestNounStatus } = useQuery(['latestNounId'], () => getLatestNounId(), {
     retry: 1,
   })
 
@@ -78,12 +81,15 @@ const Home: NextPage = () => {
   React.useEffect(() => {
     if (nounStatus === 'success') {
       const nounId = Number(noun?.id)
-      if (id === undefined) {
-        setLatestId(nounId)
-      }
       setId(isNounder ? nounId - 1 : nounId)
     }
   }, [nounStatus, noun])
+
+  React.useEffect(() => {
+    if (latestNounStatus === 'success') {
+      setLatestId(Number(latestNounId))
+    }
+  }, [latestNounId, latestNounStatus])
 
   const renderAuctionStatus = () => {
     if (id === latestId && !isNounder && Date.now() < Number(noun?.endTime) * 1000) {

@@ -8,7 +8,7 @@ const Search = ({ latestId }: { latestId?: number }) => {
   const [typing, setTyping] = React.useState(false)
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState<string>()
-  const node = React.useRef(null)
+  const node = React.useRef<HTMLDivElement>(null)
 
   const idArray = [...Array.from(Array(latestId || 0).keys()), latestId]
 
@@ -21,8 +21,10 @@ const Search = ({ latestId }: { latestId?: number }) => {
     return () => clearTimeout(timeout)
   }, [value])
 
-  const clickOutside = () => {
-    setOpen(false)
+  const clickOutside = (e: MouseEvent) => {
+    if (!node?.current?.contains(e.target as Node)) {
+      setOpen(false)
+    }
   }
 
   React.useEffect(() => {
@@ -67,7 +69,7 @@ const Search = ({ latestId }: { latestId?: number }) => {
               <a onClick={() => setOpen(false)}>
                 <div
                   className={`px-4 py-3 ${
-                    i === arr.length - 1 ? '' : 'border-b border-b-white/10'
+                    i === arr.length - 1 ? 'rounded-b-lg' : 'border-b border-b-white/10'
                   } hover:bg-white/10 transition ease-in-out`}
                 >
                   Noun {id}
