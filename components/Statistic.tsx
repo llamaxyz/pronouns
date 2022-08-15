@@ -18,7 +18,11 @@ const Statistic = ({ className = '', title, status, contentClass = '', content, 
       <div>
         <Paragraph className={`opacity-60 font-medium text-sm ${titleClass}`}>{title}</Paragraph>
       </div>
-      <Skeleton hasParentElement loading={status === 'loading'} loadingElement={<div className="h-8 bg-ui-silver rounded tracking-wide" />}>
+      <Skeleton
+        hasParentElement
+        loading={status === 'loading'}
+        loadingElement={<div className="h-8 bg-ui-black/20 rounded tracking-wide" />}
+      >
         <div>
           <Title level={6} className={`tracking-wide ${contentClass}`}>
             {content}

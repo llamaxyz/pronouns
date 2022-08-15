@@ -1,7 +1,9 @@
 type htmlButtonType = 'button' | 'submit' | 'reset' | undefined
 
+type ButtonType = 'primary' | 'secondary' | 'action' | 'action-secondary' | 'link' | 'outline'
+
 type ButtonProps = {
-  type?: 'primary' | 'secondary' | 'action' | 'action-secondary' | 'link'
+  type?: ButtonType
   htmlType?: htmlButtonType
   children: React.ReactNode
   href?: string
@@ -9,14 +11,6 @@ type ButtonProps = {
   onClick?: Function
   disabled?: boolean
   isBold?: boolean
-}
-
-type ButtonTypeMapping = {
-  primary: string
-  secondary: string
-  action: string
-  'action-secondary': string
-  link: string
 }
 
 const Button = ({
@@ -31,9 +25,9 @@ const Button = ({
     return null
   },
 }: ButtonProps) => {
-  const buttonClsMap: ButtonTypeMapping = {
+  const buttonClsMap: Record<ButtonType, string> = {
     primary:
-      'bg-white disabled:cursor-not-allowed text-ui-black hover:bg-neutral-200 focus:bg-neutral-200 focus:ring-white border border-white/10 rounded-full px-3 py-2.5',
+      'bg-white rounded-lg disabled:cursor-not-allowed text-ui-black hover:bg-neutral-200 focus:bg-neutral-200 focus:ring-white border border-white/10 rounded-full px-3 py-2.5',
     secondary:
       'bg-ui-onyx disabled:cursor-not-allowed border border-transparent hover:bg-neutral-600 rounded-[100%] p-2 disabled:opacity-40',
     action:
@@ -41,6 +35,7 @@ const Button = ({
     'action-secondary':
       'font-medium tracking-wide rounded-lg bg-white/20 border-0 hover:bg-white/10 disabled:bg-white/10 disabled:cursor-not-allowed text-white py-4',
     link: 'p-0 text-white/40 hover:text-white/80 tracking-wide font-normal text-base',
+    outline: 'hover:text-white hover:bg-white/10 border border-white/10 py-2 rounded-md text-ui-silver font-normal tracking-wide text-sm',
   }
   const ButtonElement = href ? 'a' : 'button'
   return (

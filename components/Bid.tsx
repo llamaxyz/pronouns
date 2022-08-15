@@ -1,4 +1,5 @@
 import React from 'react'
+import { XCircleIcon } from '@heroicons/react/solid'
 import { ChainId, getContractAddressesForChainOrThrow, NounsAuctionHouseABI } from '@nouns/sdk'
 import { utils, BigNumber as EthersBN } from 'ethers'
 import BigNumber from 'bignumber.js'
@@ -8,6 +9,8 @@ import Input from 'components/Input'
 import Paragraph from 'components/Paragraph'
 
 const { nounsAuctionHouseProxy } = getContractAddressesForChainOrThrow(ChainId.Mainnet)
+
+const pctBidAmounts = [5, 10, 15, 20]
 
 type BidProps = {
   minAmount: string
@@ -23,6 +26,12 @@ const minBidEth = (minBid: BigNumber): string => {
   }
 
   const eth = utils.formatEther(EthersBN.from(minBid.toString()))
+  return new BigNumber(eth).toFixed(2, BigNumber.ROUND_CEIL)
+}
+
+const increaseBidByPercentage = (bid: BigNumber, percentage: number): string => {
+  const newBid = bid.times(new BigNumber(percentage).plus(1)).decimalPlaces(0, BigNumber.ROUND_UP)
+  const eth = utils.formatEther(EthersBN.from(newBid.toString()))
   return new BigNumber(eth).toFixed(2, BigNumber.ROUND_CEIL)
 }
 
@@ -66,6 +75,10 @@ const Bid = ({ minAmount, id }: BidProps) => {
   const { write: createMinBid } = useContractWrite(minBidConfig)
 
   const onClick = (isMinBid: boolean) => () => {
+    if (isMinBid) {
+      setAmount(minBidEth(minBid))
+    }
+
     if (isConnected) {
       isMinBid ? createMinBid?.() : createBid?.()
     }
@@ -89,7 +102,22 @@ const Bid = ({ minAmount, id }: BidProps) => {
         type="number"
         onChange={changeAmount}
         placeholder={`${minBidEth(minBid)} or more`}
+        hasClickableSuffix
+        suffix={
+          amount?.length ? (
+            <Button type="link" onClick={() => setAmount('')}>
+              <XCircleIcon className="w-5 h-5 transition ease-in-out hover:text-white/40 text-white/60" />
+            </Button>
+          ) : undefined
+        }
       />
+      <div className="grid grid-cols-4 gap-2">
+        {pctBidAmounts.map(pct => (
+          <Button key={pct} onClick={() => setAmount(increaseBidByPercentage(new BigNumber(minAmount), pct / 100))} type="outline">
+            {`+${pct}%`}
+          </Button>
+        ))}
+      </div>
       <div className="flex flex-col gap-y-2">
         <Button onClick={onClick(false)} type="action">
           Place Bid

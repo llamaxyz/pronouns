@@ -4,7 +4,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { ethers } from 'ethers'
+import { utils, BigNumber as EthersBN } from 'ethers'
+import BigNumber from 'bignumber.js'
 import { Address } from 'components/Address'
 import Account from 'components/Account'
 import Bid from 'components/Bid'
@@ -25,15 +26,19 @@ const Home: NextPage = () => {
   const [id, setId] = React.useState<number>()
   const [latestId, setLatestId] = React.useState<number>()
   const [time, setTime] = React.useState<number>(Date.now())
-  const isNounder = Boolean(id && id % 10 === 0)
-
-  const { data: noun, status: nounStatus } = useQuery(['nounDetails', id, isNounder], () => getNoun(isNounder ? id && id + 1 : id), {
-    refetchOnWindowFocus: id === latestId,
-    refetchInterval: id === latestId && 10000,
-    staleTime: id === latestId ? 0 : Infinity,
-    cacheTime: id === latestId ? 300000 : Infinity,
-    retry: 1,
-  })
+  const isNounder = Boolean(id === 0 || (id && id % 10 === 0))
+  const { data: noun, status: nounStatus } = useQuery(
+    ['nounDetails', id, isNounder],
+    () => getNoun(id === undefined ? id : isNounder ? id + 1 : id),
+    {
+      refetchOnWindowFocus: id === latestId,
+      refetchInterval: id === latestId && 10000,
+      staleTime: id === latestId ? 0 : Infinity,
+      cacheTime: id === latestId ? 300000 : Infinity,
+      retry: 1,
+      enabled: id !== undefined && latestId !== undefined,
+    }
+  )
   const { data: seed, status: seedStatus } = useQuery(['noun', id], () => getNounSeed(id), {
     refetchOnWindowFocus: false,
     staleTime: Infinity,
@@ -46,7 +51,7 @@ const Home: NextPage = () => {
 
   React.useEffect(() => {
     const prefetchNextNouns = async (nounId: number) => {
-      const nounder = nounId && nounId % 10 === 0
+      const nounder = Boolean(nounId === 0 || (nounId && nounId % 10 === 0))
       await queryClient.prefetchQuery(['nounDetails', nounId, nounder], () => getNoun(nounder ? nounId + 1 : nounId), {
         staleTime: Infinity,
       })
@@ -63,6 +68,10 @@ const Home: NextPage = () => {
   React.useEffect(() => {
     if (query?.all?.[0] === 'noun' && query?.all?.[1]) {
       setId(Number(query?.all?.[1]))
+    }
+
+    if (!Object.entries(query).length) {
+      setId(latestNounId)
     }
   }, [query])
 
@@ -81,13 +90,18 @@ const Home: NextPage = () => {
   React.useEffect(() => {
     if (nounStatus === 'success') {
       const nounId = Number(noun?.id)
-      setId(isNounder ? nounId - 1 : nounId)
+      if (nounId !== id) {
+        setId(isNounder ? (nounId === 0 ? nounId + 1 : nounId - 1) : nounId)
+      }
     }
   }, [nounStatus, noun])
 
   React.useEffect(() => {
     if (latestNounStatus === 'success') {
       setLatestId(Number(latestNounId))
+      if (id === undefined) {
+        setId(Number(latestNounId))
+      }
     }
   }, [latestNounId, latestNounStatus])
 
@@ -110,7 +124,10 @@ const Home: NextPage = () => {
     return <Account address={isNounder ? 'nounders.eth' : noun?.bidder?.id} isEns={isNounder} length={2} />
   }
 
-  const renderTopBid = () => (isNounder ? 'N/A' : `Ξ ${ethers.utils.formatEther(noun?.amount || 0)}`)
+  const renderTopBid = () =>
+    isNounder
+      ? 'N/A'
+      : `Ξ ${new BigNumber(utils.formatEther(EthersBN.from((noun?.amount || 0).toString()))).toFixed(2, BigNumber.ROUND_CEIL)}`
 
   return (
     <div className="bg-ui-black text-white">
@@ -124,10 +141,10 @@ const Home: NextPage = () => {
         <Layout.Section width={5} className="flex flex-col gap-4">
           <div className="flex items-center gap-4">
             <div className="flex gap-2">
-              <Button isBold onClick={() => id && setId(id - 1)} disabled={id === 0} type="secondary">
+              <Button isBold onClick={() => id !== undefined && setId(id - 1)} disabled={id === 0} type="secondary">
                 <ChevronLeftIcon className="h-6 w-6" />
               </Button>
-              <Button isBold onClick={() => id && setId(id + 1)} disabled={id === latestId} type="secondary">
+              <Button isBold onClick={() => id !== undefined && setId(id + 1)} disabled={id === latestId} type="secondary">
                 <ChevronRightIcon className="h-6 w-6" />
               </Button>
             </div>
@@ -137,8 +154,8 @@ const Home: NextPage = () => {
               loading={nounStatus === 'loading'}
               loadingElement={
                 <>
-                  <div className="h-5 mb-1 bg-ui-silver rounded col-span-2" />
-                  <div className="h-8 bg-ui-silver rounded col-span-2" />
+                  <div className="h-5 mb-1 bg-white/20 rounded col-span-2" />
+                  <div className="h-8 bg-white/20 rounded col-span-2" />
                 </>
               }
             >
@@ -150,7 +167,7 @@ const Home: NextPage = () => {
             <Skeleton
               loading={nounStatus === 'loading'}
               loadingElement={
-                <div className="w-[108px] overflow-hidden animate-pulse mt-auto h-8 text-ui-silver bg-ui-silver py-1.5 px-3 tracking-wider text-xs xxs:text-sm rounded-full">
+                <div className="w-[108px] overflow-hidden animate-pulse mt-auto h-8 text-white/20 bg-white/20 py-1.5 px-3 tracking-wider text-xs xxs:text-sm rounded-full">
                   Live Auction
                 </div>
               }

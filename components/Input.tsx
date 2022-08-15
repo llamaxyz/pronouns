@@ -12,10 +12,11 @@ type InputProps = {
   prefix?: React.ReactNode
   prefixPadding?: string
   suffix?: React.ReactNode
+  hasClickableSuffix?: boolean
 }
 
 const inputClass =
-  'w-full transition ease-in-out placeholder:text-white/60 bg-white/10 rounded-md tracking-wide border m-0 border-white/5 hover:border-white/50 focus:outline-none focus:border-white'
+  'w-full transition ease-in-out placeholder:text-white/60 bg-white/10 rounded-lg tracking-wide border m-0 border-white/5 hover:border-white/50 focus:outline-none focus:border-white'
 
 const Input = ({
   placeholder,
@@ -29,6 +30,7 @@ const Input = ({
   value,
   className = '',
   parentClassName = '',
+  hasClickableSuffix = false,
 }: InputProps) =>
   prefix || suffix ? (
     <div className={`relative ${parentClassName}`}>
@@ -40,9 +42,13 @@ const Input = ({
         className={`${inputClass} py-2.5 ${prefix ? prefixPadding : 'pl-2.5'} ${suffix ? 'pr-14' : 'pr-2.5'} ${className}`}
         type={type}
         {...(min ? { min } : {})}
-        {...(value ? { value } : {})}
+        {...(value !== undefined ? { value } : {})}
       />
-      {suffix && <div className="flex absolute inset-y-0 right-0 items-center pr-3 pointer-events-none">{suffix}</div>}
+      {suffix && (
+        <div className={`flex absolute inset-y-0 right-0 items-center pr-3 ${hasClickableSuffix ? '' : 'pointer-events-none'}`}>
+          {suffix}
+        </div>
+      )}
     </div>
   ) : (
     <input

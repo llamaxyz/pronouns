@@ -116,7 +116,7 @@ export const getNoun = async (id: number | undefined) => {
 }
 
 export const getNounSeed = async (id: number | undefined) => {
-  if (id) {
+  if (id !== undefined) {
     const response = await subgraphClient({
       method: 'post',
       data: {

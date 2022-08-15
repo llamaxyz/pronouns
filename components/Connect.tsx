@@ -18,7 +18,7 @@ const Connect = () => (
           {(() => {
             if (!mounted || !account || !chain) {
               return (
-                <Button isBold onClick={openConnectModal}>
+                <Button className="rounded-lg" isBold onClick={openConnectModal}>
                   Connect
                 </Button>
               )
@@ -26,7 +26,7 @@ const Connect = () => (
 
             if (chain.unsupported) {
               return (
-                <Button isBold onClick={openChainModal}>
+                <Button className="rounded-lg" isBold onClick={openChainModal}>
                   Wrong network
                 </Button>
               )
@@ -34,9 +34,12 @@ const Connect = () => (
 
             return (
               <div className="flex gap-6">
-                <Button isBold onClick={openAccountModal}>
-                  {account.displayName}
-                  {account.displayBalance ? ` (${account.displayBalance})` : ''}
+                <Button className="rounded-lg flex items-center" isBold onClick={openAccountModal}>
+                  <img className="h-6 w-6 mr-2 inline rounded-full" src={`https://cdn.stamp.fyi/avatar/${account.displayName}`} />
+                  <span>
+                    {account.displayName}
+                    {account.displayBalance ? ` (${account.displayBalance})` : ''}
+                  </span>
                 </Button>
               </div>
             )
