@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { Bid } from 'utils/types'
 
 export const formatDate = (date: number | Date): string =>
   new Intl.DateTimeFormat('default', {
@@ -138,5 +139,7 @@ export const getLatestNounId = async () => {
   return response?.data?.data?.auctions?.[0]?.id
 }
 
-export const truncateAddress = (address: string, endingChars: number = 4) =>
-  address ? `${address.slice(0, 4)}...${address.slice(-endingChars)}` : '0x00...0000'
+export const truncateAddress = (address: string) => (address ? `${address.slice(0, 4)}...${address.slice(-4)}` : '0x00...0000')
+
+export const getBidCount = (bids: Bid[], bidder: string): number =>
+  bids?.reduce((acc, cur) => (cur.bidder.id === bidder ? (acc += 1) : acc), 0)

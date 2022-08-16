@@ -37,7 +37,7 @@ const increaseBidByPercentage = (bid: BigNumber, percentage: number): string => 
 
 const Bid = ({ minAmount, id }: BidProps) => {
   const [amount, setAmount] = React.useState<string>()
-  const { isConnected, address } = useAccount()
+  const { isConnected, address, status: accountStatus } = useAccount()
   const changeAmount = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(e.target.value.slice(0, 10))
   }, [])
@@ -75,6 +75,10 @@ const Bid = ({ minAmount, id }: BidProps) => {
   const { write: createMinBid } = useContractWrite(minBidConfig)
 
   const onClick = (isMinBid: boolean) => () => {
+    if (accountStatus === 'disconnected') {
+      // handle
+    }
+
     if (isMinBid) {
       setAmount(minBidEth(minBid))
     }
