@@ -51,6 +51,7 @@ const Search = ({ latestId }: { latestId?: number }) => {
         onChange={onChange}
         onFocus={onFocus}
         className="text-sm block w-full"
+        value={value}
         parentClassName="min-w-[18rem]"
         prefix={typing ? <Loader className="w-5 h-5 text-white/60" /> : <SearchIcon className="w-5 h-5 text-white/60" />}
         suffix={<span className="text-white/60 border border-white/10 p-1 text-xs rounded-md">⌘ + K</span>}
@@ -66,7 +67,12 @@ const Search = ({ latestId }: { latestId?: number }) => {
           .slice(0, 6)
           .map((id, i, arr) => (
             <Link key={id} href={`/noun/${id}`}>
-              <a onClick={() => setOpen(false)}>
+              <a
+                onClick={() => {
+                  setValue('')
+                  setOpen(false)
+                }}
+              >
                 <div
                   className={`px-4 py-3 ${
                     i === arr.length - 1 ? 'rounded-b-lg' : 'border-b border-b-white/10'

@@ -22,7 +22,7 @@ import { formatDate, getNoun, getNounSeed, getLatestNounId } from 'utils/index'
 
 const Home: NextPage = () => {
   const queryClient = useQueryClient()
-  const { query } = useRouter()
+  const { query, push } = useRouter()
   const [id, setId] = React.useState<number>()
   const [latestId, setLatestId] = React.useState<number>()
   const [time, setTime] = React.useState<number>(Date.now())
@@ -56,22 +56,18 @@ const Home: NextPage = () => {
         staleTime: Infinity,
       })
     }
-
     if (id !== undefined) {
       const prevNouns = Array.from({ length: 2 }, (_, i) => id - 1 - i)
       const nextNouns = Array.from({ length: 2 }, (_, i) => id + 1 + i)
       prevNouns.map(nextId => prefetchNextNouns(nextId))
       nextNouns.map(nextId => latestId && latestId > nextId && prefetchNextNouns(nextId))
     }
+    id === latestId ? push('/', '', { shallow: true }) : push(`/noun/${id}`, '', { shallow: true })
   }, [id])
 
   React.useEffect(() => {
     if (query?.all?.[0] === 'noun' && query?.all?.[1]) {
       setId(Number(query?.all?.[1]))
-    }
-
-    if (!Object.entries(query).length) {
-      setId(latestNounId)
     }
   }, [query])
 

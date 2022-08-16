@@ -3,6 +3,7 @@ import { ethers } from 'ethers'
 import { ExternalLinkIcon } from '@heroicons/react/outline'
 import Account from 'components/Account'
 import Paragraph from 'components/Paragraph'
+import Title from 'components/Title'
 
 interface Bid {
   id: string
@@ -22,14 +23,32 @@ type ListProps = {
 }
 
 const Header = ({ address, txHash }: HeaderProps) => (
-  <div className="bg-white/10 rounded-lg py-3 px-4">
-    <Paragraph className="xxs:text-sm text-xs opacity-60 mb-2">Highest Bidder</Paragraph>
-    <Paragraph className="flex items-center justify-between">
-      <Account alwaysAvatar address={address} />
-      <a rel="noopener noreferer noreferrer" target="_blank" href={`https://etherscan.io/tx/${txHash}`}>
-        <ExternalLinkIcon className="opacity-60 h-4 w-4" />
-      </a>
-    </Paragraph>
+  <div className="bg-white/10 rounded-lg py-2 px-3 relative">
+    <a rel="noopener noreferer noreferrer" target="_blank" href={`https://etherscan.io/tx/${txHash}`}>
+      <ExternalLinkIcon className="opacity-60 h-4 w-4 absolute top-2.5 right-2.5" />
+    </a>
+    <div className="flex flex-col justify-between gap-y-4">
+      <div>
+        <Paragraph className="xxs:text-sm text-xs opacity-60 mb-2">Highest Bidder</Paragraph>
+        <Paragraph className="flex items-center justify-between text-lg">
+          <Account alwaysAvatar address={address} />
+        </Paragraph>
+      </div>
+      <div className="flex justify-between items-center">
+        <div>
+          <Paragraph className="xxs:text-sm text-xs opacity-60 mb-2">Wallet Balance</Paragraph>
+          <Paragraph className="font-normal text-lg tracking-wide">Ξ 30.00</Paragraph>
+        </div>
+        <div>
+          <Paragraph className="xxs:text-sm text-xs opacity-60 mb-2">Bids (Current)</Paragraph>
+          <Paragraph className="font-normal text-lg tracking-wide">2</Paragraph>
+        </div>
+        <div>
+          <Paragraph className="xxs:text-sm text-xs opacity-60 mb-2">Bids (All Time)</Paragraph>
+          <Paragraph className="font-normal text-lg tracking-wide">5</Paragraph>
+        </div>
+      </div>
+    </div>
   </div>
 )
 
