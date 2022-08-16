@@ -18,12 +18,13 @@ import Skeleton from 'components/Skeleton'
 import Statistic from 'components/Statistic'
 import Tag from 'components/Tag'
 import Title from 'components/Title'
-import { formatDate, getNoun, getNounSeed, getLatestNounId } from 'utils/index'
+import { formatDate, getNoun, getNounSeed, getLatestNounId, getBidCount } from 'utils/index'
 
 const Home: NextPage = () => {
   const queryClient = useQueryClient()
   const { query, push } = useRouter()
   const [id, setId] = React.useState<number>()
+  const [pct, setPct] = React.useState('')
   const [latestId, setLatestId] = React.useState<number>()
   const [time, setTime] = React.useState<number>(Date.now())
   const isNounder = Boolean(id === 0 || (id && id % 10 === 0))
@@ -50,6 +51,7 @@ const Home: NextPage = () => {
   })
 
   React.useEffect(() => {
+    renderPctChange()
     const prefetchNextNouns = async (nounId: number) => {
       const nounder = Boolean(nounId === 0 || (nounId && nounId % 10 === 0))
       await queryClient.prefetchQuery(['nounDetails', nounId, nounder], () => getNoun(nounder ? nounId + 1 : nounId), {
@@ -117,7 +119,29 @@ const Home: NextPage = () => {
       )
     }
 
-    return <Account address={isNounder ? 'nounders.eth' : noun?.bidder?.id} isEns={isNounder} length={2} />
+    return <Account address={isNounder ? 'nounders.eth' : noun?.bidder?.id} isEns={isNounder} />
+  }
+
+  const renderPctChange = async () => {
+    if (id !== undefined && id < 2) {
+      setPct('N/A')
+    }
+
+    if (id !== latestId && !isNounder) {
+      // Winning bid of auction of current id
+      const winningBid = new BigNumber(noun?.amount)
+
+      // Ignore nounder nouns and get previous id winning bid
+      const subtrahend = Boolean(id && (id - 1) % 10 === 0) ? 2 : 1
+      const prevId = id && id - subtrahend
+      const prevWinningBid = await queryClient.fetchQuery(['nounDetails', prevId, isNounder], () => getNoun(prevId))
+
+      const pctChange = winningBid.div(new BigNumber(prevWinningBid?.amount)).decimalPlaces(4, BigNumber.ROUND_UP)
+      const formattedPct = pctChange.isGreaterThan(1)
+        ? `+${pctChange.minus(1).times(100).toString()}%`
+        : `-${new BigNumber(1).minus(pctChange).times(100).toString()}%`
+      setPct(formattedPct)
+    }
   }
 
   const renderTopBid = () =>
@@ -175,24 +199,41 @@ const Home: NextPage = () => {
         </Layout.Section>
         <Layout.Section width={4}>
           <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">
-            <div className="flex gap-4 sticky">
+            <div className="grid grid-cols-2 gap-6 sticky">
               <Statistic
                 status={nounStatus}
                 titleClass="text-ui-black"
                 contentClass="text-ui-black tabular-nums animate-fade-in-1 opacity-0 ease-in-out truncate"
-                className="bg-ui-sulphur"
+                className={`bg-ui-sulphur w-full ${id === latestId ? 'col-span-1' : 'col-span-full'}`}
                 title={id === latestId && noun?.endTime && Date.now() < Number(noun?.endTime) * 1000 ? 'Time Left' : 'Winner'}
                 content={renderAuctionStatus()}
               />
-              <Statistic
-                status={nounStatus}
-                contentClass="animate-fade-in-2 opacity-0 ease-in-out"
-                className="bg-ui-space"
-                title={id === latestId && noun?.endTime && Date.now() < Number(noun?.endTime) * 1000 ? 'Top Bid' : 'Winning Bid'}
-                content={renderTopBid()}
-              />
+              {!isNounder && (
+                <Statistic
+                  status={nounStatus}
+                  contentClass="animate-fade-in-2 opacity-0 ease-in-out"
+                  className="bg-ui-space col-span-1 w-full"
+                  title={id === latestId && noun?.endTime && Date.now() < Number(noun?.endTime) * 1000 ? 'Top Bid' : 'Winning Bid'}
+                  content={renderTopBid()}
+                />
+              )}
+              {id !== latestId && !isNounder && (
+                <Statistic
+                  status={nounStatus}
+                  contentClass="animate-fade-in-2 opacity-0 ease-in-out"
+                  className="bg-ui-space col-span-1 w-full"
+                  title="% Change"
+                  content={<div className={pct[0] === '-' ? 'text-red-400' : 'text-malachite-green'}>{pct}</div>}
+                />
+              )}
             </div>
-            {!noun?.settled && <Address.Header address={noun?.bidder?.id} txHash={noun?.bids?.[0]?.id} />}
+            {!noun?.settled && !isNounder && (
+              <Address.Header
+                bidCount={getBidCount(noun?.bids, noun?.bidder?.id)}
+                address={noun?.bidder?.id}
+                txHash={noun?.bids?.[0]?.id}
+              />
+            )}
             {!isNounder && <Address.List items={noun?.bids} />}
           </div>
         </Layout.Section>
