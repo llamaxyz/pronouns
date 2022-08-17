@@ -1,7 +1,7 @@
 import React from 'react'
 import { XCircleIcon } from '@heroicons/react/solid'
 import { ChainId, getContractAddressesForChainOrThrow, NounsAuctionHouseABI } from '@nouns/sdk'
-import { utils, BigNumber as EthersBN } from 'ethers'
+import { utils, BigNumber as EthersBN, BigNumberish } from 'ethers'
 import BigNumber from 'bignumber.js'
 import { usePrepareContractWrite, useContractWrite, useAccount, useBalance } from 'wagmi'
 import Button from 'components/Button'
@@ -37,8 +37,8 @@ const increaseBidByPercentage = (bid: BigNumber, percentage: number): string => 
 }
 
 const Bid = ({ minAmount, id }: BidProps) => {
-  const [amount, setAmount] = React.useState<string>()
-  const { isConnected, address, status: accountStatus } = useAccount()
+  const [amount, setAmount] = React.useState<string>('')
+  const { isConnected, address } = useAccount()
   const changeAmount = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(e.target.value.slice(0, 10))
   }, [])
@@ -56,48 +56,53 @@ const Bid = ({ minAmount, id }: BidProps) => {
     setOpenToast(true)
     const timeout = setTimeout(() => {
       setOpenToast(false)
-    }, 2500)
+    }, 4000)
 
     return () => clearTimeout(timeout)
   }
 
-  const { config } = usePrepareContractWrite({
+  const { config, isError: bidError } = usePrepareContractWrite({
     addressOrName: nounsAuctionHouseProxy,
     contractInterface: NounsAuctionHouseABI,
     enabled: isConnected && Boolean(minBid),
     functionName: 'createBid',
     args: [id],
     overrides: {
-      value: amount && utils.parseEther(amount),
+      value: EthersBN.from(utils.parseEther(amount || '0')),
     },
   })
 
   const { write: createBid } = useContractWrite(config)
 
-  const { config: minBidConfig } = usePrepareContractWrite({
+  const { config: minBidConfig, isError: minError } = usePrepareContractWrite({
     addressOrName: nounsAuctionHouseProxy,
     contractInterface: NounsAuctionHouseABI,
     enabled: isConnected && Boolean(minBid),
     functionName: 'createBid',
     args: [id],
     overrides: {
-      value: minBidEth(minBid),
+      value: EthersBN.from(utils.parseEther(minBidEth(minBid))),
     },
   })
 
   const { write: createMinBid } = useContractWrite(minBidConfig)
 
   const onClick = (isMinBid: boolean) => () => {
-    if (isMinBid) {
-      setAmount(minBidEth(minBid))
-    }
-
     if (isConnected) {
-      if (!amount) {
-        triggerToast('Bid amount is empty')
-      } else {
-        isMinBid ? createMinBid?.() : createBid?.()
+      if (isMinBid) {
+        setAmount(minBidEth(minBid))
+        return minError ? triggerToast('Insufficient Balance') : createMinBid?.()
       }
+
+      if (!amount) {
+        return triggerToast('Bid amount is empty')
+      }
+
+      if (EthersBN.from(utils.parseEther(amount)).lt(EthersBN.from(minAmount))) {
+        return triggerToast('Bid amount is below reserve amount')
+      }
+
+      return bidError ? triggerToast('Insufficient Balance') : createBid?.()
     } else {
       triggerToast('Wallet not connected')
     }

@@ -4,6 +4,7 @@ import { useBalance } from 'wagmi'
 import { ExternalLinkIcon } from '@heroicons/react/outline'
 import Account from 'components/Account'
 import Paragraph from 'components/Paragraph'
+import { formatNumber } from 'utils/index'
 import { Bid } from 'utils/types'
 
 type HeaderProps = {
@@ -40,7 +41,9 @@ const Header = ({ address, txHash, bidCount = 0 }: HeaderProps) => {
         <div className="flex items-center gap-x-12">
           <div>
             <Paragraph className="xxs:text-sm text-xs opacity-60 mb-2">Wallet Balance</Paragraph>
-            <Paragraph className="font-normal text-lg tracking-wide">Ξ {(+(data?.formatted || 0)).toFixed(2).toString()}</Paragraph>
+            <Paragraph className="font-normal text-lg tracking-widest">
+              Ξ {formatNumber(Number((+(data?.formatted || 0)).toFixed(2)))}
+            </Paragraph>
           </div>
           <div>
             <Paragraph className="xxs:text-sm text-xs opacity-60 mb-2">Bids</Paragraph>

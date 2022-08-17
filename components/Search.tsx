@@ -7,7 +7,7 @@ import Loader from 'components/Loader'
 const Search = ({ latestId }: { latestId?: number }) => {
   const [typing, setTyping] = React.useState(false)
   const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState<string>()
+  const [value, setValue] = React.useState<string>('')
   const node = React.useRef<HTMLDivElement>(null)
 
   const idArray = [...Array.from(Array(latestId || 0).keys()), latestId]

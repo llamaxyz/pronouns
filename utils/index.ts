@@ -2,12 +2,18 @@ import axios from 'axios'
 import { Bid } from 'utils/types'
 
 export const formatDate = (date: number | Date): string =>
-  new Intl.DateTimeFormat('default', {
+  new Intl.DateTimeFormat(typeof window !== 'undefined' ? window?.navigator?.language : 'default', {
     month: 'long',
     year: 'numeric',
     day: 'numeric',
     timeZone: 'UTC',
   }).format(date ? new Date(date) : new Date())
+
+export const formatNumber = (num: number): string =>
+  new Intl.NumberFormat(typeof window !== 'undefined' ? window?.navigator?.language : 'default', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(num)
 
 const subgraphClient = axios.create({
   baseURL: 'https://api.thegraph.com/subgraphs/name/nounsdao/nouns-subgraph',

@@ -33,7 +33,7 @@ const Home: NextPage = () => {
     () => getNoun(id === undefined ? id : isNounder ? id + 1 : id),
     {
       refetchOnWindowFocus: id === latestId,
-      refetchInterval: id === latestId && 10000,
+      refetchInterval: id === latestId && 5000,
       staleTime: id === latestId ? 0 : Infinity,
       cacheTime: id === latestId ? 300000 : Infinity,
       retry: 1,
@@ -64,7 +64,8 @@ const Home: NextPage = () => {
       prevNouns.map(nextId => prefetchNextNouns(nextId))
       nextNouns.map(nextId => latestId && latestId > nextId && prefetchNextNouns(nextId))
     }
-    id === latestId ? push('/', '', { shallow: true }) : push(`/noun/${id}`, '', { shallow: true })
+
+    id !== undefined && push(`/noun/${id}`, undefined, { shallow: true })
   }, [id])
 
   React.useEffect(() => {
@@ -74,31 +75,33 @@ const Home: NextPage = () => {
   }, [query])
 
   React.useEffect(() => {
-    const interval = setInterval(() => {
-      setTime(Date.now())
-
-      if (id === latestId && latestId && noun?.endTime && Date.now() > Number(noun?.endTime) * 1000) {
-        setLatestId(latestId + 1)
-      }
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [noun])
-
-  React.useEffect(() => {
     if (nounStatus === 'success') {
       const nounId = Number(noun?.id)
       if (nounId !== id) {
         setId(isNounder ? (nounId === 0 ? nounId + 1 : nounId - 1) : nounId)
       }
     }
+
+    const interval = setInterval(() => {
+      setTime(Date.now())
+
+      if (id === latestId && latestId && noun?.endTime && Date.now() > Number(noun?.endTime) * 1000) {
+        setLatestId(latest => latest && latest + 1)
+      }
+    }, 1000)
+
+    return () => clearInterval(interval)
   }, [nounStatus, noun])
 
   React.useEffect(() => {
     if (latestNounStatus === 'success') {
       setLatestId(Number(latestNounId))
       if (id === undefined) {
-        setId(Number(latestNounId))
+        if (window.location.pathname.startsWith('/noun/')) {
+          setId(Number(window.location.pathname.replace('/noun/', '')))
+        } else {
+          setId(Number(latestNounId))
+        }
       }
     }
   }, [latestNounId, latestNounStatus])
@@ -161,10 +164,20 @@ const Home: NextPage = () => {
         <Layout.Section width={5} className="flex flex-col gap-4">
           <div className="flex items-center gap-4">
             <div className="flex gap-2">
-              <Button isBold onClick={() => id !== undefined && setId(id - 1)} disabled={id === 0} type="secondary">
+              <Button
+                isBold
+                onClick={() => id !== undefined && setId(id => (id !== undefined ? id - 1 : undefined))}
+                disabled={id === 0}
+                type="secondary"
+              >
                 <ChevronLeftIcon className="h-6 w-6" />
               </Button>
-              <Button isBold onClick={() => id !== undefined && setId(id + 1)} disabled={id === latestId} type="secondary">
+              <Button
+                isBold
+                onClick={() => id !== undefined && setId(id => (id !== undefined ? id + 1 : undefined))}
+                disabled={id === latestId}
+                type="secondary"
+              >
                 <ChevronRightIcon className="h-6 w-6" />
               </Button>
             </div>
