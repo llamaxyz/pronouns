@@ -7,6 +7,7 @@ import { usePrepareContractWrite, useContractWrite, useAccount, useBalance } fro
 import Button from 'components/Button'
 import Input from 'components/Input'
 import Paragraph from 'components/Paragraph'
+import Toast from 'components/Toast'
 
 const { nounsAuctionHouseProxy } = getContractAddressesForChainOrThrow(ChainId.Mainnet)
 
@@ -41,12 +42,24 @@ const Bid = ({ minAmount, id }: BidProps) => {
   const changeAmount = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(e.target.value.slice(0, 10))
   }, [])
+  const [openToast, setOpenToast] = React.useState(false)
+  const [message, setMessage] = React.useState('')
   const minBid = computeMinimumNextBid(new BigNumber(minAmount))
   const { data } = useBalance({
     addressOrName: address,
     formatUnits: 'ether',
     watch: true,
   })
+
+  const triggerToast = (message: string) => {
+    setMessage(message)
+    setOpenToast(true)
+    const timeout = setTimeout(() => {
+      setOpenToast(false)
+    }, 2500)
+
+    return () => clearTimeout(timeout)
+  }
 
   const { config } = usePrepareContractWrite({
     addressOrName: nounsAuctionHouseProxy,
@@ -75,16 +88,18 @@ const Bid = ({ minAmount, id }: BidProps) => {
   const { write: createMinBid } = useContractWrite(minBidConfig)
 
   const onClick = (isMinBid: boolean) => () => {
-    if (accountStatus === 'disconnected') {
-      // handle
-    }
-
     if (isMinBid) {
       setAmount(minBidEth(minBid))
     }
 
     if (isConnected) {
-      isMinBid ? createMinBid?.() : createBid?.()
+      if (!amount) {
+        triggerToast('Bid amount is empty')
+      } else {
+        isMinBid ? createMinBid?.() : createBid?.()
+      }
+    } else {
+      triggerToast('Wallet not connected')
     }
   }
 
@@ -123,9 +138,11 @@ const Bid = ({ minAmount, id }: BidProps) => {
         ))}
       </div>
       <div className="flex flex-col gap-y-2">
-        <Button onClick={onClick(false)} type="action">
-          Place Bid
-        </Button>
+        <Toast message={message} open={openToast} setOpen={setOpenToast}>
+          <Button onClick={onClick(false)} type="action">
+            Place Bid
+          </Button>
+        </Toast>
         <Button onClick={onClick(true)} type="action-secondary">
           Min Bid
         </Button>
