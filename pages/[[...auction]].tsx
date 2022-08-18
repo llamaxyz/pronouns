@@ -65,7 +65,7 @@ const Home: NextPage = () => {
       nextNouns.map(nextId => latestId && latestId > nextId && prefetchNextNouns(nextId))
     }
 
-    id !== undefined && push(`/noun/${id}`, undefined, { shallow: true })
+    id !== undefined && id !== latestId && push(`/noun/${id}`, undefined, { shallow: true })
   }, [id])
 
   React.useEffect(() => {
