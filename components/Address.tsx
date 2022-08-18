@@ -29,7 +29,7 @@ const Header = ({ address, txHash, bidCount = 0 }: HeaderProps) => {
         target="_blank"
         href={`https://etherscan.io/tx/${txHash}`}
       >
-        <ExternalLinkIcon className="opacity-60 h-4 w-4" />
+        <ExternalLinkIcon aria-label="Etherscan" className="opacity-60 h-4 w-4" />
       </a>
       <div className="flex flex-col justify-between gap-y-4">
         <div>
@@ -63,7 +63,7 @@ const List = ({ items }: ListProps) => (
         <span className="flex items-center gap-x-4">
           <span>Ξ {ethers.utils.formatEther(bid?.amount || 0)}</span>
           <a rel="noopener noreferer noreferrer" target="_blank" href={`https://etherscan.io/tx/${bid?.id}`}>
-            <ExternalLinkIcon className="opacity-60 h-4 w-4" />
+            <ExternalLinkIcon aria-label="Etherscan" className="opacity-60 h-4 w-4" />
           </a>
         </span>
       </Paragraph>

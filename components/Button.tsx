@@ -11,6 +11,7 @@ type ButtonProps = {
   onClick?: Function
   disabled?: boolean
   isBold?: boolean
+  ariaLabel?: string
 }
 
 const Button = ({
@@ -21,6 +22,7 @@ const Button = ({
   htmlType = 'button',
   className,
   disabled = false,
+  ariaLabel,
   onClick = () => {
     return null
   },
@@ -40,6 +42,7 @@ const Button = ({
   const ButtonElement = href ? 'a' : 'button'
   return (
     <ButtonElement
+      aria-label={ariaLabel}
       href={href}
       disabled={disabled}
       {...(href ? { target: '_blank', rel: 'noopener norefferer' } : {})}

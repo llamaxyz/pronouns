@@ -35,7 +35,11 @@ const Connect = () => (
             return (
               <div className="flex gap-6">
                 <Button className="rounded-lg flex items-center" isBold onClick={openAccountModal}>
-                  <img className="h-6 w-6 mr-2 inline rounded-full" src={`https://cdn.stamp.fyi/avatar/${account.displayName}`} />
+                  <img
+                    alt="account profile"
+                    className="h-6 w-6 mr-2 inline rounded-full"
+                    src={`https://cdn.stamp.fyi/avatar/${account.displayName}`}
+                  />
                   <span>
                     {account.displayName}
                     {account.displayBalance ? ` (${account.displayBalance})` : ''}

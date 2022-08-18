@@ -165,6 +165,7 @@ const Home: NextPage = () => {
           <div className="flex items-center gap-4">
             <div className="flex gap-2">
               <Button
+                ariaLabel="Previous Noun"
                 isBold
                 onClick={() => id !== undefined && setId(id => (id !== undefined ? id - 1 : undefined))}
                 disabled={id === 0}
@@ -173,6 +174,7 @@ const Home: NextPage = () => {
                 <ChevronLeftIcon className="h-6 w-6" />
               </Button>
               <Button
+                ariaLabel="Next Noun"
                 isBold
                 onClick={() => id !== undefined && setId(id => (id !== undefined ? id + 1 : undefined))}
                 disabled={id === latestId}
