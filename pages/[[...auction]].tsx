@@ -209,7 +209,7 @@ const Home: NextPage = () => {
               loading={nounStatus === 'loading'}
               loadingElement={
                 <div className="w-[108px] overflow-hidden animate-pulse mt-auto h-8 text-white/20 bg-white/20 py-1.5 px-3 tracking-wider text-xs xxs:text-sm rounded-full">
-                  Live Auction
+                  {'           '}
                 </div>
               }
             >

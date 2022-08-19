@@ -7,12 +7,14 @@ type InputProps = {
   parentClassName?: string
   type: string
   min?: string
-  onChange: (_e: React.ChangeEvent<HTMLInputElement>) => void
-  onFocus?: (_e: React.ChangeEvent<HTMLInputElement>) => void
+  onChange?: (_e: React.ChangeEvent<HTMLInputElement>) => void
+  onValueChange?: React.Dispatch<React.SetStateAction<string>>
   prefix?: React.ReactNode
   prefixPadding?: string
   suffix?: React.ReactNode
   hasClickableSuffix?: boolean
+  isCommandInput?: boolean
+  autoFocus?: boolean
 }
 
 const inputClass =
@@ -23,7 +25,6 @@ const Input = ({
   type,
   min,
   onChange,
-  onFocus,
   prefix,
   prefixPadding = 'pl-10',
   suffix,
@@ -31,13 +32,14 @@ const Input = ({
   className = '',
   parentClassName = '',
   hasClickableSuffix = false,
-}: InputProps) =>
-  prefix || suffix ? (
+  autoFocus,
+}: InputProps) => {
+  return prefix || suffix ? (
     <div className={`relative ${parentClassName}`}>
       {prefix && <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">{prefix}</div>}
       <input
         onChange={onChange}
-        onFocus={onFocus}
+        autoFocus={autoFocus}
         placeholder={placeholder}
         className={`${inputClass} py-2.5 ${prefix ? prefixPadding : 'pl-2.5'} ${suffix ? 'pr-14' : 'pr-2.5'} ${className}`}
         type={type}
@@ -52,8 +54,8 @@ const Input = ({
     </div>
   ) : (
     <input
+      autoFocus={autoFocus}
       onChange={onChange}
-      onFocus={onFocus}
       placeholder={placeholder}
       className={`${inputClass} px-4 py-3 ${className}`}
       type={type}
@@ -61,5 +63,6 @@ const Input = ({
       {...(value ? { value } : {})}
     />
   )
+}
 
 export default Input
