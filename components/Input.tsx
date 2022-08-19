@@ -1,4 +1,5 @@
 import React from 'react'
+import { Command } from 'cmdk'
 
 type InputProps = {
   placeholder: string
@@ -7,12 +8,14 @@ type InputProps = {
   parentClassName?: string
   type: string
   min?: string
-  onChange: (_e: React.ChangeEvent<HTMLInputElement>) => void
+  onChange?: (_e: React.ChangeEvent<HTMLInputElement>) => void
+  onValueChange?: React.Dispatch<React.SetStateAction<string>>
   onFocus?: (_e: React.ChangeEvent<HTMLInputElement>) => void
   prefix?: React.ReactNode
   prefixPadding?: string
   suffix?: React.ReactNode
   hasClickableSuffix?: boolean
+  isCommandInput?: boolean
 }
 
 const inputClass =
@@ -23,6 +26,7 @@ const Input = ({
   type,
   min,
   onChange,
+  onValueChange,
   onFocus,
   prefix,
   prefixPadding = 'pl-10',
@@ -31,12 +35,14 @@ const Input = ({
   className = '',
   parentClassName = '',
   hasClickableSuffix = false,
-}: InputProps) =>
-  prefix || suffix ? (
+  isCommandInput = false,
+}: InputProps) => {
+  const InputElement = isCommandInput ? Command.Input : 'input'
+  return prefix || suffix ? (
     <div className={`relative ${parentClassName}`}>
       {prefix && <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">{prefix}</div>}
-      <input
-        onChange={onChange}
+      <InputElement
+        {...(isCommandInput ? { onValueChange } : { onChange })}
         onFocus={onFocus}
         placeholder={placeholder}
         className={`${inputClass} py-2.5 ${prefix ? prefixPadding : 'pl-2.5'} ${suffix ? 'pr-14' : 'pr-2.5'} ${className}`}
@@ -51,7 +57,7 @@ const Input = ({
       )}
     </div>
   ) : (
-    <input
+    <InputElement
       onChange={onChange}
       onFocus={onFocus}
       placeholder={placeholder}
@@ -61,5 +67,6 @@ const Input = ({
       {...(value ? { value } : {})}
     />
   )
+}
 
 export default Input

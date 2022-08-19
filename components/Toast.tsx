@@ -18,7 +18,7 @@ type ToastProps = {
 const typeToIcon: Record<BidStatus, React.ReactNode> = {
   error: <XCircleIcon className="w-8 h-8 text-red-400" />,
   success: <CheckCircleIcon className="w-8 h-8 text-malachite-green" />,
-  loading: <Image alt="Noun Loading" width={26} height={26} src={loadingNoun} />,
+  loading: <Image alt="Noun Loading" width={52} height={52} src={loadingNoun} />,
   idle: <CheckCircleIcon className="w-8 h-8 text-red-400" />,
 }
 
@@ -72,7 +72,9 @@ const Toast = ({ children, data, setData, txHash }: ToastProps) => {
     <ToastPrimitive.Provider swipeDirection="right">
       {children}
       <StyledToast
-        className="border border-2 border-neutral-600 rounded-lg bg-neutral-800 flex p-4 outline-none"
+        className={`border border-2 border-neutral-600 rounded-lg bg-neutral-800 flex ${
+          data.type === 'loading' ? 'p-0' : 'p-4'
+        } outline-none`}
         open={data.open}
         onOpenChange={setOpen}
       >
