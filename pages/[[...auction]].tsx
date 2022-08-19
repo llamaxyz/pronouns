@@ -19,6 +19,7 @@ import Statistic from 'components/Statistic'
 import Tag from 'components/Tag'
 import Title from 'components/Title'
 import { formatDate, getNoun, getNounSeed, getLatestNounId, getBidCount } from 'utils/index'
+import { AuctionState } from 'utils/types'
 
 const Home: NextPage = () => {
   const queryClient = useQueryClient()
@@ -50,6 +51,11 @@ const Home: NextPage = () => {
     retry: 1,
   })
 
+  const auctionState: AuctionState = noun?.settled
+    ? 'settled'
+    : noun?.endTime && Date.now() < Number(noun?.endTime) * 1000
+    ? 'live'
+    : 'unsettled'
   React.useEffect(() => {
     renderPctChange()
     const prefetchNextNouns = async (nounId: number) => {
@@ -85,7 +91,7 @@ const Home: NextPage = () => {
     const interval = setInterval(() => {
       setTime(Date.now())
 
-      if (id === latestId && latestId && noun?.endTime && Date.now() > Number(noun?.endTime) * 1000) {
+      if (id === latestId && latestId && auctionState === 'unsettled') {
         setLatestId(latest => latest && latest + 1)
       }
     }, 1000)
@@ -220,14 +226,14 @@ const Home: NextPage = () => {
                 titleClass="text-ui-black"
                 contentClass="text-ui-black tabular-nums animate-fade-in-1 opacity-0 ease-in-out truncate"
                 className={`bg-ui-sulphur w-full ${id === latestId ? 'col-span-1' : 'col-span-full'}`}
-                title={id === latestId && noun?.endTime && Date.now() < Number(noun?.endTime) * 1000 ? 'Time Left' : 'Winner'}
+                title={id === latestId && auctionState === 'live' ? 'Time Left' : 'Winner'}
                 content={renderAuctionStatus()}
               />
               <Statistic
                 status={nounStatus}
                 contentClass="animate-fade-in-2 opacity-0 ease-in-out"
                 className="bg-ui-space col-span-1 w-full"
-                title={id === latestId && noun?.endTime && Date.now() < Number(noun?.endTime) * 1000 ? 'Top Bid' : 'Winning Bid'}
+                title={id === latestId && auctionState === 'live' ? 'Top Bid' : 'Winning Bid'}
                 content={renderTopBid()}
               />
               {id !== latestId && (
@@ -247,19 +253,42 @@ const Home: NextPage = () => {
                 txHash={noun?.bids?.[0]?.id}
               />
             )}
-            {isNounder ? (
-              <Paragraph>
-                All Noun auction proceeds are sent to the Nouns DAO. For this reason, the projectʼs founders (‘Nounders’) have chosen to
-                compensate themselves with Nouns. Every 10th Noun for the first 5 years of the project will be sent to their multisig
-                (5/10), where it will be vested and distributed to individual Nounders.
-              </Paragraph>
-            ) : (
-              <Address.List items={noun?.bids} />
-            )}
+            {!isNounder && <Address.List items={noun?.bids} />}
           </div>
         </Layout.Section>
         <Layout.Section width={3}>
-          {noun?.amount && id === latestId && latestId && <Bid minAmount={noun.amount} id={latestId} />}
+          {latestId && auctionState === 'live' ? (
+            <Bid minAmount={noun.amount} id={latestId} />
+          ) : (
+            <Skeleton
+              hasParentElement
+              loading={nounStatus === 'loading'}
+              loadingElement={
+                <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-2">
+                  <div className="h-5 mb-1 bg-white/20 rounded col-span-2" />
+                  <div className="h-8 bg-white/20 rounded col-span-2" />
+                  <div className="h-8 bg-white/20 rounded col-span-2" />
+                </div>
+              }
+            >
+              <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">
+                <Paragraph>
+                  {isNounder
+                    ? 'All Noun auction proceeds are sent to the Nouns DAO. For this reason, the projectʼs founders (‘Nounders’) have chosen to compensate themselves with Nouns. Every 10th Noun for the first 5 years of the project will be sent to their multisig (5/10), where it will be vested and distributed to individual Nounders.'
+                    : `This auction ended ${formatDate(noun?.startTime * 1000, true)}`}
+                </Paragraph>
+                {auctionState === 'unsettled' && (
+                  <Button
+                    href="https://fomonouns.wtf/"
+                    className="w-full text-ui-black bg-ui-sulphur hover:bg-ui-sulphur/40 text-center"
+                    type="action-secondary"
+                  >
+                    Vote on the next Noun
+                  </Button>
+                )}
+              </div>
+            </Skeleton>
+          )}
         </Layout.Section>
       </Layout>
     </div>

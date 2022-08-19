@@ -1,14 +1,25 @@
 import React from 'react'
-import { XCircleIcon } from '@heroicons/react/solid'
+import Image from 'next/image'
+import { ExternalLinkIcon } from '@heroicons/react/outline'
+import { XCircleIcon, CheckCircleIcon } from '@heroicons/react/solid'
 import { styled, keyframes } from '@stitches/react'
 import * as ToastPrimitive from '@radix-ui/react-toast'
 import Paragraph from 'components/Paragraph'
+import loadingNoun from 'public/loading-skull-noun.gif'
+import { BidStatus, ToastData } from 'utils/types'
 
 type ToastProps = {
+  data: ToastData
+  txHash?: string
   children: React.ReactNode
-  open: boolean
-  message: string
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setData: React.Dispatch<React.SetStateAction<ToastData>>
+}
+
+const typeToIcon: Record<BidStatus, React.ReactNode> = {
+  error: <XCircleIcon className="w-8 h-8 text-red-400" />,
+  success: <CheckCircleIcon className="w-8 h-8 text-malachite-green" />,
+  loading: <Image alt="Noun Loading" width={26} height={26} src={loadingNoun} />,
+  idle: <CheckCircleIcon className="w-8 h-8 text-red-400" />,
 }
 
 const hide = keyframes({
@@ -54,21 +65,30 @@ const StyledToast = styled(ToastPrimitive.Root, {
   },
 })
 
-const Toast = ({ children, open, setOpen, message }: ToastProps) => (
-  <ToastPrimitive.Provider swipeDirection="right">
-    {children}
-    <StyledToast
-      className="border border-2 border-neutral-600 rounded-lg bg-neutral-800 flex p-4 outline-none"
-      open={open}
-      onOpenChange={setOpen}
-    >
-      <ToastPrimitive.Title className="flex items-center gap-x-2 font-medium">
-        <XCircleIcon className="w-8 h-8 text-red-400" />
-        <Paragraph className="tracking-wider">{message}</Paragraph>
-      </ToastPrimitive.Title>
-    </StyledToast>
-    <ToastPrimitive.Viewport className="fixed bottom-0 right-0 flex flex-col p-6 z-50 gap-2.5 m-0 outline-none list-none" />
-  </ToastPrimitive.Provider>
-)
+const Toast = ({ children, data, setData, txHash }: ToastProps) => {
+  const setOpen = (open: boolean) => setData({ ...data, open })
+
+  return (
+    <ToastPrimitive.Provider swipeDirection="right">
+      {children}
+      <StyledToast
+        className="border border-2 border-neutral-600 rounded-lg bg-neutral-800 flex p-4 outline-none"
+        open={data.open}
+        onOpenChange={setOpen}
+      >
+        <ToastPrimitive.Title className="flex items-center justify-between gap-x-2 font-medium">
+          {typeToIcon[data.type]}
+          <Paragraph className="tracking-wider">{data.message}</Paragraph>
+          {txHash && (
+            <a rel="noopener noreferer noreferrer" target="_blank" href={`https://etherscan.io/tx/${txHash}`}>
+              <ExternalLinkIcon aria-label="Etherscan" className="opacity-60 h-5 w-5" />
+            </a>
+          )}
+        </ToastPrimitive.Title>
+      </StyledToast>
+      <ToastPrimitive.Viewport className="fixed bottom-0 right-0 flex flex-col p-6 z-50 gap-2.5 m-0 outline-none list-none" />
+    </ToastPrimitive.Provider>
+  )
+}
 
 export default Toast

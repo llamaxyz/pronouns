@@ -10,3 +10,13 @@ export interface Bid {
   amount: string
   bids: Bidder[]
 }
+
+export type AuctionState = 'settled' | 'live' | 'unsettled'
+
+export type BidStatus = 'success' | 'loading' | 'error' | 'idle'
+
+export type ToastData = {
+  open: boolean
+  message: string
+  type: BidStatus
+}

@@ -1,11 +1,13 @@
 import axios from 'axios'
 import { Bid } from 'utils/types'
 
-export const formatDate = (date: number | Date): string =>
+export const formatDate = (date: number | Date, displayTime?: boolean): string =>
   new Intl.DateTimeFormat(typeof window !== 'undefined' ? window?.navigator?.language : 'default', {
     month: 'long',
     year: 'numeric',
     day: 'numeric',
+    ...(displayTime && { hour: 'numeric' }),
+    ...(displayTime && { minute: 'numeric' }),
     timeZone: 'UTC',
   }).format(date ? new Date(date) : new Date())
 
