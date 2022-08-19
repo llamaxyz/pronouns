@@ -1,5 +1,10 @@
-import axios from 'axios'
 import { Bid } from 'utils/types'
+
+/*
+ *********************
+ * Utility functions
+ *********************
+ */
 
 export const formatDate = (date: number | Date, displayTime?: boolean): string =>
   new Intl.DateTimeFormat(typeof window !== 'undefined' ? window?.navigator?.language : 'default', {
@@ -17,9 +22,18 @@ export const formatNumber = (num: number): string =>
     maximumFractionDigits: 2,
   }).format(num)
 
-const subgraphClient = axios.create({
-  baseURL: 'https://api.thegraph.com/subgraphs/name/nounsdao/nouns-subgraph',
-})
+export const truncateAddress = (address: string) => (address ? `${address.slice(0, 4)}...${address.slice(-4)}` : '0x00...0000')
+
+export const getBidCount = (bids: Bid[], bidder: string): number =>
+  bids?.reduce((acc, cur) => (cur.bidder.id === bidder ? (acc += 1) : acc), 0)
+
+/*
+ *********************
+ * Nouns data fetching
+ *********************
+ */
+
+const NOUNS_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/nounsdao/nouns-subgraph'
 
 const nounQuery = (id: number) => `{
     auction(id: ${id}) {
@@ -115,39 +129,36 @@ const latestNounIdQuery = `{
 }`
 
 export const getNoun = async (id: number | undefined) => {
-  const response = await subgraphClient({
+  const response = await fetch(NOUNS_SUBGRAPH_URL, {
     method: 'post',
-    data: {
+    body: JSON.stringify({
       query: id ? nounQuery(id) : latestNounQuery,
-    },
+    }),
   })
-  return id ? response.data?.data?.auction : response.data?.data?.auctions[0]
+  const responseData = await response?.json()
+  return id ? responseData?.data?.auction : responseData?.data?.auctions[0]
 }
 
 export const getNounSeed = async (id: number | undefined) => {
   if (id !== undefined) {
-    const response = await subgraphClient({
+    const response = await fetch(NOUNS_SUBGRAPH_URL, {
       method: 'post',
-      data: {
+      body: JSON.stringify({
         query: nounSeedQuery(id),
-      },
+      }),
     })
-    return response.data?.data?.noun
+    const responseData = await response?.json()
+    return responseData?.data?.noun
   }
 }
 
 export const getLatestNounId = async () => {
-  const response = await subgraphClient({
+  const response = await fetch(NOUNS_SUBGRAPH_URL, {
     method: 'post',
-    data: {
+    body: JSON.stringify({
       query: latestNounIdQuery,
-    },
+    }),
   })
-
-  return response?.data?.data?.auctions?.[0]?.id
+  const responseData = await response?.json()
+  return responseData?.data?.auctions?.[0]?.id
 }
-
-export const truncateAddress = (address: string) => (address ? `${address.slice(0, 4)}...${address.slice(-4)}` : '0x00...0000')
-
-export const getBidCount = (bids: Bid[], bidder: string): number =>
-  bids?.reduce((acc, cur) => (cur.bidder.id === bidder ? (acc += 1) : acc), 0)

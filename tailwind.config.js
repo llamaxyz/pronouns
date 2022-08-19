@@ -29,7 +29,6 @@ module.exports = {
       },
       fontFamily: {
         sans: ['Aeonik', ...defaultTheme.fontFamily.sans],
-        logo: ['"Judera-Ring"', ...defaultTheme.fontFamily.sans],
       },
       animation: {
         marquee: 'marquee 200s linear infinite',

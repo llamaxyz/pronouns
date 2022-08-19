@@ -4,13 +4,6 @@
 
 @layer base {
     @font-face {
-        font-family: 'Judera-Ring';
-        font-display: fallback;
-        font-weight: 400;
-        src: url('/fonts/Judera-Ring.ttf');
-    }
-
-    @font-face {
         font-family: 'Aeonik';
         font-display: fallback;
         font-weight: 400;

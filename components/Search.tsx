@@ -69,7 +69,7 @@ const Search = ({ latestId }: { latestId?: number }) => {
         </div>
       </Button>
       {open && (
-        <div className="z-40 fixed top-0 left-0 w-screen h-screen bg-black/20 backdrop-blur-sm">
+        <div className="z-40 fixed top-0 left-0 w-screen h-screen bg-black/50 backdrop-blur-sm">
           <div ref={node} className="z-50 w-[50%] top-[10%] drop-shadow-xl left-[50%] rounded-lg fixed bg-ui-black -translate-x-1/2">
             <Input
               autoFocus
@@ -128,12 +128,3 @@ const Search = ({ latestId }: { latestId?: number }) => {
 }
 
 export default Search
-
-// <div
-//   className={`absolute border border-white/10 w-full z-50 tracking-wide rounded-lg bg-ui-black transition ease-in-out ${
-//     open ? 'block' : 'hidden'
-//   }`}
-//   ref={node}
-// >
-
-// </div>

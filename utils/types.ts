@@ -1,8 +1,4 @@
-export type Status = 'success' | 'error' | 'loading'
-
-export interface Bidder {
-  id: string
-}
+export type AuctionState = 'settled' | 'live' | 'unsettled'
 
 export interface Bid {
   id: string
@@ -11,9 +7,13 @@ export interface Bid {
   bids: Bidder[]
 }
 
-export type AuctionState = 'settled' | 'live' | 'unsettled'
+export interface Bidder {
+  id: string
+}
 
 export type BidStatus = 'success' | 'loading' | 'error' | 'idle'
+
+export type Status = 'success' | 'error' | 'loading'
 
 export type ToastData = {
   open: boolean

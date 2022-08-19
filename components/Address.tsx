@@ -1,5 +1,5 @@
 import React from 'react'
-import { ethers } from 'ethers'
+import { utils } from 'ethers'
 import { useBalance } from 'wagmi'
 import { ExternalLinkIcon } from '@heroicons/react/outline'
 import Account from 'components/Account'
@@ -61,7 +61,7 @@ const List = ({ items }: ListProps) => (
       <Paragraph key={bid.id} className="flex items-center justify-between opacity-60">
         <Account alwaysAvatar address={bid?.bidder?.id} />
         <span className="flex items-center gap-x-4">
-          <span>Ξ {ethers.utils.formatEther(bid?.amount || 0)}</span>
+          <span>Ξ {utils.formatEther(bid?.amount || 0)}</span>
           <a rel="noopener noreferer noreferrer" target="_blank" href={`https://etherscan.io/tx/${bid?.id}`}>
             <ExternalLinkIcon aria-label="Etherscan" className="opacity-60 h-4 w-4" />
           </a>

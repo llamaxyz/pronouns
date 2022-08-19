@@ -1,6 +1,6 @@
 declare module 'tailwindcss/resolveConfig' {
   import type { Config } from 'tailwindcss'
 
-  declare function resolveConfig(config: Config): Config
+  declare function resolveConfig(_config: Config): Config
   export = resolveConfig
 }
