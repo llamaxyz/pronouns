@@ -144,6 +144,25 @@ const seedQuery = (id: number) => `{
   }
 }`
 
+const seedsQuery = `{
+    nouns(first: 1000) {
+        id
+        seed {
+          background
+          body
+          accessory
+          head
+          glasses
+          __typename
+    }
+    owner {
+          id
+          __typename
+    }
+    __typename
+  }
+}`
+
 const accountQuery = (address: string) => `{
   account(id: "${address}") {
     id
@@ -203,4 +222,15 @@ export const getAccount = async (address: string) => {
   })
   const responseData = await response?.json()
   return responseData?.data?.account ?? { account: { id: address, tokenBalanceRaw: '0' } }
+}
+
+export const getSeeds = async () => {
+  const response = await fetch(NOUNS_SUBGRAPH_URL, {
+    method: 'post',
+    body: JSON.stringify({
+      query: seedsQuery,
+    }),
+  })
+  const responseData = await response?.json()
+  return responseData?.data?.nouns
 }

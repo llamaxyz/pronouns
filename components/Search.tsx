@@ -3,7 +3,23 @@ import Link from 'next/link'
 import { SearchIcon } from '@heroicons/react/outline'
 import Button from 'components/Button'
 import Input from 'components/Input'
+import Noun from 'components/Noun'
 import Loader from 'components/Loader'
+import { useSeeds } from 'utils/hooks/index'
+
+type Seed = {
+  id: string
+  seed: {
+    background: string
+    body: string
+    accessory: string
+    head: string
+    glasses: string
+  }
+  owner: {
+    id: string
+  }
+}
 
 const Search = ({ latestId }: { latestId?: number }) => {
   const [typing, setTyping] = React.useState(false)
@@ -11,6 +27,7 @@ const Search = ({ latestId }: { latestId?: number }) => {
   const [value, setValue] = React.useState<string>('')
   const node = React.useRef<HTMLDivElement>(null)
   const inputNode = React.useRef<HTMLInputElement>(null)
+  const { data: seeds, status: seedStatus } = useSeeds()
 
   const idArray = [...Array.from(Array(latestId || 0).keys()), latestId]
 
@@ -70,7 +87,7 @@ const Search = ({ latestId }: { latestId?: number }) => {
       </Button>
       {open && (
         <div className="z-40 fixed top-0 left-0 w-screen h-screen bg-black/50 backdrop-blur-sm">
-          <div ref={node} className="z-50 w-[50%] top-[10%] drop-shadow-xl left-[50%] rounded-lg fixed bg-ui-black -translate-x-1/2">
+          <div ref={node} className="z-50 w-[50%] top-[10%] drop-shadow-xl left-[50%] rounded-lg fixed bg-ui-charleston -translate-x-1/2">
             <Input
               autoFocus
               placeholder="Search"
@@ -82,6 +99,7 @@ const Search = ({ latestId }: { latestId?: number }) => {
               prefix={typing ? <Loader className="w-5 h-5 text-white/60" /> : <SearchIcon className="w-5 h-5 text-white/60" />}
               suffix={<span className="text-white/60 border border-white/10 p-1 text-xs rounded-md">ESC</span>}
             />
+            <div className="px-6 py-4 border-b border-b-white/10 text-white/50">Nouns</div>
             {value === '' ? (
               <div className="text-white">
                 <Link href={`/noun/${latestId}`}>
@@ -91,7 +109,19 @@ const Search = ({ latestId }: { latestId?: number }) => {
                       setOpen(false)
                     }}
                   >
-                    <div className={`px-4 py-3 rounded-b-lg hover:bg-white/10 transition ease-in-out`}>Go to latest Noun</div>
+                    <div
+                      className={`px-6 py-4 rounded-b-lg hover:bg-white/10 flex border-l border-l-transparent hover:border-l hover:border-l-white transition ease-in-out`}
+                    >
+                      <div className="mr-2">
+                        <Noun
+                          isSmall
+                          seed={seeds?.find((seed: Seed) => seed.id === latestId?.toString())?.seed}
+                          status={seedStatus}
+                          id={latestId}
+                        />
+                      </div>
+                      Go to latest Noun
+                    </div>
                   </a>
                 </Link>
               </div>
@@ -109,10 +139,18 @@ const Search = ({ latestId }: { latestId?: number }) => {
                         }}
                       >
                         <div
-                          className={`px-4 py-3 ${
+                          className={`px-6 py-4 ${
                             i === arr.length - 1 ? 'rounded-b-lg' : 'border-b border-b-white/10'
-                          } hover:bg-white/10 transition ease-in-out`}
+                          } hover:bg-white/10 border-l border-l-transparent hover:border-l hover:border-l-white transition ease-in-out flex`}
                         >
+                          <div className="mr-2">
+                            <Noun
+                              isSmall
+                              seed={seeds?.find((seed: Seed) => seed.id === id?.toString())?.seed}
+                              status={seedStatus}
+                              id={id}
+                            />
+                          </div>
                           Noun {id}
                         </div>
                       </a>

@@ -69,7 +69,7 @@ const Header = ({ address, txHash, bidCount = 0 }: HeaderProps) => {
 }
 
 const List = ({ items }: ListProps) => (
-  <div className="py-2 px-3 flex flex-col gap-y-4 max-h-[28rem] overflow-scroll">
+  <div className="py-2 px-3 flex flex-col gap-y-4 overflow-scroll">
     {items?.map((bid: Bid) => (
       <Paragraph key={bid.id} className="flex items-center justify-between opacity-60">
         <Account alwaysAvatar address={bid?.bidder?.id} />

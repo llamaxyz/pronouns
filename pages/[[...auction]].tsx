@@ -22,6 +22,12 @@ import { formatDate, getNoun, getBidCount } from 'utils/index'
 import { AuctionState } from 'utils/types'
 import { useNoun, useLatestNounId } from 'utils/hooks/index'
 
+const auctionStateToTag: Record<AuctionState, string> = {
+  settled: 'Settled',
+  live: 'Auction Live',
+  unsettled: 'Pending Settlement',
+}
+
 const Home: NextPage = () => {
   // Imported hooks
   const queryClient = useQueryClient()
@@ -229,14 +235,14 @@ const Home: NextPage = () => {
                 </div>
               }
             >
-              <Tag className="mt-auto hidden xxxs:block">{isNounder ? 'Nounders' : noun?.settled ? 'Settled' : 'Live Auction'}</Tag>
+              <Tag className="mt-auto hidden xxxs:block">{isNounder ? 'Nounders' : auctionStateToTag[auctionState]}</Tag>
             </Skeleton>
           </div>
           <Noun seed={noun?.noun?.seed} status={nounStatus} id={id} />
         </Layout.Section>
         <Layout.Section width={4}>
-          <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">
-            <div className="grid grid-cols-2 gap-6 sticky">
+          <div className="border border-white/10 rounded-xl p-4 h-[calc(100vh_-_129.5px)] flex flex-col gap-y-4">
+            <div className="grid grid-cols-2 gap-2 sticky">
               <Statistic
                 status={nounStatus}
                 titleClass="text-ui-black"

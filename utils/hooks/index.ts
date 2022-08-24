@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { getLatestNounId, getNoun, getAccount } from 'utils/index'
+import { getLatestNounId, getNoun, getAccount, getSeeds } from 'utils/index'
 
 export const useLatestNounId = () =>
   useQuery(['latestNounId'], () => getLatestNounId(), {
@@ -20,5 +20,10 @@ export const useNoun = (id?: number, latestId?: number) => {
 
 export const useOwner = (address: string) =>
   useQuery(['owner', address], () => address && getAccount(address), {
+    retry: 1,
+  })
+
+export const useSeeds = () =>
+  useQuery(['seeds'], getSeeds, {
     retry: 1,
   })

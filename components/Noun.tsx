@@ -16,6 +16,7 @@ type NounProps = {
   seed?: NounSeed
   id: number | undefined
   status: Status
+  isSmall?: boolean
 }
 
 const renderNoun = (seed: NounSeed) => {
@@ -23,9 +24,19 @@ const renderNoun = (seed: NounSeed) => {
   return `data:image/svg+xml;base64,${window.btoa(buildSVG(parts, ImageData.palette, background))}`
 }
 
-const Noun = ({ seed, status, id }: NounProps) => (
-  <div className={`${seed?.background.toString() === '0' ? 'bg-cool' : 'bg-warm'} flex justify-center rounded-lg h-64 text-black`}>
-    <Image alt={`Noun ${id}`} width={256} height={256} src={status === 'loading' || seed === undefined ? loadingNoun : renderNoun(seed)} />
+const Noun = ({ seed, status, id, isSmall = false }: NounProps) => (
+  <div
+    className={`${isSmall ? '' : seed?.background.toString() === '0' ? 'bg-cool' : 'bg-warm'} flex justify-center ${
+      isSmall ? 'h-6 w-6' : 'h-64 rounded-lg'
+    } text-black`}
+  >
+    <Image
+      {...(isSmall ? { style: { borderRadius: '50%' } } : {})}
+      alt={`Noun ${id}`}
+      width={256}
+      height={256}
+      src={status === 'loading' || seed === undefined ? loadingNoun : renderNoun(seed)}
+    />
   </div>
 )
 
