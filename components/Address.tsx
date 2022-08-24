@@ -4,8 +4,10 @@ import { useBalance } from 'wagmi'
 import { ExternalLinkIcon } from '@heroicons/react/outline'
 import Account from 'components/Account'
 import Paragraph from 'components/Paragraph'
+import Skeleton from 'components/Skeleton'
 import { formatNumber } from 'utils/index'
 import { Bid } from 'utils/types'
+import { useOwner } from 'utils/hooks'
 
 type HeaderProps = {
   address: string
@@ -21,8 +23,9 @@ const Header = ({ address, txHash, bidCount = 0 }: HeaderProps) => {
   const { data } = useBalance({
     addressOrName: address,
   })
+  const { data: owner, status: ownerStatus } = useOwner(address)
   return (
-    <div className="bg-white/10 rounded-lg py-2 px-3 relative">
+    <div className="bg-white/10 rounded-lg py-4 px-5 relative">
       <a
         className="absolute top-2.5 right-2.5 z-10"
         rel="noopener noreferer noreferrer"
@@ -38,7 +41,7 @@ const Header = ({ address, txHash, bidCount = 0 }: HeaderProps) => {
             <Account alwaysAvatar address={address} />
           </Paragraph>
         </div>
-        <div className="flex items-center gap-x-12">
+        <div className="flex items-center justify-between gap-x-2">
           <div>
             <Paragraph className="xxs:text-sm text-xs opacity-60 mb-2">Wallet Balance</Paragraph>
             <Paragraph className="font-normal text-lg tracking-widest">
@@ -46,8 +49,18 @@ const Header = ({ address, txHash, bidCount = 0 }: HeaderProps) => {
             </Paragraph>
           </div>
           <div>
-            <Paragraph className="xxs:text-sm text-xs opacity-60 mb-2">Bids</Paragraph>
+            <Paragraph className="xxs:text-sm text-xs opacity-60 mb-2">Current Bids</Paragraph>
             <Paragraph className="font-normal text-lg tracking-wide">{bidCount}</Paragraph>
+          </div>
+          <div>
+            <Paragraph className="xxs:text-sm text-xs opacity-60 mb-2">Nouns Owned</Paragraph>
+            <Skeleton
+              className=""
+              loading={ownerStatus !== 'success'}
+              loadingElement={<div className="h-5 mb-1 bg-white/20 rounded col-span-2" />}
+            >
+              <Paragraph className="font-normal text-lg tracking-wide">{owner?.tokenBalanceRaw}</Paragraph>
+            </Skeleton>
           </div>
         </div>
       </div>
@@ -72,7 +85,7 @@ const List = ({ items }: ListProps) => (
 )
 
 const pkg = {
-  Header,
+  Header: React.memo(Header),
   List: React.memo(List),
 }
 

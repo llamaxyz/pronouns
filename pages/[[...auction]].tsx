@@ -1,6 +1,6 @@
 import React from 'react'
 import type { NextPage } from 'next'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -18,52 +18,60 @@ import Skeleton from 'components/Skeleton'
 import Statistic from 'components/Statistic'
 import Tag from 'components/Tag'
 import Title from 'components/Title'
-import { formatDate, getNoun, getNounSeed, getLatestNounId, getBidCount } from 'utils/index'
+import { formatDate, getNoun, getBidCount } from 'utils/index'
 import { AuctionState } from 'utils/types'
+import { useNoun, useLatestNounId } from 'utils/hooks/index'
 
 const Home: NextPage = () => {
+  // Imported hooks
   const queryClient = useQueryClient()
   const { query, push } = useRouter()
+
+  // Local state
   const [id, setId] = React.useState<number>()
   const [pct, setPct] = React.useState('')
   const [latestId, setLatestId] = React.useState<number>()
   const [time, setTime] = React.useState<number>(Date.now())
-  const isNounder = Boolean(id === 0 || (id && id % 10 === 0))
-  const { data: noun, status: nounStatus } = useQuery(
-    ['nounDetails', id, isNounder],
-    () => getNoun(id === undefined ? id : isNounder ? id + 1 : id),
-    {
-      refetchOnWindowFocus: id === latestId,
-      refetchInterval: id === latestId && 5000,
-      staleTime: id === latestId ? 0 : Infinity,
-      cacheTime: id === latestId ? 300000 : Infinity,
-      retry: 1,
-      enabled: id !== undefined && latestId !== undefined,
-    }
-  )
-  const { data: seed, status: seedStatus } = useQuery(['noun', id], () => getNounSeed(id), {
-    refetchOnWindowFocus: false,
-    staleTime: Infinity,
-    cacheTime: Infinity,
-    retry: 1,
-  })
-  const { data: latestNounId, status: latestNounStatus } = useQuery(['latestNounId'], () => getLatestNounId(), {
-    retry: 1,
-  })
 
+  // Server state
+  const { data: noun, status: nounStatus } = useNoun(id, latestId)
+  const { data: latestNounId, status: latestNounStatus } = useLatestNounId()
+
+  // Local variables
+  const isNounder = Boolean(id === 0 || (id && id % 10 === 0))
   const auctionState: AuctionState = noun?.settled
     ? 'settled'
     : noun?.endTime && Date.now() < Number(noun?.endTime) * 1000
     ? 'live'
     : 'unsettled'
+
+  React.useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        id !== 0 && setId(id => (id !== undefined ? id - 1 : undefined))
+      }
+
+      if (e.key === 'ArrowRight') {
+        id !== latestId && setId(id => (id !== undefined ? id + 1 : undefined))
+      }
+    }
+
+    document.addEventListener('keydown', down)
+
+    return () => {
+      document.removeEventListener('keydown', down)
+    }
+  }, [latestId, id])
+
   React.useEffect(() => {
     renderPctChange()
     const prefetchNextNouns = async (nounId: number) => {
       const nounder = Boolean(nounId === 0 || (nounId && nounId % 10 === 0))
-      await queryClient.prefetchQuery(['nounDetails', nounId, nounder], () => getNoun(nounder ? nounId + 1 : nounId), {
+      await queryClient.prefetchQuery(['noun', nounId, nounder], () => getNoun(nounId), {
         staleTime: Infinity,
       })
     }
+
     if (id !== undefined) {
       const prevNouns = Array.from({ length: 2 }, (_, i) => id - 1 - i)
       const nextNouns = Array.from({ length: 2 }, (_, i) => id + 1 + i)
@@ -72,11 +80,19 @@ const Home: NextPage = () => {
     }
 
     id !== undefined && id !== latestId && push(`/noun/${id}`, undefined, { shallow: true })
+
+    if (id === latestId) {
+      window.history.replaceState({ ...window.history.state, as: '/', url: '/' }, '', '/')
+    }
   }, [id])
 
   React.useEffect(() => {
     if (query?.auction?.[0] === 'noun' && query?.auction?.[1]) {
       setId(Number(query?.auction?.[1]))
+    }
+
+    if (Object.entries(query).length === 0) {
+      setId(latestId)
     }
   }, [query])
 
@@ -216,7 +232,7 @@ const Home: NextPage = () => {
               <Tag className="mt-auto hidden xxxs:block">{isNounder ? 'Nounders' : noun?.settled ? 'Settled' : 'Live Auction'}</Tag>
             </Skeleton>
           </div>
-          <Noun seed={seed?.seed} status={seedStatus} id={id} />
+          <Noun seed={noun?.noun?.seed} status={nounStatus} id={id} />
         </Layout.Section>
         <Layout.Section width={4}>
           <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">

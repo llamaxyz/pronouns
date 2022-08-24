@@ -3,7 +3,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import Connect from 'components/Connect'
 import Search from 'components/Search'
-import Title from 'components/Title'
 import logo from 'public/pronouns-logo.svg'
 
 const Nav = ({ latestId }: { latestId?: number }) => {
