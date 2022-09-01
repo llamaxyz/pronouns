@@ -36,6 +36,7 @@ const Home: NextPage = () => {
   // Local state
   const [id, setId] = React.useState<number>()
   const [pct, setPct] = React.useState('')
+  const [pctLoading, setPctLoading] = React.useState(false)
   const [latestId, setLatestId] = React.useState<number>()
   const [time, setTime] = React.useState<number>(Date.now())
 
@@ -155,6 +156,7 @@ const Home: NextPage = () => {
   }
 
   const renderPctChange = async () => {
+    setPctLoading(true)
     if (id !== undefined && id < 2) {
       setPct('N/A')
     }
@@ -174,6 +176,7 @@ const Home: NextPage = () => {
         : `-${new BigNumber(1).minus(pctChange).times(100).toString()}%`
       setPct(formattedPct)
     }
+    setPctLoading(false)
   }
 
   const renderTopBid = () =>
@@ -191,7 +194,7 @@ const Home: NextPage = () => {
       <Nav latestId={latestId} />
       <Layout>
         <Layout.Section width={5} className="flex flex-col gap-4">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 overflow-hidden">
             <div className="flex gap-2">
               <Button
                 ariaLabel="Previous Noun"
@@ -274,11 +277,16 @@ const Home: NextPage = () => {
               />
               {id !== latestId && (
                 <Statistic
-                  status={nounStatus}
-                  contentClass="animate-fade-in-2 opacity-0 ease-in-out"
+                  status={pctLoading ? 'loading' : nounStatus}
                   className="bg-ui-space col-span-1 w-full"
                   title="% Change"
-                  content={isNounder ? 'N/A' : <div className={pct[0] === '-' ? 'text-red-400' : 'text-ui-malachite-green'}>{pct}</div>}
+                  content={
+                    isNounder ? (
+                      'N/A'
+                    ) : (
+                      <div className={pct[0] === '-' ? 'text-red-400' : 'text-ui-malachite-green'}>{pct === '-NaN%' ? 'N/A' : pct}</div>
+                    )
+                  }
                 />
               )}
             </div>
@@ -308,7 +316,7 @@ const Home: NextPage = () => {
               }
             >
               <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">
-                <Paragraph>
+                <Paragraph isLarge>
                   {isNounder
                     ? 'All Noun auction proceeds are sent to the Nouns DAO. For this reason, the projectʼs founders (‘Nounders’) have chosen to compensate themselves with Nouns. Every 10th Noun for the first 5 years of the project will be sent to their multisig (5/10), where it will be vested and distributed to individual Nounders.'
                     : `This auction ended ${formatDate(noun?.startTime * 1000, true)}`}
@@ -316,7 +324,7 @@ const Home: NextPage = () => {
                 {auctionState === 'unsettled' && (
                   <Button
                     href="https://fomonouns.wtf/"
-                    className="w-full text-ui-black bg-ui-sulphur hover:bg-ui-sulphur/40 text-center"
+                    className="w-full text-ui-black bg-ui-sulphur hover:bg-ui-sulphur/70 text-center"
                     type="action-secondary"
                   >
                     Vote on the next Noun
