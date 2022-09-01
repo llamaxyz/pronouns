@@ -25,7 +25,7 @@ import { useNoun, useLatestNounId } from 'utils/hooks/index'
 const auctionStateToTag: Record<AuctionState, string> = {
   settled: 'Settled',
   live: 'Auction Live',
-  unsettled: 'Pending Settlement',
+  unsettled: 'Pending',
 }
 
 const Home: NextPage = () => {
@@ -50,6 +50,7 @@ const Home: NextPage = () => {
     : noun?.endTime && Date.now() < Number(noun?.endTime) * 1000
     ? 'live'
     : 'unsettled'
+  const isAuctionLive = id === latestId && auctionState === 'live'
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -235,27 +236,40 @@ const Home: NextPage = () => {
                 </div>
               }
             >
-              <Tag className="mt-auto hidden xxxs:block">{isNounder ? 'Nounders' : auctionStateToTag[auctionState]}</Tag>
+              {auctionState === 'settled' ? (
+                <div className="border-l pl-4 border-white/10">
+                  <Paragraph className="text-ui-silver">Held By</Paragraph>
+                  <Title isBold level={6}>
+                    <Account address={noun?.noun?.owner?.id} />
+                  </Title>
+                </div>
+              ) : (
+                <Tag state={auctionState} className="mt-auto hidden xxxs:block">
+                  {auctionStateToTag[auctionState]}
+                </Tag>
+              )}
             </Skeleton>
           </div>
           <Noun seed={noun?.noun?.seed} status={nounStatus} id={id} />
         </Layout.Section>
         <Layout.Section width={4}>
-          <div className="border border-white/10 rounded-xl p-4 h-[calc(100vh_-_129.5px)] flex flex-col gap-y-4">
+          <div className={`border border-white/10 rounded-xl min-h-[328px] h-[calc(100vh_-_139.5px)] p-4 flex flex-col gap-y-4`}>
             <div className="grid grid-cols-2 gap-2 sticky">
               <Statistic
                 status={nounStatus}
                 titleClass="text-ui-black"
                 contentClass="text-ui-black tabular-nums animate-fade-in-1 opacity-0 ease-in-out truncate"
-                className={`bg-ui-sulphur w-full ${id === latestId ? 'col-span-1' : 'col-span-full'}`}
-                title={id === latestId && auctionState === 'live' ? 'Time Left' : 'Winner'}
+                className={`${isAuctionLive ? 'bg-ui-sulphur' : 'bg-ui-malachite-green'} w-full ${
+                  id === latestId ? 'col-span-1' : 'col-span-full'
+                }`}
+                title={isAuctionLive ? 'Time Left' : 'Winner'}
                 content={renderAuctionStatus()}
               />
               <Statistic
                 status={nounStatus}
                 contentClass="animate-fade-in-2 opacity-0 ease-in-out"
                 className="bg-ui-space col-span-1 w-full"
-                title={id === latestId && auctionState === 'live' ? 'Top Bid' : 'Winning Bid'}
+                title={isAuctionLive ? 'Top Bid' : 'Winning Bid'}
                 content={renderTopBid()}
               />
               {id !== latestId && (
@@ -264,7 +278,7 @@ const Home: NextPage = () => {
                   contentClass="animate-fade-in-2 opacity-0 ease-in-out"
                   className="bg-ui-space col-span-1 w-full"
                   title="% Change"
-                  content={isNounder ? 'N/A' : <div className={pct[0] === '-' ? 'text-red-400' : 'text-malachite-green'}>{pct}</div>}
+                  content={isNounder ? 'N/A' : <div className={pct[0] === '-' ? 'text-red-400' : 'text-ui-malachite-green'}>{pct}</div>}
                 />
               )}
             </div>

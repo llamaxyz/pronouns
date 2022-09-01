@@ -21,6 +21,9 @@ type Seed = {
   }
 }
 
+const searchItemStyle =
+  'px-6 py-4 border-b border-b-white/10 hover:bg-white/10 border-l-2 border-l-transparent hover:border-l-2 hover:border-l-white transition ease-in-out flex'
+
 const Search = ({ latestId }: { latestId?: number }) => {
   const [typing, setTyping] = React.useState(false)
   const [open, setOpen] = React.useState(false)
@@ -93,7 +96,7 @@ const Search = ({ latestId }: { latestId?: number }) => {
               placeholder="Search"
               type="text"
               onChange={onChange}
-              className="text-sm block w-full text-white rounded-t-lg rounded-b-none"
+              className="text-lg block w-full text-white rounded-t-lg rounded-b-none"
               value={value}
               parentClassName="min-w-[18rem]"
               prefix={typing ? <Loader className="w-5 h-5 text-white/60" /> : <SearchIcon className="w-5 h-5 text-white/60" />}
@@ -109,9 +112,7 @@ const Search = ({ latestId }: { latestId?: number }) => {
                       setOpen(false)
                     }}
                   >
-                    <div
-                      className={`px-6 py-4 rounded-b-lg hover:bg-white/10 flex border-l border-l-transparent hover:border-l hover:border-l-white transition ease-in-out`}
-                    >
+                    <div className={searchItemStyle}>
                       <div className="mr-2">
                         <Noun
                           isSmall
@@ -129,7 +130,7 @@ const Search = ({ latestId }: { latestId?: number }) => {
               idArray
                 .filter(id => value && id?.toString().includes(value))
                 .slice(0, 8)
-                .map((id, i, arr) => (
+                .map(id => (
                   <div className="text-white" key={id}>
                     <Link href={`/noun/${id}`}>
                       <a
@@ -138,11 +139,7 @@ const Search = ({ latestId }: { latestId?: number }) => {
                           setOpen(false)
                         }}
                       >
-                        <div
-                          className={`px-6 py-4 ${
-                            i === arr.length - 1 ? 'rounded-b-lg' : 'border-b border-b-white/10'
-                          } hover:bg-white/10 border-l border-l-transparent hover:border-l hover:border-l-white transition ease-in-out flex`}
-                        >
+                        <div className={searchItemStyle}>
                           <div className="mr-2">
                             <Noun
                               isSmall
@@ -158,6 +155,7 @@ const Search = ({ latestId }: { latestId?: number }) => {
                   </div>
                 ))
             )}
+            <div className="py-1" />
           </div>
         </div>
       )}

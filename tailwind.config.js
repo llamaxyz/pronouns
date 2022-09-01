@@ -10,15 +10,13 @@ module.exports = {
       colors: {
         // Using https://color-name.com to generate color names
         neutral: colors.neutral,
-        avocado: '#56850D',
-        'malachite-green': '#4BFB9C',
         ui: {
           black: '#111813',
-          onyx: '#3B3835',
+          charleston: '#282D2A',
+          'malachite-green': '#4BFB9C',
           silver: '#AFAFAF',
           space: '#414642',
           sulphur: '#FBDF4B',
-          charleston: '#282D2A',
         },
         warm: '#e1d7d5',
         cool: '#d5d7e1',

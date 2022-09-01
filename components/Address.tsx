@@ -73,12 +73,15 @@ const List = ({ items }: ListProps) => (
     {items?.map((bid: Bid) => (
       <Paragraph key={bid.id} className="flex items-center justify-between opacity-60">
         <Account alwaysAvatar address={bid?.bidder?.id} />
-        <span className="flex items-center gap-x-4">
+        <a
+          className="flex items-center gap-x-4 hover:text-white/70 transition ease-in-out mr-1"
+          rel="noopener noreferer noreferrer"
+          target="_blank"
+          href={`https://etherscan.io/tx/${bid?.id}`}
+        >
           <span>Ξ {utils.formatEther(bid?.amount || 0)}</span>
-          <a rel="noopener noreferer noreferrer" target="_blank" href={`https://etherscan.io/tx/${bid?.id}`}>
-            <ExternalLinkIcon aria-label="Etherscan" className="opacity-60 h-4 w-4" />
-          </a>
-        </span>
+          <ExternalLinkIcon aria-label="Etherscan" className="opacity-60 h-4 w-4" />
+        </a>
       </Paragraph>
     ))}
   </div>
