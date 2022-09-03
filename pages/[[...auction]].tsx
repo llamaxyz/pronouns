@@ -194,7 +194,7 @@ const Home: NextPage = () => {
       <Nav latestId={latestId} />
       <Layout>
         <Layout.Section width={5} className="flex flex-col gap-4">
-          <div className="flex items-center gap-4 overflow-hidden">
+          <div className="flex items-center xs:flex-nowrap flex-wrap gap-4 overflow-hidden">
             <div className="flex gap-2">
               <Button
                 ariaLabel="Previous Noun"
@@ -240,14 +240,14 @@ const Home: NextPage = () => {
               }
             >
               {auctionState === 'settled' ? (
-                <div className="border-l pl-4 border-white/10">
+                <div className="xs:border-l xs:pl-4 xs:border-white/10">
                   <Paragraph className="text-ui-silver">Held By</Paragraph>
                   <Title isBold level={6}>
                     <Account address={noun?.noun?.owner?.id} />
                   </Title>
                 </div>
               ) : (
-                <Tag state={auctionState} className="mt-auto hidden xxxs:block">
+                <Tag state={auctionState} className="mt-auto hidden xxxs:block truncate">
                   {auctionStateToTag[auctionState]}
                 </Tag>
               )}
@@ -256,7 +256,7 @@ const Home: NextPage = () => {
           <Noun seed={noun?.noun?.seed} status={nounStatus} id={id} />
         </Layout.Section>
         <Layout.Section width={4}>
-          <div className={`border border-white/10 rounded-xl min-h-[328px] lg:h-[calc(100vh_-_139.5px)] p-4 flex flex-col gap-y-4`}>
+          <div className={`border border-white/10 rounded-xl lg:h-[calc(100vh_-_139.5px)] p-4 flex flex-col ${isNounder ? '' : 'gap-y-4'}`}>
             <div className="grid grid-cols-2 gap-2 sticky">
               <Statistic
                 status={nounStatus}
