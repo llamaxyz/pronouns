@@ -14,7 +14,7 @@ const Account = ({ address, isEns = false, alwaysAvatar = false }: AccountProps)
   })
 
   return (
-    <span className="flex items-center justify-center">
+    <span className="flex items-center justify-center overflow-hidden">
       <img
         alt={`${address} profile`}
         className={`h-6 w-6 mr-2 rounded-full ${alwaysAvatar ? '' : 'inline lg:hidden xl:inline'}`}

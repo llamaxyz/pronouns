@@ -193,7 +193,7 @@ export const getNoun = async (id?: number) => {
       endTime: responseData?.data?.auction.endTime,
       startTime: responseData?.data?.auction.startTime,
       id: nounderData?.data.noun.id,
-      settled: responseData?.data?.auction.settled,
+      settled: true,
       ...nounderData?.data,
     }
   }

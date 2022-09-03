@@ -216,12 +216,12 @@ const Home: NextPage = () => {
               </Button>
             </div>
             <Skeleton
-              className="px-1 w-[124px] whitespace-nowrap"
+              className="px-1 whitespace-nowrap"
               hasParentElement
               loading={nounStatus === 'loading'}
               loadingElement={
                 <>
-                  <div className="h-5 mb-1 bg-white/20 rounded col-span-2" />
+                  <div className="h-5 w-[124px] mb-1 bg-white/20 rounded col-span-2" />
                   <div className="h-8 bg-white/20 rounded col-span-2" />
                 </>
               }
@@ -256,7 +256,7 @@ const Home: NextPage = () => {
           <Noun seed={noun?.noun?.seed} status={nounStatus} id={id} />
         </Layout.Section>
         <Layout.Section width={4}>
-          <div className={`border border-white/10 rounded-xl min-h-[328px] h-[calc(100vh_-_139.5px)] p-4 flex flex-col gap-y-4`}>
+          <div className={`border border-white/10 rounded-xl min-h-[328px] lg:h-[calc(100vh_-_139.5px)] p-4 flex flex-col gap-y-4`}>
             <div className="grid grid-cols-2 gap-2 sticky">
               <Statistic
                 status={nounStatus}
@@ -290,14 +290,16 @@ const Home: NextPage = () => {
                 />
               )}
             </div>
-            {!noun?.settled && !isNounder && (
-              <Address.Header
-                bidCount={getBidCount(noun?.bids, noun?.bidder?.id)}
-                address={noun?.bidder?.id}
-                txHash={noun?.bids?.[0]?.id}
-              />
-            )}
-            {!isNounder && <Address.List items={noun?.bids} />}
+            <div className="overflow-scroll">
+              {!noun?.settled && !isNounder && (
+                <Address.Header
+                  bidCount={getBidCount(noun?.bids, noun?.bidder?.id)}
+                  address={noun?.bidder?.id}
+                  txHash={noun?.bids?.[0]?.id}
+                />
+              )}
+              {!isNounder && <Address.List items={noun?.bids} />}
+            </div>
           </div>
         </Layout.Section>
         <Layout.Section width={3}>

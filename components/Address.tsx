@@ -69,7 +69,7 @@ const Header = ({ address, txHash, bidCount = 0 }: HeaderProps) => {
 }
 
 const List = ({ items }: ListProps) => (
-  <div className="py-2 px-3 flex flex-col gap-y-4 overflow-scroll">
+  <div className="py-2 px-3 flex flex-col gap-y-4">
     {items?.map((bid: Bid) => (
       <Paragraph key={bid.id} className="flex items-center justify-between opacity-60">
         <Account alwaysAvatar address={bid?.bidder?.id} />
@@ -79,7 +79,7 @@ const List = ({ items }: ListProps) => (
           target="_blank"
           href={`https://etherscan.io/tx/${bid?.id}`}
         >
-          <span>Ξ {utils.formatEther(bid?.amount || 0)}</span>
+          <span className="min-w-[50px]">Ξ {utils.formatEther(bid?.amount || 0)}</span>
           <ExternalLinkIcon aria-label="Etherscan" className="opacity-60 h-4 w-4" />
         </a>
       </Paragraph>
