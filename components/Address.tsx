@@ -69,7 +69,7 @@ const Header = ({ address, txHash, bidCount = 0 }: HeaderProps) => {
 }
 
 const List = ({ items }: ListProps) => (
-  <div className="py-2 px-3 flex flex-col gap-y-4">
+  <div className="p-3 flex flex-col gap-y-4">
     {items?.map((bid: Bid) => (
       <Paragraph key={bid.id} className="flex items-center justify-between opacity-60">
         <Account alwaysAvatar address={bid?.bidder?.id} />
