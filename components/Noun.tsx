@@ -2,15 +2,7 @@ import Image from 'next/image'
 import { ImageData, getNounData } from '@nouns/assets'
 import { buildSVG } from '@nouns/sdk'
 import loadingNoun from 'public/loading-skull-noun.gif'
-import { Status } from 'utils/types'
-
-interface NounSeed {
-  accessory: number
-  background: number
-  body: number
-  glasses: number
-  head: number
-}
+import { NounSeed, Status } from 'utils/types'
 
 type NounProps = {
   seed?: NounSeed

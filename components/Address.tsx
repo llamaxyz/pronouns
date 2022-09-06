@@ -1,5 +1,6 @@
 import React from 'react'
-import { utils } from 'ethers'
+import BigNumber from 'bignumber.js'
+import { utils, BigNumber as EthersBN } from 'ethers'
 import { useBalance } from 'wagmi'
 import { ExternalLinkIcon } from '@heroicons/react/outline'
 import Account from 'components/Account'
@@ -79,7 +80,9 @@ const List = ({ items }: ListProps) => (
           target="_blank"
           href={`https://etherscan.io/tx/${bid?.id}`}
         >
-          <span className="min-w-[50px]">Ξ {utils.formatEther(bid?.amount || 0)}</span>
+          <span className="min-w-[50px] tabular-nums">
+            Ξ {new BigNumber(utils.formatEther(EthersBN.from((bid?.amount || 0).toString()))).toFixed(2, BigNumber.ROUND_CEIL)}
+          </span>
           <ExternalLinkIcon aria-label="Etherscan" className="opacity-60 h-4 w-4" />
         </a>
       </Paragraph>

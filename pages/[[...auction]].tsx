@@ -1,32 +1,20 @@
 import React from 'react'
 import type { NextPage } from 'next'
 import { useQueryClient } from '@tanstack/react-query'
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { utils, BigNumber as EthersBN } from 'ethers'
 import BigNumber from 'bignumber.js'
-import { Address } from 'components/Address'
-import Account from 'components/Account'
+import Auction from 'components/Auction'
 import Bid from 'components/Bid'
 import Button from 'components/Button'
 import Nav from 'components/Nav'
 import Paragraph from 'components/Paragraph'
 import { Layout } from 'components/Layout'
-import Noun from 'components/Noun'
+import Panel from 'components/Panel'
 import Skeleton from 'components/Skeleton'
-import Statistic from 'components/Statistic'
-import Tag from 'components/Tag'
-import Title from 'components/Title'
-import { formatDate, getNoun, getBidCount } from 'utils/index'
+import { formatDate, getNoun } from 'utils/index'
 import { AuctionState } from 'utils/types'
 import { useNoun, useLatestNounId } from 'utils/hooks/index'
-
-const auctionStateToTag: Record<AuctionState, string> = {
-  settled: 'Settled',
-  live: 'Auction Live',
-  unsettled: 'Pending',
-}
 
 const Home: NextPage = () => {
   // Imported hooks
@@ -51,7 +39,6 @@ const Home: NextPage = () => {
     : noun?.endTime && Date.now() < Number(noun?.endTime) * 1000
     ? 'live'
     : 'unsettled'
-  const isAuctionLive = id === latestId && auctionState === 'live'
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -72,7 +59,6 @@ const Home: NextPage = () => {
   }, [latestId, id])
 
   React.useEffect(() => {
-    renderPctChange()
     const prefetchNextNouns = async (nounId: number) => {
       const nounder = Boolean(nounId === 0 || (nounId && nounId % 10 === 0))
       await queryClient.prefetchQuery(['noun', nounId, nounder], () => getNoun(nounId), {
@@ -107,6 +93,7 @@ const Home: NextPage = () => {
   React.useEffect(() => {
     if (nounStatus === 'success') {
       const nounId = Number(noun?.id)
+      renderPctChange(noun?.amount)
       if (nounId !== id) {
         setId(isNounder ? (nounId === 0 ? nounId + 1 : nounId - 1) : nounId)
       }
@@ -136,26 +123,7 @@ const Home: NextPage = () => {
     }
   }, [latestNounId, latestNounStatus])
 
-  const renderAuctionStatus = () => {
-    if (id === latestId && !isNounder && Date.now() < Number(noun?.endTime) * 1000) {
-      const hours = Math.floor(((Number(noun?.endTime) * 1000 - time) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-      const minutes = Math.floor(((Number(noun?.endTime) * 1000 - time) % (1000 * 60 * 60)) / (1000 * 60))
-      const seconds = Math.floor(((Number(noun?.endTime) * 1000 - time) % (1000 * 60)) / 1000)
-      return (
-        <>
-          {hours < 10 ? `0${hours}` : hours}
-          <span className="px-0.5 opacity-60 relative bottom-0.5">:</span>
-          {minutes < 10 ? `0${minutes}` : minutes}
-          <span className="px-0.5 opacity-60 relative bottom-0.5">:</span>
-          {seconds < 10 ? `0${seconds}` : seconds}
-        </>
-      )
-    }
-
-    return <Account address={isNounder ? 'nounders.eth' : noun?.bidder?.id} isEns={isNounder} />
-  }
-
-  const renderPctChange = async () => {
+  const renderPctChange = async (amount: string) => {
     setPctLoading(true)
     if (id !== undefined && id < 2) {
       setPct('N/A')
@@ -163,7 +131,7 @@ const Home: NextPage = () => {
 
     if (id !== latestId && !isNounder) {
       // Winning bid of auction of current id
-      const winningBid = new BigNumber(noun?.amount)
+      const winningBid = new BigNumber(amount)
 
       // Ignore nounder nouns and get previous id winning bid
       const subtrahend = Boolean(id && (id - 1) % 10 === 0) ? 2 : 1
@@ -171,18 +139,16 @@ const Home: NextPage = () => {
       const prevWinningBid = await queryClient.fetchQuery(['nounDetails', prevId, isNounder], () => getNoun(prevId))
 
       const pctChange = winningBid.div(new BigNumber(prevWinningBid?.amount)).decimalPlaces(4, BigNumber.ROUND_UP)
-      const formattedPct = pctChange.isGreaterThan(1)
-        ? `+${pctChange.minus(1).times(100).toString()}%`
-        : `-${new BigNumber(1).minus(pctChange).times(100).toString()}%`
+
+      const formattedPct = pctChange.isEqualTo(1)
+        ? '0.00%'
+        : pctChange.isGreaterThan(1)
+        ? `+${pctChange.minus(1).times(100).toFixed(2, BigNumber.ROUND_CEIL).toString()}%`
+        : `-${new BigNumber(1).minus(pctChange).times(100).toFixed(2, BigNumber.ROUND_CEIL).toString()}%`
       setPct(formattedPct)
     }
     setPctLoading(false)
   }
-
-  const renderTopBid = () =>
-    isNounder
-      ? 'N/A'
-      : `Ξ ${new BigNumber(utils.formatEther(EthersBN.from((noun?.amount || 0).toString()))).toFixed(2, BigNumber.ROUND_CEIL)}`
 
   return (
     <div className="bg-ui-black text-white">
@@ -194,113 +160,29 @@ const Home: NextPage = () => {
       <Nav latestId={latestId} />
       <Layout>
         <Layout.Section width={5} className="flex flex-col gap-4">
-          <div className="flex items-center xs:flex-nowrap flex-wrap gap-4 overflow-hidden">
-            <div className="flex gap-2">
-              <Button
-                ariaLabel="Previous Noun"
-                isBold
-                onClick={() => id !== undefined && setId(id => (id !== undefined ? id - 1 : undefined))}
-                disabled={id === 0}
-                type="secondary"
-              >
-                <ChevronLeftIcon className="h-6 w-6" />
-              </Button>
-              <Button
-                ariaLabel="Next Noun"
-                isBold
-                onClick={() => id !== undefined && setId(id => (id !== undefined ? id + 1 : undefined))}
-                disabled={id === latestId}
-                type="secondary"
-              >
-                <ChevronRightIcon className="h-6 w-6" />
-              </Button>
-            </div>
-            <Skeleton
-              className="px-1 whitespace-nowrap"
-              hasParentElement
-              loading={nounStatus === 'loading'}
-              loadingElement={
-                <>
-                  <div className="h-5 w-[124px] mb-1 bg-white/20 rounded col-span-2" />
-                  <div className="h-8 bg-white/20 rounded col-span-2" />
-                </>
-              }
-            >
-              <Paragraph className="text-ui-silver">{formatDate(noun?.startTime * 1000)}</Paragraph>
-              <Title isBold level={6}>
-                Noun {id}
-              </Title>
-            </Skeleton>
-            <Skeleton
-              loading={nounStatus === 'loading'}
-              loadingElement={
-                <div className="w-[108px] overflow-hidden animate-pulse mt-auto h-8 text-white/20 bg-white/20 py-1.5 px-3 tracking-wider text-xs xxs:text-sm rounded-full">
-                  {'           '}
-                </div>
-              }
-            >
-              {auctionState === 'settled' ? (
-                <div className="xs:border-l xs:pl-4 xs:border-white/10">
-                  <Paragraph className="text-ui-silver">Held By</Paragraph>
-                  <Title isBold level={6}>
-                    <Account address={noun?.noun?.owner?.id} />
-                  </Title>
-                </div>
-              ) : (
-                <Tag state={auctionState} className="mt-auto hidden xxxs:block truncate">
-                  {auctionStateToTag[auctionState]}
-                </Tag>
-              )}
-            </Skeleton>
-          </div>
-          <Noun seed={noun?.noun?.seed} status={nounStatus} id={id} />
+          <Panel
+            auctionState={auctionState}
+            seed={noun?.noun?.seed}
+            status={nounStatus}
+            id={id}
+            ownerAddress={noun?.noun?.owner?.id}
+            setId={setId}
+            latestId={latestId}
+            startTime={noun?.startTime}
+          />
         </Layout.Section>
         <Layout.Section width={4}>
-          <div className={`border border-white/10 rounded-xl lg:h-[calc(100vh_-_139.5px)] p-4 flex flex-col ${isNounder ? '' : 'gap-y-4'}`}>
-            <div className="grid grid-cols-2 gap-2 sticky">
-              <Statistic
-                status={nounStatus}
-                titleClass="text-ui-black"
-                contentClass="text-ui-black tabular-nums animate-fade-in-1 opacity-0 ease-in-out truncate"
-                className={`${isAuctionLive ? 'bg-ui-sulphur' : 'bg-ui-malachite-green'} w-full ${
-                  id === latestId ? 'col-span-1' : 'col-span-full'
-                }`}
-                title={isAuctionLive ? 'Time Left' : 'Winner'}
-                content={renderAuctionStatus()}
-              />
-              <Statistic
-                status={nounStatus}
-                contentClass="animate-fade-in-2 opacity-0 ease-in-out"
-                className="bg-ui-space col-span-1 w-full"
-                title={isAuctionLive ? 'Top Bid' : 'Winning Bid'}
-                content={renderTopBid()}
-              />
-              {id !== latestId && (
-                <Statistic
-                  status={pctLoading ? 'loading' : nounStatus}
-                  className="bg-ui-space col-span-1 w-full"
-                  title="% Change"
-                  content={
-                    isNounder ? (
-                      'N/A'
-                    ) : (
-                      <div className={pct[0] === '-' ? 'text-red-400' : 'text-ui-malachite-green'}>{pct === '-NaN%' ? 'N/A' : pct}</div>
-                    )
-                  }
-                />
-              )}
-            </div>
-            <div className="overflow-scroll">
-              {!noun?.settled && !isNounder && (
-                <Address.Header
-                  bidCount={getBidCount(noun?.bids, noun?.bidder?.id)}
-                  address={noun?.bidder?.id}
-                  txHash={noun?.bids?.[0]?.id}
-                />
-              )}
-              {!isNounder && <Address.List items={noun?.bids} />}
-            </div>
-          </div>
+          <Auction
+            noun={noun}
+            status={nounStatus}
+            auctionState={auctionState}
+            isPercentChangeLoading={pctLoading}
+            isNounder={isNounder}
+            percentChange={pct}
+            timeRemaining={time}
+            id={id}
+            latestId={latestId}
+          />
         </Layout.Section>
         <Layout.Section width={3}>
           {latestId && auctionState === 'live' ? (

@@ -11,12 +11,18 @@ export interface Bidder {
   id: string
 }
 
-export type BidStatus = 'success' | 'loading' | 'error' | 'idle'
+export interface NounSeed {
+  accessory: number
+  background: number
+  body: number
+  glasses: number
+  head: number
+}
 
-export type Status = 'success' | 'error' | 'loading'
+export type Status = 'success' | 'error' | 'loading' | 'idle'
 
 export type ToastData = {
   open: boolean
   message: string
-  type: BidStatus
+  type: Status
 }

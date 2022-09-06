@@ -6,7 +6,7 @@ import { styled, keyframes } from '@stitches/react'
 import * as ToastPrimitive from '@radix-ui/react-toast'
 import Paragraph from 'components/Paragraph'
 import loadingNoun from 'public/loading-skull-noun.gif'
-import { BidStatus, ToastData } from 'utils/types'
+import { Status, ToastData } from 'utils/types'
 
 type ToastProps = {
   data: ToastData
@@ -15,7 +15,7 @@ type ToastProps = {
   setData: React.Dispatch<React.SetStateAction<ToastData>>
 }
 
-const typeToIcon: Record<BidStatus, React.ReactNode> = {
+const typeToIcon: Record<Status, React.ReactNode> = {
   error: <XCircleIcon className="w-8 h-8 text-red-400" />,
   success: <CheckCircleIcon className="w-8 h-8 text-ui-malachite-green" />,
   loading: <Image alt="Noun Loading" width={52} height={52} src={loadingNoun} />,

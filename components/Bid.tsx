@@ -8,18 +8,18 @@ import Button from 'components/Button'
 import Input from 'components/Input'
 import Paragraph from 'components/Paragraph'
 import Toast from 'components/Toast'
-import { BidStatus, ToastData } from 'utils/types'
+import { Status, ToastData } from 'utils/types'
 
 const { nounsAuctionHouseProxy } = getContractAddressesForChainOrThrow(ChainId.Mainnet)
 
-const pctBidAmounts = [5, 10, 15, 20]
+const pctBidAmounts = [5, 10, 20]
 
 type BidProps = {
   minAmount: string
   id: number
 }
 
-const statusToMessage: Record<BidStatus, string> = {
+const statusToMessage: Record<Status, string> = {
   success: 'Bid Confirmed',
   loading: 'Bid Pending',
   error: 'Bid Failed',
@@ -68,7 +68,7 @@ const Bid = ({ minAmount, id }: BidProps) => {
     return () => clearTimeout(timeout)
   }
 
-  const triggerDataToast = (status: BidStatus, hash?: string) => {
+  const triggerDataToast = (status: Status, hash?: string) => {
     hash && setTxHash(hash)
     setToast({ message: statusToMessage[status], open: true, type: status })
     if (status === 'success') {
@@ -96,39 +96,14 @@ const Bid = ({ minAmount, id }: BidProps) => {
     hash: bidTxData?.hash,
   })
 
-  const { config: minBidConfig, isError: minError } = usePrepareContractWrite({
-    addressOrName: nounsAuctionHouseProxy,
-    contractInterface: NounsAuctionHouseABI,
-    enabled: isConnected && Boolean(minBid),
-    functionName: 'createBid',
-    args: [id],
-    overrides: {
-      value: EthersBN.from(utils.parseEther(minBidEth(minBid))),
-    },
-  })
-
-  const { write: createMinBid, data: minBidTxData } = useContractWrite(minBidConfig)
-  const { status: minBidStatus } = useWaitForTransaction({
-    hash: minBidTxData?.hash,
-  })
-
   React.useEffect(() => {
     if (bidStatus !== 'idle') {
       triggerDataToast(bidStatus, bidTxData?.hash)
     }
+  }, [bidStatus])
 
-    if (minBidStatus !== 'idle') {
-      triggerDataToast(minBidStatus, minBidTxData?.hash)
-    }
-  }, [bidStatus, minBidStatus])
-
-  const onClick = (isMinBid: boolean) => () => {
+  const submitBid = () => {
     if (isConnected) {
-      if (isMinBid) {
-        setAmount(minBidEth(minBid))
-        return minError ? triggerErrorToast('Insufficient Balance') : createMinBid?.()
-      }
-
       if (!amount) {
         return triggerErrorToast('Bid amount is empty')
       }
@@ -171,6 +146,9 @@ const Bid = ({ minAmount, id }: BidProps) => {
         }
       />
       <div className="grid grid-cols-4 gap-2">
+        <Button onClick={() => setAmount(minBidEth(minBid))} type="outline">
+          Min
+        </Button>
         {pctBidAmounts.map(pct => (
           <Button key={pct} onClick={() => setAmount(increaseBidByPercentage(new BigNumber(minAmount), pct / 100))} type="outline">
             {`+${pct}%`}
@@ -179,13 +157,10 @@ const Bid = ({ minAmount, id }: BidProps) => {
       </div>
       <div className="flex flex-col gap-y-2">
         <Toast data={toast} setData={setToast} txHash={txHash}>
-          <Button onClick={onClick(false)} type="action">
+          <Button onClick={submitBid} type="action">
             Place Bid
           </Button>
         </Toast>
-        <Button onClick={onClick(true)} type="action-secondary">
-          Min Bid
-        </Button>
       </div>
     </div>
   )
