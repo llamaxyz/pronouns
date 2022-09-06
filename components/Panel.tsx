@@ -88,6 +88,9 @@ const Panel = ({ status, id, setId, latestId, startTime, auctionState, ownerAddr
       </Skeleton>
     </div>
     <Noun id={id} status={status} seed={seed} />
+    <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">
+      <Title level={5}>Current Rarity</Title>
+    </div>
   </>
 )
 
