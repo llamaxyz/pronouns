@@ -146,11 +146,16 @@ const Bid = ({ minAmount, id }: BidProps) => {
         }
       />
       <div className="grid grid-cols-4 gap-2">
-        <Button onClick={() => setAmount(minBidEth(minBid))} type="outline">
+        <Button onClick={() => setAmount(minBidEth(minBid))} weight="normal" type="outline">
           Min
         </Button>
         {pctBidAmounts.map(pct => (
-          <Button key={pct} onClick={() => setAmount(increaseBidByPercentage(new BigNumber(minAmount), pct / 100))} type="outline">
+          <Button
+            weight="normal"
+            key={pct}
+            onClick={() => setAmount(increaseBidByPercentage(new BigNumber(minAmount), pct / 100))}
+            type="outline"
+          >
             {`+${pct}%`}
           </Button>
         ))}

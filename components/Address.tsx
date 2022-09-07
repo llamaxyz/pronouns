@@ -26,9 +26,9 @@ const Header = ({ address, txHash, bidCount = 0 }: HeaderProps) => {
   })
   const { data: owner, status: ownerStatus } = useOwner(address)
   return (
-    <div className="bg-white/10 rounded-lg py-4 px-5 relative">
+    <div className="bg-white/5 rounded-lg py-4 px-5 relative">
       <a
-        className="absolute top-2.5 right-2.5 z-10"
+        className="absolute top-2.5 right-2.5 z-10 hover:text-white/70 transition ease-in-out"
         rel="noopener noreferer noreferrer"
         target="_blank"
         href={`https://etherscan.io/tx/${txHash}`}

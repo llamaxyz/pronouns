@@ -63,7 +63,11 @@ const Auction = ({
     return <Account address={isNounder ? NOUNDERS_ENS : noun?.bidder?.id} isEns={isNounder} />
   }
   return (
-    <div className={`border border-white/10 rounded-xl lg:h-[calc(100vh_-_139.5px)] p-4 flex flex-col ${isNounder ? '' : 'gap-y-4'}`}>
+    <div
+      className={`border border-white/10 rounded-xl min-h-[26rem] lg:h-[calc(100vh_-_139.5px)] p-4 flex flex-col ${
+        isNounder ? '' : 'gap-y-4'
+      }`}
+    >
       <div className="grid grid-cols-2 gap-2 sticky">
         <Statistic
           status={status}
@@ -108,7 +112,7 @@ const Auction = ({
         )}
       </div>
       <div className="overflow-scroll">
-        {!noun?.settled && !isNounder && (
+        {!noun?.settled && !isNounder && status === 'success' && (
           <Address.Header bidCount={getBidCount(noun?.bids, noun?.bidder?.id)} address={noun?.bidder?.id} txHash={noun?.bids?.[0]?.id} />
         )}
         {!isNounder && <Address.List items={noun?.bids} />}

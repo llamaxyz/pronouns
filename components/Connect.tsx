@@ -18,7 +18,7 @@ const Connect = () => (
           {(() => {
             if (!mounted || !account || !chain) {
               return (
-                <Button className="rounded-lg" isBold onClick={openConnectModal}>
+                <Button className="rounded-lg" weight="bold" onClick={openConnectModal}>
                   Connect
                 </Button>
               )
@@ -26,7 +26,7 @@ const Connect = () => (
 
             if (chain.unsupported) {
               return (
-                <Button className="rounded-lg" isBold onClick={openChainModal}>
+                <Button className="rounded-lg" weight="bold" onClick={openChainModal}>
                   Wrong network
                 </Button>
               )
@@ -34,7 +34,7 @@ const Connect = () => (
 
             return (
               <div className="flex gap-6">
-                <Button className="rounded-lg flex items-center" isBold onClick={openAccountModal}>
+                <Button className="rounded-lg flex items-center" weight="bold" onClick={openAccountModal}>
                   <img
                     alt="account profile"
                     className="h-6 w-6 mr-2 inline rounded-full"

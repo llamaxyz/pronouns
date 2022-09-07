@@ -1,5 +1,7 @@
 export type AuctionState = 'settled' | 'live' | 'unsettled'
 
+export type FontWeight = 'normal' | 'medium' | 'bold'
+
 export interface Bid {
   id: string
   bidder: Bidder

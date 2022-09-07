@@ -1,4 +1,4 @@
-import { Bid } from 'utils/types'
+import { Bid, FontWeight } from 'utils/types'
 
 /*
  *********************
@@ -23,6 +23,12 @@ export const formatNumber = (num: number): string =>
   }).format(num)
 
 export const truncateAddress = (address: string) => (address ? `${address.slice(0, 4)}...${address.slice(-4)}` : '0x00...0000')
+
+export const weightToClassName: Record<FontWeight, string> = {
+  normal: 'font-normal',
+  medium: 'font-medium',
+  bold: 'font-semibold',
+}
 
 export const getBidCount = (bids: Bid[], bidder: string): number =>
   bids?.reduce((acc, cur) => (cur.bidder.id === bidder ? (acc += 1) : acc), 0)

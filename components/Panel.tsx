@@ -34,7 +34,7 @@ const Panel = ({ status, id, setId, latestId, startTime, auctionState, ownerAddr
       <div className="flex gap-2">
         <Button
           ariaLabel="Previous Noun"
-          isBold
+          weight="bold"
           onClick={() => id !== undefined && setId(id => (id !== undefined ? id - 1 : undefined))}
           disabled={id === 0}
           type="secondary"
@@ -43,7 +43,7 @@ const Panel = ({ status, id, setId, latestId, startTime, auctionState, ownerAddr
         </Button>
         <Button
           ariaLabel="Next Noun"
-          isBold
+          weight="bold"
           onClick={() => id !== undefined && setId(id => (id !== undefined ? id + 1 : undefined))}
           disabled={id === latestId}
           type="secondary"

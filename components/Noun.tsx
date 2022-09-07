@@ -24,6 +24,7 @@ const Noun = ({ seed, status, id, isSmall = false }: NounProps) => (
   >
     <Image
       {...(isSmall ? { style: { borderRadius: '50%' } } : {})}
+      key={status}
       alt={`Noun ${id}`}
       width={256}
       height={256}

@@ -18,7 +18,7 @@ type InputProps = {
 }
 
 const inputClass =
-  'w-full transition ease-in-out placeholder:text-white/60 bg-white/10 rounded-lg tracking-wide border m-0 border-white/5 hover:border-white/50 focus:outline-none focus:border-white'
+  'w-full transition ease-in-out placeholder:text-white/60 bg-white/10 rounded-lg tracking-wide border m-0 border-white/5 hover:border-white/50 focus:outline-none focus:border-white font-normal'
 
 const Input = ({
   placeholder,
