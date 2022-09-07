@@ -7,6 +7,7 @@ import Tag from 'components/Tag'
 import Title from 'components/Title'
 import Skeleton from 'components/Skeleton'
 import { AuctionState, Status, NounSeed } from 'utils/types'
+import { NOUNDERS_ENS } from 'utils/constants'
 import { formatDate } from 'utils/index'
 
 type PanelProps = {
@@ -18,6 +19,7 @@ type PanelProps = {
   startTime: number
   auctionState: AuctionState
   ownerAddress: string
+  isNounder: boolean
 }
 
 const auctionStateToTag: Record<AuctionState, string> = {
@@ -26,7 +28,7 @@ const auctionStateToTag: Record<AuctionState, string> = {
   unsettled: 'Pending',
 }
 
-const Panel = ({ status, id, setId, latestId, startTime, auctionState, ownerAddress, seed }: PanelProps) => (
+const Panel = ({ status, id, setId, latestId, startTime, auctionState, ownerAddress, seed, isNounder }: PanelProps) => (
   <>
     <div className="flex items-center xs:flex-nowrap flex-wrap gap-4 overflow-hidden">
       <div className="flex gap-2">
@@ -77,7 +79,7 @@ const Panel = ({ status, id, setId, latestId, startTime, auctionState, ownerAddr
           <div className="xs:border-l xs:pl-4 xs:border-white/10">
             <Paragraph className="text-ui-silver">Held By</Paragraph>
             <Title weight="bold" level={4}>
-              <Account address={ownerAddress} />
+              <Account address={isNounder ? NOUNDERS_ENS : ownerAddress} isEns={isNounder} />
             </Title>
           </div>
         ) : (
@@ -88,9 +90,6 @@ const Panel = ({ status, id, setId, latestId, startTime, auctionState, ownerAddr
       </Skeleton>
     </div>
     <Noun id={id} status={status} seed={seed} />
-    <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">
-      <Title level={5}>Current Rarity</Title>
-    </div>
   </>
 )
 

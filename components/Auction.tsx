@@ -5,6 +5,7 @@ import { Address } from 'components/Address'
 import Account from 'components/Account'
 import Statistic from 'components/Statistic'
 import { getBidCount } from 'utils/index'
+import { NOUNDERS_ENS } from 'utils/constants'
 import { AuctionState, Status, Bid, Bidder } from 'utils/types'
 
 type Noun = {
@@ -59,7 +60,7 @@ const Auction = ({
       )
     }
 
-    return <Account address={isNounder ? 'nounders.eth' : noun?.bidder?.id} isEns={isNounder} />
+    return <Account address={isNounder ? NOUNDERS_ENS : noun?.bidder?.id} isEns={isNounder} />
   }
   return (
     <div className={`border border-white/10 rounded-xl lg:h-[calc(100vh_-_139.5px)] p-4 flex flex-col ${isNounder ? '' : 'gap-y-4'}`}>

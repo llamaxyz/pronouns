@@ -20,7 +20,7 @@ const Account = ({ address, isEns = false, alwaysAvatar = false }: AccountProps)
         className={`h-6 w-6 mr-2 rounded-full ${alwaysAvatar ? '' : 'inline lg:hidden xl:inline'}`}
         src={`https://cdn.stamp.fyi/avatar/${address}`}
       />
-      <span className="truncate">{ensName ? ensName : isEns ? address : truncateAddress(address)}</span>
+      <span className="truncate tabular-nums">{ensName ? ensName : isEns ? address : truncateAddress(address)}</span>
     </span>
   )
 }

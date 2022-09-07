@@ -169,6 +169,7 @@ const Home: NextPage = () => {
             setId={setId}
             latestId={latestId}
             startTime={noun?.startTime}
+            isNounder={isNounder}
           />
         </Layout.Section>
         <Layout.Section width={4}>
