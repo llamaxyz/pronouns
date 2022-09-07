@@ -1,6 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline'
 import Account from 'components/Account'
 import Button from 'components/Button'
+import Metric from 'components/Metric'
 import Noun from 'components/Noun'
 import Paragraph from 'components/Paragraph'
 import Tag from 'components/Tag'
@@ -90,6 +91,25 @@ const Panel = ({ status, id, setId, latestId, startTime, auctionState, ownerAddr
       </Skeleton>
     </div>
     <Noun id={id} status={status} seed={seed} />
+    <div className="grid grid-cols-2 gap-4">
+      <div className="xxs:col-auto col-span-full">
+        <Metric content="75" status="success" title="Number" />
+      </div>
+      <div className="xxs:col-auto col-span-full">
+        <Metric content="75" status="success" title="Number" />
+      </div>
+      <div className="xxs:col-auto col-span-full">
+        <Metric content="75" status="success" title="Number" />
+      </div>
+      <div className="xxs:col-auto col-span-full">
+        <Metric content="75" status="success" title="Number" />
+      </div>
+    </div>
+    <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">
+      <Title level={5} weight="normal">
+        Current Rarity
+      </Title>
+    </div>
   </>
 )
 
