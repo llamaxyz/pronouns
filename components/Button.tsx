@@ -35,7 +35,7 @@ const Button = ({
       'bg-white rounded-lg disabled:cursor-not-allowed text-ui-black hover:bg-neutral-200 focus:bg-neutral-200 focus:ring-white border border-white/10 rounded-full px-3 py-2.5',
     secondary: 'bg-white/20 disabled:cursor-not-allowed border border-transparent hover:bg-white/30 rounded-[100%] p-2 disabled:opacity-40',
     action:
-      'text-ui-black rounded-lg border-transparent bg-ui-malachite-green hover:bg-ui-malachite-green/50 disabled:cursor-not-allowed disabled:bg-ui-malachite-green/50 py-4',
+      'text-ui-black rounded-lg border-transparent bg-ui-green hover:bg-ui-green/50 disabled:cursor-not-allowed disabled:bg-ui-green/50 py-4',
     'action-secondary':
       'rounded-lg bg-white/20 border-0 hover:bg-white/10 disabled:bg-white/10 disabled:cursor-not-allowed text-white py-4',
     link: 'p-0 text-white/40 hover:text-white/80 text-base',

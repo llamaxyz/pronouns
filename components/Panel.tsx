@@ -7,9 +7,20 @@ import Paragraph from 'components/Paragraph'
 import Tag from 'components/Tag'
 import Title from 'components/Title'
 import Skeleton from 'components/Skeleton'
+import diamond from 'public/icons/diamond.svg'
+import crosshair from 'public/icons/crosshair.svg'
+import stars from 'public/icons/stars.svg'
+import fraction from 'public/icons/fraction.svg'
 import { AuctionState, Status, NounSeed } from 'utils/types'
 import { NOUNDERS_ENS } from 'utils/constants'
 import { formatDate } from 'utils/index'
+
+const metrics = [
+  { stat: 'Ξ 69.69', description: 'Book Value', bgColor: 'bg-ui-green/5', icon: diamond },
+  { stat: 'Ξ 89.83', description: '14 Day EMA', bgColor: 'bg-ui-blue/5', icon: crosshair },
+  { stat: '12', description: 'Weight', bgColor: 'bg-ui-purple/5', icon: stars },
+  { stat: '-25.56%', description: 'Bid vs. Floor', bgColor: 'bg-ui-sulphur/5', icon: fraction },
+]
 
 type PanelProps = {
   seed?: NounSeed
@@ -92,18 +103,11 @@ const Panel = ({ status, id, setId, latestId, startTime, auctionState, ownerAddr
     </div>
     <Noun id={id} status={status} seed={seed} />
     <div className="grid grid-cols-2 gap-4">
-      <div className="xxs:col-auto col-span-full">
-        <Metric content="75" status="success" title="Number" />
-      </div>
-      <div className="xxs:col-auto col-span-full">
-        <Metric content="75" status="success" title="Number" />
-      </div>
-      <div className="xxs:col-auto col-span-full">
-        <Metric content="75" status="success" title="Number" />
-      </div>
-      <div className="xxs:col-auto col-span-full">
-        <Metric content="75" status="success" title="Number" />
-      </div>
+      {metrics.map((metric, id) => (
+        <div key={id} className="xxs:col-auto col-span-full">
+          <Metric bgColor={metric.bgColor} stat={metric.stat} status="success" description={metric.description} icon={metric.icon} />
+        </div>
+      ))}
     </div>
     <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">
       <Title level={5} weight="normal">

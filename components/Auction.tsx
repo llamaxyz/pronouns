@@ -73,9 +73,7 @@ const Auction = ({
           status={status}
           titleClass="text-ui-black"
           contentClass="text-ui-black tabular-nums animate-fade-in-1 opacity-0 ease-in-out truncate"
-          className={`${isAuctionLive ? 'bg-ui-sulphur' : 'bg-ui-malachite-green'} w-full ${
-            id === latestId ? 'col-span-1' : 'col-span-full'
-          }`}
+          className={`${isAuctionLive ? 'bg-ui-sulphur' : 'bg-ui-green'} w-full ${id === latestId ? 'col-span-1' : 'col-span-full'}`}
           title={isAuctionLive ? 'Time Left' : 'Winner'}
           content={renderAuctionStatus()}
         />
@@ -97,11 +95,7 @@ const Auction = ({
               ) : (
                 <div
                   className={`tabular-nums ${
-                    percentChange[0] === '0' || id === 1
-                      ? 'text-white'
-                      : percentChange[0] === '-'
-                      ? 'text-red-400'
-                      : 'text-ui-malachite-green'
+                    percentChange[0] === '0' || id === 1 ? 'text-white' : percentChange[0] === '-' ? 'text-red-400' : 'text-ui-green'
                   }`}
                 >
                   {percentChange === '-NaN%' ? 'N/A' : percentChange}

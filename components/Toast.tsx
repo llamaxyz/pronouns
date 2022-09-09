@@ -17,7 +17,7 @@ type ToastProps = {
 
 const typeToIcon: Record<Status, React.ReactNode> = {
   error: <XCircleIcon className="w-8 h-8 text-red-400" />,
-  success: <CheckCircleIcon className="w-8 h-8 text-ui-malachite-green" />,
+  success: <CheckCircleIcon className="w-8 h-8 text-ui-green" />,
   loading: <Image alt="Noun Loading" width={52} height={52} src={loadingNoun} />,
   idle: <CheckCircleIcon className="w-8 h-8 text-red-400" />,
 }

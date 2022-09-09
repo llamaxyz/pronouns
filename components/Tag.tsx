@@ -8,7 +8,7 @@ type TagProps = {
 
 const stateToColor: Record<AuctionState, string> = {
   settled: 'text-ui-sulphur bg-ui-sulphur/10',
-  live: 'text-ui-malachite-green bg-ui-malachite-green/10',
+  live: 'text-ui-green bg-ui-green/10',
   unsettled: 'text-ui-sulphur bg-ui-sulphur/10',
 }
 

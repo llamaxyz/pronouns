@@ -12,8 +12,10 @@ module.exports = {
         neutral: colors.neutral,
         ui: {
           black: '#111813',
+          blue: '#4BB1FB',
           charleston: '#282D2A',
-          'malachite-green': '#4BFB9C',
+          green: '#4BFB9C',
+          purple: '#A637FD',
           silver: '#AFAFAF',
           space: '#414642',
           sulphur: '#FBDF4B',
