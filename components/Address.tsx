@@ -58,7 +58,7 @@ const Header = ({ address, txHash, bidCount = 0 }: HeaderProps) => {
             <Skeleton
               className=""
               loading={ownerStatus !== 'success'}
-              loadingElement={<div className="h-5 mb-1 bg-white/20 rounded col-span-2" />}
+              loadingElement={<div className="animate-pulse h-5 mb-1 bg-white/20 rounded col-span-2" />}
             >
               <Paragraph className="font-normal text-lg tracking-wide">{owner?.tokenBalanceRaw}</Paragraph>
             </Skeleton>

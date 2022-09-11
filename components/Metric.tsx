@@ -27,7 +27,7 @@ const Metric = ({ bgColor = '', description, status, statClass = '', stat, icon 
       <Skeleton
         hasParentElement
         loading={status === 'loading'}
-        loadingElement={<div className="h-8 w-[75%] mx-auto bg-ui-black/20 rounded tracking-wide" />}
+        loadingElement={<div className="animate-pulse h-8 w-[75%] mx-auto bg-ui-black/20 rounded tracking-wide" />}
       >
         <div className="flex gap-x-4 items-center">
           <div className={`rounded-lg p-2.5 flex items-center ${bgColor}`}>

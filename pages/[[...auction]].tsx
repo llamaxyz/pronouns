@@ -194,9 +194,9 @@ const Home: NextPage = () => {
               loading={nounStatus === 'loading'}
               loadingElement={
                 <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-2">
-                  <div className="h-5 mb-1 bg-white/20 rounded col-span-2" />
-                  <div className="h-8 bg-white/20 rounded col-span-2" />
-                  <div className="h-8 bg-white/20 rounded col-span-2" />
+                  <div className="animate-pulse h-5 mb-1 bg-white/20 rounded col-span-2" />
+                  <div className="animate-pulse h-8 bg-white/20 rounded col-span-2" />
+                  <div className="animate-pulse h-8 bg-white/20 rounded col-span-2" />
                 </div>
               }
             >

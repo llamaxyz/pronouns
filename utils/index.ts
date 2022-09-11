@@ -1,4 +1,4 @@
-import { Bid, FontWeight, NounSeed } from 'utils/types'
+import { Bid, FontWeight } from 'utils/types'
 
 /*
  *********************
