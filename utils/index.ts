@@ -1,4 +1,4 @@
-import { Bid, FontWeight } from 'utils/types'
+import { Bid, FontWeight, NounSeed } from 'utils/types'
 
 /*
  *********************
@@ -239,4 +239,21 @@ export const getSeeds = async () => {
   })
   const responseData = await response?.json()
   return responseData?.data?.nouns
+}
+
+export const getTraitStats = async (seed?: Record<string, string>) => {
+  if (seed) {
+    const seedSearchParams: Record<string, string> = {
+      background: seed.background,
+      body: seed.body,
+      head: seed.head,
+      accessory: seed.accessory,
+      glasses: seed.glasses,
+    }
+    const response = await fetch('/api/stats?' + new URLSearchParams(seedSearchParams), {
+      method: 'GET',
+    })
+    const responseData = await response?.json()
+    return responseData
+  }
 }

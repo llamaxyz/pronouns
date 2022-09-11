@@ -114,7 +114,7 @@ const Panel = ({ status, id, setId, latestId, startTime, auctionState, ownerAddr
       <Title level={5} weight="normal">
         Current Rarity
       </Title>
-      <Table seed={seed} status={status} />
+      <Table id={id} seed={seed} status={status} />
     </div>
   </div>
 )
