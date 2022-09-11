@@ -51,9 +51,9 @@ const renderPart = (seed: NounSeed, id: number) => {
 const Table = ({ seed, status }: TableProps) => {
   const bg = seed?.background.toString() === '0' ? 'bg-cool' : 'bg-warm'
   return (
-    <div className="min-w-[480px] gap-y-4 flex flex-col">
+    <div className="min-w-[480px] grid grid-cols-[40px_repeat(3,_minmax(0,_1fr))_auto] gap-4">
       {tableData.map((row, i) => (
-        <div key={i} className="flex gap-x-6 overflow-x-auto">
+        <>
           <div className={`${bg} flex w-10 h-10 rounded text-black`}>
             <Image
               className="rounded"
@@ -63,8 +63,8 @@ const Table = ({ seed, status }: TableProps) => {
               src={status === 'loading' || seed === undefined ? loadingNoun : renderPart(seed, i - 1)}
             />
           </div>
-          {row.map((data, i) => (
-            <div className="flex-1" key={i}>
+          {row.map((data, j) => (
+            <div key={j}>
               {typeof data.name === 'string' ? (
                 <div className="uppercase text-white/60 tracking-wider text-xs">{data.name}</div>
               ) : (
@@ -73,7 +73,7 @@ const Table = ({ seed, status }: TableProps) => {
               {typeof data.value === 'string' ? <div className="font-medium text-md">{data.value}</div> : data.value}
             </div>
           ))}
-        </div>
+        </>
       ))}
     </div>
   )
