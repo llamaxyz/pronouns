@@ -105,7 +105,7 @@ const Auction = ({
           />
         )}
       </div>
-      <div className="overflow-scroll">
+      <div className="overflow-y-auto">
         {!noun?.settled && !isNounder && status === 'success' && (
           <Address.Header bidCount={getBidCount(noun?.bids, noun?.bidder?.id)} address={noun?.bidder?.id} txHash={noun?.bids?.[0]?.id} />
         )}

@@ -4,7 +4,7 @@ const colors = require('tailwindcss/colors')
 const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
-  content: ['./pages/**/*.{js,ts,jsx,tsx,mx,mdx}', './components/**/*.{js,ts,jsx,tsx}'],
+  content: ['./pages/**/*.{js,ts,jsx,tsx,mx,mdx}', './components/**/*.{js,ts,jsx,tsx}', './utils/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
@@ -32,19 +32,14 @@ module.exports = {
         sans: ['Aeonik', ...defaultTheme.fontFamily.sans],
       },
       animation: {
-        marquee: 'marquee 200s linear infinite',
-        marquee2: 'marquee2 200s linear infinite',
+        progress: '1s linear 0.05s',
         'fade-in-1': '0.5s ease 0.05s 1 normal forwards running fadeIn',
         'fade-in-2': '0.5s ease 0.15s 1 normal forwards running fadeIn',
       },
       keyframes: {
-        marquee: {
-          '0%': { transform: 'translateX(0%)' },
-          '100%': { transform: 'translateX(-100%)' },
-        },
-        marquee2: {
-          '0%': { transform: 'translateX(100%)' },
-          '100%': { transform: 'translateX(0%)' },
+        progress: {
+          '0%': { width: '0%' },
+          '100%': { width: '100%' },
         },
         fadeIn: {
           '0%': { opacity: '0', transform: 'translateY(8px)' },

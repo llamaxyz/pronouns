@@ -4,6 +4,7 @@ import Button from 'components/Button'
 import Metric from 'components/Metric'
 import Noun from 'components/Noun'
 import Paragraph from 'components/Paragraph'
+import Table from 'components/Table'
 import Tag from 'components/Tag'
 import Title from 'components/Title'
 import Skeleton from 'components/Skeleton'
@@ -41,8 +42,8 @@ const auctionStateToTag: Record<AuctionState, string> = {
 }
 
 const Panel = ({ status, id, setId, latestId, startTime, auctionState, ownerAddress, seed, isNounder }: PanelProps) => (
-  <>
-    <div className="flex items-center xs:flex-nowrap flex-wrap gap-4 overflow-hidden">
+  <div className="lg:h-[calc(100vh_-_139.5px)] min-h-[26rem] overflow-y-auto flex flex-col gap-4">
+    <div className="flex items-center xs:flex-nowrap flex-wrap gap-4">
       <div className="flex gap-2">
         <Button
           ariaLabel="Previous Noun"
@@ -113,8 +114,9 @@ const Panel = ({ status, id, setId, latestId, startTime, auctionState, ownerAddr
       <Title level={5} weight="normal">
         Current Rarity
       </Title>
+      <Table seed={seed} status={status} />
     </div>
-  </>
+  </div>
 )
 
 export default Panel

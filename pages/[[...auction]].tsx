@@ -159,7 +159,7 @@ const Home: NextPage = () => {
       </Head>
       <Nav latestId={latestId} />
       <Layout>
-        <Layout.Section width={5} className="flex flex-col gap-4">
+        <Layout.Section width={5}>
           <Panel
             auctionState={auctionState}
             seed={noun?.noun?.seed}
