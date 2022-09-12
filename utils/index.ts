@@ -6,6 +6,8 @@ import { Bid, FontWeight } from 'utils/types'
  *********************
  */
 
+export const capitalize = (text: string) => text[0].toUpperCase() + text.slice(1)
+
 export const formatDate = (date: number | Date, displayTime?: boolean): string =>
   new Intl.DateTimeFormat(typeof window !== 'undefined' ? window?.navigator?.language : 'default', {
     month: 'long',
