@@ -78,7 +78,7 @@ const Search = ({ latestId }: { latestId?: number }) => {
   }, [open])
 
   return (
-    <div className="relative hidden lg:block">
+    <div className="relative hidden lg:block mx-auto">
       <Button type="input" weight="normal" onClick={() => setOpen(true)}>
         <div className="flex absolute inset-y-0 left-0 items-center pl-3">
           <SearchIcon className="w-5 h-5 text-white/60" />

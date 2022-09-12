@@ -82,7 +82,7 @@ const Toast = ({ children, data, setData, txHash }: ToastProps) => {
           {typeToIcon[data.type]}
           <Paragraph className="tracking-wider">{data.message}</Paragraph>
           {txHash && (
-            <a rel="noopener noreferer noreferrer" target="_blank" href={`https://etherscan.io/tx/${txHash}`}>
+            <a rel="noreferrer" target="_blank" href={`https://etherscan.io/tx/${txHash}`}>
               <ExternalLinkIcon aria-label="Etherscan" className="opacity-60 h-5 w-5" />
             </a>
           )}

@@ -50,7 +50,7 @@ const Button = ({
       aria-label={ariaLabel}
       href={href}
       disabled={disabled}
-      {...(href ? { target: '_blank', rel: 'noopener norefferer' } : {})}
+      {...(href ? { target: '_blank', rel: 'noreferrer' } : {})}
       className={`text-sm inline-block transition-colors group ease-in-out tracking-wide ${weightToClassName[weight]} ${
         buttonClsMap[type]
       } ${className ?? ''}`}

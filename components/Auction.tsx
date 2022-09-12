@@ -64,7 +64,7 @@ const Auction = ({
   }
   return (
     <div
-      className={`border border-white/10 rounded-xl min-h-[26rem] lg:h-[calc(100vh_-_139.5px)] p-4 flex flex-col ${
+      className={`border border-white/10 rounded-xl min-h-[26rem] lg:h-[calc(100vh_-_143px)] p-4 flex flex-col ${
         isNounder ? '' : 'gap-y-4'
       }`}
     >
