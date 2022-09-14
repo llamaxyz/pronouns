@@ -31,7 +31,7 @@ const auctionStateToTag: Record<AuctionState, string> = {
 
 const Panel = ({ status, id, setId, latestId, startTime, auctionState, ownerAddress, seed, isNounder }: PanelProps) => (
   <div className="lg:h-[calc(100vh_-_143px)] min-h-[26rem] flex">
-    <div className="overflow-y-auto">
+    <div className="overflow-y-auto w-full">
       <div className="flex flex-col gap-4">
         <div className="flex items-center xs:flex-nowrap flex-wrap gap-4">
           <div className="flex gap-2">
@@ -100,7 +100,7 @@ const Panel = ({ status, id, setId, latestId, startTime, auctionState, ownerAddr
             Current Rarity
           </Title>
           <div className="overflow-x-auto">
-            <Table id={id} seed={seed} status={status} />
+            <Table id={id} seed={seed} status={status} latestId={latestId} />
           </div>
         </div>
       </div>

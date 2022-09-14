@@ -1,23 +1,45 @@
 import React from 'react'
 import Image from 'next/image'
 import { ImageData, getNounData } from '@nouns/assets'
+import cdf from '@stdlib/stats-base-dists-binomial-cdf'
 import { buildSVG } from '@nouns/sdk'
 import loadingNoun from 'public/loading-skull-noun.gif'
 import Progress from 'components/Progress'
 import Skeleton from 'components/Skeleton'
 import { capitalize } from 'utils/index'
-import { NounSeed, Status } from 'utils/types'
+import { NounSeed, Status, Rarity } from 'utils/types'
 import { useTraitStats } from 'utils/hooks'
 import { EncodedImage } from '@nouns/assets/dist/types'
+
+const traitProbabilityMap: Record<string, number> = {
+  Background: 0.5,
+  Body: 0.0333333333,
+  Accessory: 0.00714285714,
+  Head: 0.0041322314,
+  Glasses: 0.0434782609,
+}
 
 type TableProps = {
   seed?: NounSeed
   status: Status
   id?: number
+  latestId?: number
 }
 
-const getProgress = (pct: number, status: Status) => {
-  const rarity = pct > 40 ? 'Common' : pct > 10 ? 'Medium' : 'Rare'
+const getRarity = (total: number, pct: number): Rarity => {
+  if (total === 1) return 'Only Mint'
+  if (total <= 3) return 'Very Limited'
+  if (total <= 5) return 'Limited'
+  if (pct > 0.8) return 'Very Common'
+  if (pct > 0.49) return 'Common'
+  if (pct > 0.35) return 'Medium'
+  if (pct > 0.25) return 'Rare'
+  if (pct > 0.1) return 'Very Rare'
+  return 'Limited'
+}
+
+const getProgress = (total: number, pct: number, status: Status) => {
+  const rarity = getRarity(total, pct)
   return {
     name: '',
     value: <Progress pct={pct} status={status} rarity={rarity} />,
@@ -27,6 +49,7 @@ const getProgress = (pct: number, status: Status) => {
 const generateTableData = (
   apiData: Record<string, Record<string, number>>,
   status: Status,
+  latestId?: number,
   nounParts?: {
     name: string
     image: string
@@ -50,7 +73,11 @@ const generateTableData = (
           return { ...rowData, value: apiData[traitArr[j]]?.total_occurrence ?? '—' }
         }
         if (i === 3) {
-          return getProgress(apiData[traitArr[j]]?.pct_occurrence, status)
+          return getProgress(
+            apiData[traitArr[j]]?.total_occurrence,
+            cdf(apiData[traitArr[j]]?.total_occurrence, (latestId || 1000) + 1, traitProbabilityMap[row[0].name]),
+            status
+          )
         }
         return rowData
       })
@@ -88,12 +115,12 @@ const renderNounParts = (seed: NounSeed) => {
   ]
 }
 
-const Table = ({ seed, status, id }: TableProps) => {
+const Table = ({ seed, status, id, latestId }: TableProps) => {
   const { data, status: dataStatus } = useTraitStats(seed as unknown as Record<string, string>, id)
 
   const bg = seed?.background.toString() === '0' ? 'bg-cool' : 'bg-warm'
   const nounParts = seed && renderNounParts(seed)
-  const tableData = generateTableData(data?.body, dataStatus, nounParts)
+  const tableData = generateTableData(data?.body, dataStatus, latestId, nounParts)
 
   return (
     <div className="min-w-[480px] grid grid-cols-[40px_repeat(3,_minmax(0,_1fr))_auto] gap-4">

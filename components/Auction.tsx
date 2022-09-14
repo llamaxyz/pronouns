@@ -62,6 +62,7 @@ const Auction = ({
 
     return <Account address={isNounder ? NOUNDERS_ENS : noun?.bidder?.id} isEns={isNounder} />
   }
+
   return (
     <div
       className={`border border-white/10 rounded-xl min-h-[26rem] lg:h-[calc(100vh_-_143px)] p-4 flex flex-col ${

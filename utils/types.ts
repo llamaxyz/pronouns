@@ -23,6 +23,8 @@ export interface NounSeed {
 
 export type Status = 'success' | 'error' | 'loading' | 'idle'
 
+export type Rarity = 'Very Common' | 'Common' | 'Medium' | 'Rare' | 'Very Rare' | 'Limited' | 'Very Limited' | 'Only Mint'
+
 export type ToastData = {
   open: boolean
   message: string

@@ -1,8 +1,6 @@
 import BigNumber from 'bignumber.js'
 import Skeleton from 'components/Skeleton'
-import { Status } from 'utils/types'
-
-type Rarity = 'Common' | 'Medium' | 'Rare'
+import { Status, Rarity } from 'utils/types'
 
 type ProgressProps = {
   total?: number
@@ -12,19 +10,36 @@ type ProgressProps = {
 }
 
 const rarityToClsName: Record<Rarity, string> = {
+  'Very Common': 'bg-white/20',
   Common: 'bg-white/40',
   Medium: 'bg-ui-sulphur',
-  Rare: 'bg-ui-green',
+  Rare: 'bg-ui-darkerGreen',
+  'Very Rare': 'bg-ui-darkGreen',
+  Limited: 'bg-ui-green',
+  'Very Limited': 'bg-ui-lightGreen',
+  'Only Mint': 'bg-ui-lighterGreen',
 }
 
 const rarityToClsNameTxt = {
-  Common: 'text-white/60',
+  'Very Common': 'text-white/50',
+  Common: 'text-white/70',
   Medium: 'text-ui-sulphur',
-  Rare: 'text-ui-green',
+  Rare: 'text-ui-darkerGreen',
+  'Very Rare': 'text-ui-darkGreen',
+  Limited: 'text-ui-green',
+  'Very Limited': 'text-ui-lightGreen',
+  'Only Mint': 'text-ui-lighterGreen',
 }
 
 const Progress = ({ total = 36, pct, status, rarity }: ProgressProps) => {
-  const filled = Number(new BigNumber(pct || 0).div(100).times(new BigNumber(total)).toFixed(0, BigNumber.ROUND_CEIL).toString())
+  const filled =
+    rarity === 'Only Mint'
+      ? 1
+      : rarity === 'Very Limited'
+      ? 2
+      : rarity === 'Limited'
+      ? 3
+      : Number(new BigNumber(pct || 0).times(new BigNumber(total)).toFixed(0, BigNumber.ROUND_CEIL).toString())
   return (
     <>
       <Skeleton
