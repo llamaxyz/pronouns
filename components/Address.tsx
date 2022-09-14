@@ -29,7 +29,7 @@ const Header = ({ address, txHash, bidCount = 0 }: HeaderProps) => {
     <div className="bg-white/5 rounded-lg py-4 px-5 relative">
       <a
         className="absolute top-2.5 right-2.5 z-10 hover:text-white/70 transition ease-in-out"
-        rel="noopener noreferer noreferrer"
+        rel="noreferrer"
         target="_blank"
         href={`https://etherscan.io/tx/${txHash}`}
       >
@@ -58,7 +58,7 @@ const Header = ({ address, txHash, bidCount = 0 }: HeaderProps) => {
             <Skeleton
               className=""
               loading={ownerStatus !== 'success'}
-              loadingElement={<div className="h-5 mb-1 bg-white/20 rounded col-span-2" />}
+              loadingElement={<div className="animate-pulse h-5 mb-1 bg-white/20 rounded col-span-2" />}
             >
               <Paragraph className="font-normal text-lg tracking-wide">{owner?.tokenBalanceRaw}</Paragraph>
             </Skeleton>

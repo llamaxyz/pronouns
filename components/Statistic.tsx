@@ -21,7 +21,7 @@ const Statistic = ({ className = '', title, status, contentClass = '', content, 
       <Skeleton
         hasParentElement
         loading={status === 'loading'}
-        loadingElement={<div className="h-8 w-[75%] mx-auto bg-ui-black/20 rounded tracking-wide" />}
+        loadingElement={<div className="animate-pulse h-8 w-[75%] mx-auto bg-ui-black/20 rounded tracking-wide" />}
       >
         <div>
           <Title level={4} className={contentClass} weight="medium">

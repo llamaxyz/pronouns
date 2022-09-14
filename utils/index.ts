@@ -6,6 +6,8 @@ import { Bid, FontWeight } from 'utils/types'
  *********************
  */
 
+export const capitalize = (text: string) => text[0].toUpperCase() + text.slice(1)
+
 export const formatDate = (date: number | Date, displayTime?: boolean): string =>
   new Intl.DateTimeFormat(typeof window !== 'undefined' ? window?.navigator?.language : 'default', {
     month: 'long',
@@ -239,4 +241,21 @@ export const getSeeds = async () => {
   })
   const responseData = await response?.json()
   return responseData?.data?.nouns
+}
+
+export const getTraitStats = async (seed?: Record<string, string>) => {
+  if (seed) {
+    const seedSearchParams: Record<string, string> = {
+      background: seed.background,
+      body: seed.body,
+      head: seed.head,
+      accessory: seed.accessory,
+      glasses: seed.glasses,
+    }
+    const response = await fetch('/api/stats?' + new URLSearchParams(seedSearchParams), {
+      method: 'GET',
+    })
+    const responseData = await response?.json()
+    return responseData
+  }
 }

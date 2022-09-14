@@ -62,9 +62,10 @@ const Auction = ({
 
     return <Account address={isNounder ? NOUNDERS_ENS : noun?.bidder?.id} isEns={isNounder} />
   }
+
   return (
     <div
-      className={`border border-white/10 rounded-xl min-h-[26rem] lg:h-[calc(100vh_-_139.5px)] p-4 flex flex-col ${
+      className={`border border-white/10 rounded-xl min-h-[26rem] lg:h-[calc(100vh_-_143px)] p-4 flex flex-col ${
         isNounder ? '' : 'gap-y-4'
       }`}
     >
@@ -73,9 +74,7 @@ const Auction = ({
           status={status}
           titleClass="text-ui-black"
           contentClass="text-ui-black tabular-nums animate-fade-in-1 opacity-0 ease-in-out truncate"
-          className={`${isAuctionLive ? 'bg-ui-sulphur' : 'bg-ui-malachite-green'} w-full ${
-            id === latestId ? 'col-span-1' : 'col-span-full'
-          }`}
+          className={`${isAuctionLive ? 'bg-ui-sulphur' : 'bg-ui-green'} w-full ${id === latestId ? 'col-span-1' : 'col-span-full'}`}
           title={isAuctionLive ? 'Time Left' : 'Winner'}
           content={renderAuctionStatus()}
         />
@@ -97,11 +96,7 @@ const Auction = ({
               ) : (
                 <div
                   className={`tabular-nums ${
-                    percentChange[0] === '0' || id === 1
-                      ? 'text-white'
-                      : percentChange[0] === '-'
-                      ? 'text-red-400'
-                      : 'text-ui-malachite-green'
+                    percentChange[0] === '0' || id === 1 ? 'text-white' : percentChange[0] === '-' ? 'text-red-400' : 'text-ui-green'
                   }`}
                 >
                   {percentChange === '-NaN%' ? 'N/A' : percentChange}
@@ -111,7 +106,7 @@ const Auction = ({
           />
         )}
       </div>
-      <div className="overflow-scroll">
+      <div className="overflow-y-auto">
         {!noun?.settled && !isNounder && status === 'success' && (
           <Address.Header bidCount={getBidCount(noun?.bids, noun?.bidder?.id)} address={noun?.bidder?.id} txHash={noun?.bids?.[0]?.id} />
         )}
