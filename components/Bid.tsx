@@ -1,7 +1,7 @@
 import React from 'react'
 import { XCircleIcon } from '@heroicons/react/solid'
 import { ChainId, getContractAddressesForChainOrThrow, NounsAuctionHouseABI } from '@nouns/sdk'
-import { utils, BigNumber as EthersBN } from 'ethers'
+import { getDefaultProvider, utils, BigNumber as EthersBN } from 'ethers'
 import BigNumber from 'bignumber.js'
 import { usePrepareContractWrite, useContractWrite, useAccount, useBalance, useWaitForTransaction } from 'wagmi'
 import Button from 'components/Button'
@@ -46,6 +46,7 @@ const increaseBidByPercentage = (bid: BigNumber, percentage: number): string => 
 
 const Bid = ({ minAmount, id }: BidProps) => {
   const [amount, setAmount] = React.useState<string>('')
+  const [gasAmount, setGasAmount] = React.useState<string>('')
   const { isConnected, address } = useAccount()
   const changeAmount = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(e.target.value.slice(0, 10))
@@ -97,6 +98,17 @@ const Bid = ({ minAmount, id }: BidProps) => {
   })
 
   React.useEffect(() => {
+    const getGas = async () => {
+      const gasPrice = await getDefaultProvider('homestead', { alchemy: process.env.ALCHEMY_API_KEY }).getGasPrice()
+      const totalGas = new BigNumber(utils.formatEther(gasPrice))
+        .times(new BigNumber(config?.request?.gasLimit?.toString() || 0))
+        .toString()
+      setGasAmount(totalGas)
+    }
+    getGas()
+  }, [config?.request])
+
+  React.useEffect(() => {
     if (bidStatus !== 'idle') {
       triggerDataToast(bidStatus, bidTxData?.hash)
     }
@@ -117,14 +129,14 @@ const Bid = ({ minAmount, id }: BidProps) => {
       triggerErrorToast('Wallet not connected')
     }
   }
-
+  const availableEther = new BigNumber(data?.formatted.toString() || 0).minus(gasAmount).toFixed(2, BigNumber.ROUND_DOWN).toString()
   return (
     <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">
       <div className="flex justify-between">
         <Paragraph>Bid controls</Paragraph>
         {isConnected && (
-          <Button type="link" onClick={() => setAmount((+(data?.formatted || 0)).toFixed(3).toString())}>
-            Ξ {(+(data?.formatted || 0)).toFixed(2)} available
+          <Button type="link" onClick={() => setAmount(availableEther)}>
+            Ξ {availableEther} available
           </Button>
         )}
       </div>

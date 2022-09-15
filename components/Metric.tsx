@@ -26,8 +26,21 @@ const Metric = ({ bgColor = '', description, status, statClass = '', stat, icon 
     <div className="p-4 text-center rounded-lg border border-white/10">
       <Skeleton
         hasParentElement
-        loading={status === 'loading'}
-        loadingElement={<div className="animate-pulse h-8 w-[75%] mx-auto bg-ui-black/20 rounded tracking-wide" />}
+        loading={status !== 'success'}
+        loadingElement={
+          <div className="flex gap-x-4 items-center">
+            <div className={`rounded-lg p-2.5 flex items-center ${bgColor}`}>
+              <Image alt="icon" src={icon} />
+            </div>
+            <div className="flex flex-col items-start">
+              <div className="animate-pulse h-7 w-full bg-white/20 rounded tracking-wide" />
+              <Paragraph className="text-ui-silver">
+                {description}{' '}
+                <InformationCircleIcon className="h-4 w-4 inline hover:text-white/50 transition ease-in-out hover:cursor-pointer" />
+              </Paragraph>
+            </div>
+          </div>
+        }
       >
         <div className="flex gap-x-4 items-center">
           <div className={`rounded-lg p-2.5 flex items-center ${bgColor}`}>
@@ -39,7 +52,7 @@ const Metric = ({ bgColor = '', description, status, statClass = '', stat, icon 
             </Title>
             <Paragraph className="text-ui-silver">
               {description}{' '}
-              <InformationCircleIcon className="h-4 w-4 inline hover:text-white/50 transition ease-in-out hover:cursor-pointer" />
+              {/* <InformationCircleIcon className="h-4 w-4 inline hover:text-white/50 transition ease-in-out hover:cursor-pointer" /> */}
             </Paragraph>
           </div>
         </div>

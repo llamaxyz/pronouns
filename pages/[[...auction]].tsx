@@ -209,7 +209,7 @@ const Home: NextPage = () => {
                 {auctionState === 'unsettled' && (
                   <Button
                     href="https://fomonouns.wtf/"
-                    className="w-full text-ui-black bg-ui-sulphur hover:bg-ui-sulphur/70 text-center"
+                    className="w-full text-ui-black bg-ui-sulphur hover:bg-ui-sulphur/90 text-center"
                     type="action-secondary"
                   >
                     Vote on the next Noun

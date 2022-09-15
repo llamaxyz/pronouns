@@ -27,7 +27,7 @@ type TableProps = {
 }
 
 const getRarity = (total: number, pct: number): Rarity => {
-  if (total === 1) return 'Only Mint'
+  if (total === 1 || total === undefined) return 'Only Mint'
   if (total <= 3) return 'Very Limited'
   if (total <= 5) return 'Limited'
   if (pct > 0.8) return 'Very Common'
@@ -70,7 +70,7 @@ const generateTableData = (
           return { ...rowData, value: amount ? `Ξ ${amount}` : '—' }
         }
         if (i === 2) {
-          return { ...rowData, value: apiData[traitArr[j]]?.total_occurrence ?? '—' }
+          return { ...rowData, value: apiData[traitArr[j]]?.total_occurrence ?? '1' }
         }
         if (i === 3) {
           return getProgress(
