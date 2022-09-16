@@ -178,6 +178,13 @@ const accountQuery = (address: string) => `{
   }
 }`
 
+const amountsQuery = `{
+  auctions(orderBy: startTime, orderDirection: desc, first: 1000, skip: 1) {
+    id
+    amount
+  }
+}`
+
 export const getNoun = async (id?: number) => {
   const isNounder = Boolean(id === 0 || (id && id % 10 === 0))
   const response = await fetch(NOUNS_SUBGRAPH_URL, {
@@ -258,4 +265,15 @@ export const getTraitStats = async (seed?: Record<string, string>) => {
     const responseData = await response?.json()
     return responseData
   }
+}
+
+export const getAmounts = async () => {
+  const response = await fetch(NOUNS_SUBGRAPH_URL, {
+    method: 'post',
+    body: JSON.stringify({
+      query: amountsQuery,
+    }),
+  })
+  const responseData = await response?.json()
+  return responseData?.data?.auctions
 }

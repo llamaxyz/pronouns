@@ -58,7 +58,7 @@ const generateTableData = (
   const traitArr = ['background', 'body', 'accessory', 'head', 'glasses']
   const rowsWithTraits = traitArr.map((trait, j) => [
     { name: capitalize(trait), value: nounParts?.[j].name },
-    { name: 'Sale', value: '' },
+    { name: 'Avg. Sale', value: '' },
     { name: 'Population', value: '' },
     { name: '', value: <Progress rarity="Common" /> },
   ])

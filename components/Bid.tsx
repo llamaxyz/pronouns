@@ -99,7 +99,10 @@ const Bid = ({ minAmount, id }: BidProps) => {
 
   React.useEffect(() => {
     const getGas = async () => {
-      const gasPrice = await getDefaultProvider('homestead', { alchemy: process.env.ALCHEMY_API_KEY }).getGasPrice()
+      const provider = getDefaultProvider('homestead', {
+        alchemy: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
+      })
+      const gasPrice = await provider.getGasPrice()
       const totalGas = new BigNumber(utils.formatEther(gasPrice))
         .times(new BigNumber(config?.request?.gasLimit?.toString() || 0))
         .toString()

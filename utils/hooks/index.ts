@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { getLatestNounId, getNoun, getAccount, getSeeds, getTraitStats } from 'utils/index'
-import { NounSeed } from 'utils/types'
+import { getLatestNounId, getNoun, getAccount, getSeeds, getTraitStats, getAmounts } from 'utils/index'
 
 export const useLatestNounId = () =>
   useQuery(['latestNounId'], () => getLatestNounId(), {
@@ -31,6 +30,15 @@ export const useSeeds = () =>
 
 export const useTraitStats = (seed?: Record<string, string>, id?: number) => {
   return useQuery(['traitStats', id, seed], () => getTraitStats(seed), {
+    retry: 1,
+  })
+}
+
+export const useAmounts = () => {
+  return useQuery(['amounts'], () => getAmounts(), {
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
+    cacheTime: Infinity,
     retry: 1,
   })
 }

@@ -14,7 +14,7 @@ const queryClient = new QueryClient()
 const styleConfig = resolveConfig(tailwindConfig)
 const { chains, provider, webSocketProvider } = configureChains(
   [chain.mainnet],
-  [alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY }), publicProvider()]
+  [alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY }), publicProvider()]
 )
 const { connectors } = getDefaultWallets({
   appName: 'Pronouns',

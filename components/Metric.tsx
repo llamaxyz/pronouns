@@ -1,5 +1,4 @@
 import Image from 'next/image'
-import { InformationCircleIcon } from '@heroicons/react/solid'
 import Paragraph from 'components/Paragraph'
 import Skeleton from 'components/Skeleton'
 import Title from 'components/Title'
@@ -34,10 +33,7 @@ const Metric = ({ bgColor = '', description, status, statClass = '', stat, icon 
             </div>
             <div className="flex flex-col items-start">
               <div className="animate-pulse h-7 w-full bg-white/20 rounded tracking-wide" />
-              <Paragraph className="text-ui-silver">
-                {description}{' '}
-                <InformationCircleIcon className="h-4 w-4 inline hover:text-white/50 transition ease-in-out hover:cursor-pointer" />
-              </Paragraph>
+              <Paragraph className="text-ui-silver">{description}</Paragraph>
             </div>
           </div>
         }
@@ -50,10 +46,7 @@ const Metric = ({ bgColor = '', description, status, statClass = '', stat, icon 
             <Title level={5} className={statClass} weight="medium">
               {stat}
             </Title>
-            <Paragraph className="text-ui-silver">
-              {description}{' '}
-              {/* <InformationCircleIcon className="h-4 w-4 inline hover:text-white/50 transition ease-in-out hover:cursor-pointer" /> */}
-            </Paragraph>
+            <Paragraph className="text-ui-silver">{description}</Paragraph>
           </div>
         </div>
       </Skeleton>
