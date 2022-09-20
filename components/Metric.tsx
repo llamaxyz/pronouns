@@ -46,7 +46,7 @@ const Metric = ({ bgColor = '', description, status, statClass = '', stat, icon 
             <Title level={5} className={statClass} weight="medium">
               {stat}
             </Title>
-            <Paragraph className="text-ui-silver">{description}</Paragraph>
+            <Paragraph className="text-ui-silver text-base lg:text-sm xl:text-base">{description}</Paragraph>
           </div>
         </div>
       </Skeleton>

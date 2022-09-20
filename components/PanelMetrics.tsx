@@ -3,17 +3,24 @@ import { useBalance, useContractRead } from 'wagmi'
 import BigNumber from 'bignumber.js'
 import { utils, BigNumber as EthersBN } from 'ethers'
 import Metric from 'components/Metric'
-import { useAmounts } from 'utils/hooks'
+import { useAmounts, useOpenseaData } from 'utils/hooks'
 import diamond from 'public/icons/diamond.svg'
 import crosshair from 'public/icons/crosshair.svg'
 import stars from 'public/icons/stars.svg'
 import fraction from 'public/icons/fraction.svg'
 
+type PanelMetricsProps = {
+  amount?: string
+  latestId?: number
+  id?: number
+  isNounder: boolean
+}
+
 const metrics = [
   { description: 'Book Value', bgColor: 'bg-ui-green/5', icon: diamond },
-  { description: '14 Day Avg.', bgColor: 'bg-ui-blue/5', icon: crosshair },
+  { description: 'Trailing Avg.', bgColor: 'bg-ui-blue/5', icon: crosshair },
+  { description: 'Price vs. Floor', bgColor: 'bg-ui-sulphur/5', icon: fraction },
   { description: 'Weight', bgColor: 'bg-ui-purple/5', icon: stars },
-  { description: 'Bid vs. Floor', bgColor: 'bg-ui-sulphur/5', icon: fraction },
 ]
 
 const calculateBookValue = (latestId?: number, eth?: string, steth?: string) =>
@@ -44,9 +51,36 @@ const idToTrailingValues = (ema: Record<string, string>[], id?: number) => {
     : '—'
 }
 
-const PanelMetrics = ({ latestId, id }: { latestId?: number; id?: number }) => {
+const calcPriceVsFloor = (isNounder: boolean, amount?: string, floor?: number) => {
+  // setPctLoading(true)
+
+  // if (id !== latestId && !isNounder) {
+  //   // Winning bid of auction of current id
+  //   const winningBid = new BigNumber(amount)
+
+  //   // Ignore nounder nouns and get previous id winning bid
+  //   const subtrahend = Boolean(id && (id - 1) % 10 === 0) ? 2 : 1
+  //   const prevId = id && id - subtrahend
+  //   const prevWinningBid = await queryClient.fetchQuery(['nounDetails', prevId, isNounder], () => getNoun(prevId))
+
+  // }
+
+  if (isNounder || amount === undefined || floor === undefined) return 'N/A'
+  const pctChange = new BigNumber(amount)
+    .div(new BigNumber(utils.parseEther(`${floor}` || '0').toString()))
+    .decimalPlaces(4, BigNumber.ROUND_UP)
+  const formattedPct = pctChange.isEqualTo(1)
+    ? '0.00%'
+    : pctChange.isGreaterThan(1)
+    ? `+ ${pctChange.minus(1).times(100).toFixed(2, BigNumber.ROUND_CEIL).toString()}%`
+    : `- ${new BigNumber(1).minus(pctChange).times(100).toFixed(2, BigNumber.ROUND_CEIL).toString()}%`
+  return formattedPct
+}
+
+const PanelMetrics = ({ amount, latestId, id, isNounder }: PanelMetricsProps) => {
   const [loading, setLoading] = React.useState(true)
   const { data: ema, status: emaStatus } = useAmounts()
+  const { data: osData, status: osDataStatus } = useOpenseaData()
   const [bookValue, setBookValue] = React.useState('0')
 
   const { data: ethBalanceData } = useBalance({
@@ -88,6 +122,16 @@ const PanelMetrics = ({ latestId, id }: { latestId?: number; id?: number }) => {
           status={emaStatus}
           description={metrics[1].description}
           icon={metrics[1].icon}
+        />
+      </div>
+      <div className="xxs:col-auto col-span-full">
+        <Metric
+          statClass="tabular-nums"
+          bgColor={metrics[2].bgColor}
+          stat={calcPriceVsFloor(isNounder, amount, osData?.stats?.floor_price)}
+          status={osDataStatus}
+          description={metrics[2].description}
+          icon={metrics[2].icon}
         />
       </div>
     </div>

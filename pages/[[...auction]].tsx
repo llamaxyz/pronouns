@@ -161,6 +161,7 @@ const Home: NextPage = () => {
       <Layout>
         <Layout.Section width={5}>
           <Panel
+            amount={noun?.amount}
             auctionState={auctionState}
             seed={noun?.noun?.seed}
             status={nounStatus}

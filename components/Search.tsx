@@ -93,7 +93,7 @@ const Search = ({ latestId }: { latestId?: number }) => {
           <div ref={node} className="z-50 w-[50%] top-[10%] drop-shadow-xl left-[50%] rounded-lg fixed bg-ui-charleston -translate-x-1/2">
             <Input
               autoFocus
-              placeholder="Search"
+              placeholder="Enter Noun ID"
               type="text"
               onChange={onChange}
               className="text-lg block w-full text-white rounded-t-lg rounded-b-none"

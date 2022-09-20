@@ -42,6 +42,7 @@ export const getBidCount = (bids: Bid[], bidder: string): number =>
  */
 
 const NOUNS_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/nounsdao/nouns-subgraph'
+const NOUNS_OPENSEA_URL = 'https://api.opensea.io/api/v1/collection/nouns/stats'
 
 const nounQuery = (id: number) => `{
     auction(id: ${id}) {
@@ -276,4 +277,12 @@ export const getAmounts = async () => {
   })
   const responseData = await response?.json()
   return responseData?.data?.auctions
+}
+
+export const getOpenseaData = async () => {
+  const response = await fetch(NOUNS_OPENSEA_URL, {
+    method: 'get',
+  })
+  const responseData = await response?.json()
+  return responseData
 }

@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
-import { getLatestNounId, getNoun, getAccount, getSeeds, getTraitStats, getAmounts } from 'utils/index'
+import { getLatestNounId, getNoun, getAccount, getSeeds, getTraitStats, getAmounts, getOpenseaData } from 'utils/index'
 
 export const useLatestNounId = () =>
-  useQuery(['latestNounId'], () => getLatestNounId(), {
+  useQuery(['latestNounId'], getLatestNounId, {
     retry: 1,
   })
 
@@ -35,7 +35,16 @@ export const useTraitStats = (seed?: Record<string, string>, id?: number) => {
 }
 
 export const useAmounts = () => {
-  return useQuery(['amounts'], () => getAmounts(), {
+  return useQuery(['amounts'], getAmounts, {
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
+    cacheTime: Infinity,
+    retry: 1,
+  })
+}
+
+export const useOpenseaData = () => {
+  return useQuery(['floor'], getOpenseaData, {
     refetchOnWindowFocus: false,
     staleTime: Infinity,
     cacheTime: Infinity,

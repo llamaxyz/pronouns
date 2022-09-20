@@ -13,6 +13,7 @@ import { NOUNDERS_ENS } from 'utils/constants'
 import { formatDate } from 'utils/index'
 
 type PanelProps = {
+  amount?: string
   seed?: NounSeed
   id?: number
   status: Status
@@ -30,7 +31,7 @@ const auctionStateToTag: Record<AuctionState, string> = {
   unsettled: 'Pending',
 }
 
-const Panel = ({ status, id, setId, latestId, startTime, auctionState, ownerAddress, seed, isNounder }: PanelProps) => (
+const Panel = ({ amount, status, id, setId, latestId, startTime, auctionState, ownerAddress, seed, isNounder }: PanelProps) => (
   <div className="lg:h-[calc(100vh_-_143px)] min-h-[26rem] flex">
     <div className="overflow-y-auto w-full">
       <div className="flex flex-col gap-4">
@@ -96,7 +97,7 @@ const Panel = ({ status, id, setId, latestId, startTime, auctionState, ownerAddr
           </Skeleton>
         </div>
         <Noun id={id} status={status} seed={seed} />
-        <PanelMetrics id={id} latestId={latestId} />
+        <PanelMetrics amount={amount} id={id} latestId={latestId} isNounder={isNounder} />
         <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">
           <Title level={5} weight="normal">
             Current Rarity
