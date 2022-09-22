@@ -17,10 +17,20 @@ type PanelMetricsProps = {
 }
 
 const metrics = [
-  { description: 'Book Value', bgColor: 'bg-ui-green/5', icon: diamond },
-  { description: 'Trailing Avg.', bgColor: 'bg-ui-blue/5', icon: crosshair },
-  { description: 'Price vs. Floor', bgColor: 'bg-ui-sulphur/5', icon: fraction },
-  { description: 'Weight', bgColor: 'bg-ui-purple/5', icon: stars },
+  {
+    description: 'Book Value',
+    bgColor: 'bg-ui-green/5',
+    icon: diamond,
+    tooltipText: 'Total ETH/stETH in the treasury divided by number of Nouns.',
+  },
+  { description: 'Trailing Avg.', bgColor: 'bg-ui-blue/5', icon: crosshair, tooltipText: 'Avg. price of the previous 14 auctions.' },
+  {
+    description: 'Price vs. Floor',
+    bgColor: 'bg-ui-sulphur/5',
+    icon: fraction,
+    tooltipText: 'Percentage difference between auction price (or current bid) and the secondary floor price.',
+  },
+  { description: 'Weight', bgColor: 'bg-ui-purple/5', icon: stars, tooltipText: '' },
 ]
 
 const calculateBookValue = (latestId?: number, eth?: string, steth?: string) =>
@@ -52,19 +62,6 @@ const idToTrailingValues = (ema: Record<string, string>[], id?: number) => {
 }
 
 const calcPriceVsFloor = (isNounder: boolean, amount?: string, floor?: number) => {
-  // setPctLoading(true)
-
-  // if (id !== latestId && !isNounder) {
-  //   // Winning bid of auction of current id
-  //   const winningBid = new BigNumber(amount)
-
-  //   // Ignore nounder nouns and get previous id winning bid
-  //   const subtrahend = Boolean(id && (id - 1) % 10 === 0) ? 2 : 1
-  //   const prevId = id && id - subtrahend
-  //   const prevWinningBid = await queryClient.fetchQuery(['nounDetails', prevId, isNounder], () => getNoun(prevId))
-
-  // }
-
   if (isNounder || amount === undefined || floor === undefined) return 'N/A'
   const pctChange = new BigNumber(amount)
     .div(new BigNumber(utils.parseEther(`${floor}` || '0').toString()))
@@ -72,8 +69,8 @@ const calcPriceVsFloor = (isNounder: boolean, amount?: string, floor?: number) =
   const formattedPct = pctChange.isEqualTo(1)
     ? '0.00%'
     : pctChange.isGreaterThan(1)
-    ? `+ ${pctChange.minus(1).times(100).toFixed(2, BigNumber.ROUND_CEIL).toString()}%`
-    : `- ${new BigNumber(1).minus(pctChange).times(100).toFixed(2, BigNumber.ROUND_CEIL).toString()}%`
+    ? `+${pctChange.minus(1).times(100).toFixed(2, BigNumber.ROUND_CEIL).toString()}%`
+    : `-${new BigNumber(1).minus(pctChange).times(100).toFixed(2, BigNumber.ROUND_CEIL).toString()}%`
   return formattedPct
 }
 
@@ -108,30 +105,36 @@ const PanelMetrics = ({ amount, latestId, id, isNounder }: PanelMetricsProps) =>
     <div className="grid grid-cols-2 gap-4">
       <div className="xxs:col-auto col-span-full">
         <Metric
+          border
           bgColor={metrics[0].bgColor}
           stat={`Ξ ${bookValue}`}
           status={loading ? 'loading' : 'success'}
           description={metrics[0].description}
           icon={metrics[0].icon}
+          tooltipText={metrics[0].tooltipText}
         />
       </div>
       <div className="xxs:col-auto col-span-full">
         <Metric
+          border
           bgColor={metrics[1].bgColor}
           stat={`Ξ ${idToTrailingValues(ema, id)}`}
           status={emaStatus}
           description={metrics[1].description}
           icon={metrics[1].icon}
+          tooltipText={metrics[1].tooltipText}
         />
       </div>
       <div className="xxs:col-auto col-span-full">
         <Metric
+          border
           statClass="tabular-nums"
           bgColor={metrics[2].bgColor}
           stat={calcPriceVsFloor(isNounder, amount, osData?.stats?.floor_price)}
           status={osDataStatus}
           description={metrics[2].description}
           icon={metrics[2].icon}
+          tooltipText={metrics[2].tooltipText}
         />
       </div>
     </div>

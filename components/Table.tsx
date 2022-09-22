@@ -145,7 +145,7 @@ const Table = ({ seed, status, id, latestId }: TableProps) => {
                   {React.isValidElement(data.name) ? (
                     data.name
                   ) : (
-                    <div className="uppercase text-white/60 tracking-wider text-xs">{data.name}</div>
+                    <div className="uppercase text-white/60 font-light tracking-wider text-xs">{data.name}</div>
                   )}
                 </Skeleton>
               ) : null}

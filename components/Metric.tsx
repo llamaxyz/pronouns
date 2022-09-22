@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Paragraph from 'components/Paragraph'
 import Skeleton from 'components/Skeleton'
 import Title from 'components/Title'
+import Tooltip from 'components/Tooltip'
 import { Status } from 'utils/types'
 
 type StaticImageData = {
@@ -18,11 +19,13 @@ type MetricProps = {
   description: string
   status: Status
   stat: string | React.ReactNode
+  tooltipText?: string
+  border?: boolean
 }
 
-const Metric = ({ bgColor = '', description, status, statClass = '', stat, icon }: MetricProps) => {
+const Metric = ({ bgColor = '', description, tooltipText, status, statClass = '', stat, icon, border = false }: MetricProps) => {
   return (
-    <div className="p-4 text-center rounded-lg border border-white/10">
+    <div className={`text-center rounded-lg ${border ? 'border border-white/10 p-4' : 'py-4 pt-4 pb-0'}`}>
       <Skeleton
         hasParentElement
         loading={status !== 'success'}
@@ -46,7 +49,9 @@ const Metric = ({ bgColor = '', description, status, statClass = '', stat, icon 
             <Title level={5} className={statClass} weight="medium">
               {stat}
             </Title>
-            <Paragraph className="text-ui-silver text-base lg:text-sm xl:text-base">{description}</Paragraph>
+            <Paragraph className="text-ui-silver text-sm sm:text-base lg:text-sm xl:text-base font-light">
+              {description} {tooltipText && <Tooltip text={tooltipText} />}
+            </Paragraph>
           </div>
         </div>
       </Skeleton>

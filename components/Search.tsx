@@ -90,7 +90,10 @@ const Search = ({ latestId }: { latestId?: number }) => {
       </Button>
       {open && (
         <div className="z-40 fixed top-0 left-0 w-screen h-screen bg-black/50 backdrop-blur-sm">
-          <div ref={node} className="z-50 w-[50%] top-[10%] drop-shadow-xl left-[50%] rounded-lg fixed bg-ui-charleston -translate-x-1/2">
+          <div
+            ref={node}
+            className="z-50 w-[50%] max-w-5xl top-[10%] drop-shadow-xl left-[50%] -translate-x-[50%] rounded-lg fixed bg-ui-charleston -translate-x-1/2"
+          >
             <Input
               autoFocus
               placeholder="Enter Noun ID"

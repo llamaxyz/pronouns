@@ -36,9 +36,10 @@ const Panel = ({ amount, status, id, setId, latestId, startTime, auctionState, o
     <div className="overflow-y-auto w-full">
       <div className="flex flex-col gap-4">
         <div className="flex items-center xs:flex-nowrap flex-wrap gap-4">
-          <div className="flex gap-2">
+          <div className="flex gap-2 ml-0.5">
             <Button
               ariaLabel="Previous Noun"
+              className=""
               weight="bold"
               onClick={() => id !== undefined && setId(id => (id !== undefined ? id - 1 : undefined))}
               disabled={id === 0}

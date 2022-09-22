@@ -37,7 +37,8 @@ module.exports = {
       },
       animation: {
         progress: '1s linear 0.05s',
-        'fade-in-1': '0.5s ease 0.05s 1 normal forwards running fadeIn',
+        tooltip: '0.3s ease 0.05s 1 normal forwards running tooltip',
+        'fade-in-1': '0.5s ease-in-out 0.05s 1 normal forwards running fadeIn',
         'fade-in-2': '0.5s ease 0.15s 1 normal forwards running fadeIn',
       },
       keyframes: {
@@ -47,6 +48,10 @@ module.exports = {
         },
         fadeIn: {
           '0%': { opacity: '0', transform: 'translateY(8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        tooltip: {
+          '0%': { opacity: '0', transform: 'translateY(2px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
       },
