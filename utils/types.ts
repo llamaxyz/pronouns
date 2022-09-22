@@ -30,3 +30,14 @@ export type ToastData = {
   message: string
   type: Status
 }
+
+export type NounType = {
+  amount: string
+  endTime: string
+  bidder: Bidder
+  settled: boolean
+  bids: Bid[]
+  noun: {
+    seed: NounSeed
+  }
+}

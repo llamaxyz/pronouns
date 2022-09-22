@@ -1,4 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline'
+import Auction from 'components/Auction'
 import Account from 'components/Account'
 import Button from 'components/Button'
 import Noun from 'components/Noun'
@@ -8,13 +9,12 @@ import Table from 'components/Table'
 import Tag from 'components/Tag'
 import Title from 'components/Title'
 import Skeleton from 'components/Skeleton'
-import { AuctionState, Status, NounSeed } from 'utils/types'
+import { AuctionState, Status, NounType } from 'utils/types'
 import { NOUNDERS_ENS } from 'utils/constants'
 import { formatDate } from 'utils/index'
 
 type PanelProps = {
-  amount?: string
-  seed?: NounSeed
+  noun: NounType
   id?: number
   status: Status
   setId: React.Dispatch<React.SetStateAction<number | undefined>>
@@ -23,6 +23,9 @@ type PanelProps = {
   auctionState: AuctionState
   ownerAddress: string
   isNounder: boolean
+  time: number
+  pct: string
+  pctLoading: boolean
 }
 
 const auctionStateToTag: Record<AuctionState, string> = {
@@ -31,7 +34,20 @@ const auctionStateToTag: Record<AuctionState, string> = {
   unsettled: 'Pending',
 }
 
-const Panel = ({ amount, status, id, setId, latestId, startTime, auctionState, ownerAddress, seed, isNounder }: PanelProps) => (
+const Panel = ({
+  status,
+  id,
+  setId,
+  latestId,
+  startTime,
+  auctionState,
+  ownerAddress,
+  noun,
+  isNounder,
+  pctLoading,
+  pct,
+  time,
+}: PanelProps) => (
   <div className="lg:h-[calc(100vh_-_143px)] min-h-[26rem] flex">
     <div className="overflow-y-auto w-full">
       <div className="flex flex-col gap-4">
@@ -97,14 +113,26 @@ const Panel = ({ amount, status, id, setId, latestId, startTime, auctionState, o
             )}
           </Skeleton>
         </div>
-        <Noun id={id} status={status} seed={seed} />
-        <PanelMetrics amount={amount} id={id} latestId={latestId} isNounder={isNounder} />
+        <Noun id={id} status={status} seed={noun?.noun?.seed} />
+        <Auction
+          className="lg:hidden"
+          noun={noun}
+          status={status}
+          auctionState={auctionState}
+          isPercentChangeLoading={pctLoading}
+          isNounder={isNounder}
+          percentChange={pct}
+          timeRemaining={time}
+          id={id}
+          latestId={latestId}
+        />
+        <PanelMetrics amount={noun?.amount} id={id} latestId={latestId} isNounder={isNounder} />
         <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">
           <Title level={5} weight="normal">
             Current Rarity
           </Title>
           <div className="overflow-x-auto">
-            <Table id={id} seed={seed} status={status} latestId={latestId} />
+            <Table id={id} seed={noun?.noun?.seed} status={status} latestId={latestId} />
           </div>
         </div>
       </div>

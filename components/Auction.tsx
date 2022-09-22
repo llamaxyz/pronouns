@@ -6,15 +6,7 @@ import Account from 'components/Account'
 import Statistic from 'components/Statistic'
 import { getBidCount } from 'utils/index'
 import { NOUNDERS_ENS } from 'utils/constants'
-import { AuctionState, Status, Bid, Bidder } from 'utils/types'
-
-type Noun = {
-  amount: string
-  endTime: string
-  bidder: Bidder
-  settled: boolean
-  bids: Bid[]
-}
+import { AuctionState, Status, NounType } from 'utils/types'
 
 type AuctionProps = {
   id?: number | undefined
@@ -25,7 +17,8 @@ type AuctionProps = {
   isNounder: boolean
   isPercentChangeLoading: boolean
   status: Status
-  noun: Noun
+  noun: NounType
+  className?: string
 }
 
 const Auction = ({
@@ -38,6 +31,7 @@ const Auction = ({
   isNounder,
   isPercentChangeLoading,
   noun,
+  className,
 }: AuctionProps) => {
   const isAuctionLive = id === latestId && auctionState === 'live'
   const renderTopBid = () =>
@@ -67,7 +61,7 @@ const Auction = ({
     <div
       className={`border border-white/10 rounded-xl min-h-[26rem] lg:h-[calc(100vh_-_143px)] p-4 flex flex-col ${
         isNounder ? '' : 'gap-y-4'
-      }`}
+      } ${className ?? ''}`}
     >
       <div className="grid grid-cols-2 gap-2 sticky">
         <Statistic

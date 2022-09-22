@@ -159,9 +159,8 @@ const Home: NextPage = () => {
       <Layout>
         <Layout.Section width={5}>
           <Panel
-            amount={noun?.amount}
+            noun={noun}
             auctionState={auctionState}
-            seed={noun?.noun?.seed}
             status={nounStatus}
             id={id}
             ownerAddress={noun?.noun?.owner?.id}
@@ -169,9 +168,12 @@ const Home: NextPage = () => {
             latestId={latestId}
             startTime={noun?.startTime}
             isNounder={isNounder}
+            pctLoading={pctLoading}
+            pct={pct}
+            time={time}
           />
         </Layout.Section>
-        <Layout.Section width={4}>
+        <Layout.Section className="hidden lg:block" width={4}>
           <Auction
             noun={noun}
             status={nounStatus}
