@@ -20,7 +20,7 @@ const Layout = ({ className = '', children }: LayoutProps) => {
 }
 
 const Section = ({ children, width, className = '' }: SectionProps) => (
-  <div className={`col-span-full ${columnWidths[width - 1]} py-6 ${className}`}>{children}</div>
+  <div className={`col-span-full ${columnWidths[width - 1]} py-2 lg:py-6 ${className}`}>{children}</div>
 )
 
 const pkg = Object.assign(Layout, {

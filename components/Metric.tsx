@@ -49,7 +49,7 @@ const Metric = ({ bgColor = '', description, tooltipText, status, statClass = ''
             <Title level={5} className={statClass} weight="medium">
               {stat}
             </Title>
-            <Paragraph className="text-ui-silver text-sm sm:text-base lg:text-sm xl:text-base font-light">
+            <Paragraph className="text-ui-silver text-sm sm:text-base lg:text-sm xl:text-base">
               {description} {tooltipText && <Tooltip text={tooltipText} />}
             </Paragraph>
           </div>

@@ -153,6 +153,7 @@ const Home: NextPage = () => {
       <Head>
         <meta name="title" content="Auction | Pronouns" />
         <meta property="og:title" content="Auction | Pronouns" />
+        <meta property="og:image" content="http://localhost:3000/api/og-image?name=Next.js&stage=adopt" />
         <title>Auction | Pronouns</title>
       </Head>
       <Nav latestId={latestId} />
