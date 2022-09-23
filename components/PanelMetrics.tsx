@@ -36,7 +36,7 @@ const metrics = [
 const calculateBookValue = (latestId?: number, eth?: string, steth?: string) =>
   new BigNumber(eth || 0)
     .plus(new BigNumber(utils.formatEther(EthersBN.from(steth || 0))))
-    .dividedBy(new BigNumber(latestId || 1))
+    .dividedBy(new BigNumber(latestId ? latestId - 1 : 1))
     .toFixed(2, BigNumber.ROUND_CEIL)
     .toString()
 
