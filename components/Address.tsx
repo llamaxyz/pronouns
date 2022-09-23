@@ -73,7 +73,7 @@ const List = ({ items }: ListProps) => (
   <div className="p-3 flex flex-col gap-y-4">
     {items?.map((bid: Bid) => (
       <Paragraph key={bid.id} className="flex items-center justify-between opacity-60">
-        <Account alwaysAvatar address={bid?.bidder?.id} />
+        <Account className="max-w-[50%] xl:max-w-none" alwaysAvatar address={bid?.bidder?.id} />
         <a
           className="flex items-center gap-x-4 hover:text-white/70 transition ease-in-out mr-1"
           rel="noopener noreferer noreferrer"

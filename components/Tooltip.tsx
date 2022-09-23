@@ -3,10 +3,17 @@ import { InformationCircleIcon } from '@heroicons/react/solid'
 import * as TooltipPrimitive from '@radix-ui/react-tooltip'
 
 const Tooltip = ({ text }: { text: string }) => {
+  const [open, setOpen] = React.useState(false)
   return (
     <TooltipPrimitive.Provider delayDuration={50}>
-      <TooltipPrimitive.Root>
-        <TooltipPrimitive.Trigger asChild>
+      <TooltipPrimitive.Root open={open}>
+        <TooltipPrimitive.Trigger
+          asChild
+          onMouseEnter={() => setOpen(true)}
+          onMouseLeave={() => setOpen(false)}
+          onFocus={() => setOpen(true)}
+          onBlur={() => setOpen(false)}
+        >
           <InformationCircleIcon className="h-4 w-4 inline hover:text-white/50 transition ease-in-out" />
         </TooltipPrimitive.Trigger>
         <TooltipPrimitive.Portal>
