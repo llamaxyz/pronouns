@@ -2,7 +2,7 @@ import React from 'react'
 import { InformationCircleIcon } from '@heroicons/react/solid'
 import * as TooltipPrimitive from '@radix-ui/react-tooltip'
 
-const Tooltip = ({ text }: { text: string }) => {
+const Tooltip = ({ text, darkBg = false }: { text: string; darkBg?: boolean }) => {
   const [open, setOpen] = React.useState(false)
   return (
     <TooltipPrimitive.Provider delayDuration={50}>
@@ -18,11 +18,13 @@ const Tooltip = ({ text }: { text: string }) => {
         </TooltipPrimitive.Trigger>
         <TooltipPrimitive.Portal>
           <TooltipPrimitive.Content
-            className="bg-neutral-800 px-3 py-2 max-w-[14rem] text-white text-sm tracking-wide rounded shadow-sm animate-tooltip opacity-0 ease-in-out"
+            className={`${
+              darkBg ? 'bg-ui-black' : 'bg-neutral-800'
+            } px-3 py-2 max-w-[14rem] text-white text-sm tracking-wide rounded shadow-sm animate-tooltip opacity-0 ease-in-out`}
             sideOffset={5}
           >
             {text}
-            <TooltipPrimitive.Arrow className="fill-neutral-800" />
+            <TooltipPrimitive.Arrow className={darkBg ? 'fill-ui-black' : 'fill-neutral-800'} />
           </TooltipPrimitive.Content>
         </TooltipPrimitive.Portal>
       </TooltipPrimitive.Root>

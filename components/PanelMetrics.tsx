@@ -23,7 +23,7 @@ const metrics = [
     icon: diamond,
     tooltipText: 'Total ETH/stETH in the treasury divided by number of Nouns.',
   },
-  { description: 'Trailing Avg.', bgColor: 'bg-ui-blue/5', icon: crosshair, tooltipText: 'Avg. price of the previous 14 auctions.' },
+  { description: '14 day avg.', bgColor: 'bg-ui-blue/5', icon: crosshair, tooltipText: 'Avg. price of the most recent 14 auctions.' },
   {
     description: 'Price vs. Floor',
     bgColor: 'bg-ui-sulphur/5',
@@ -46,11 +46,7 @@ const idToTrailingValues = (ema: Record<string, string>[], id?: number) => {
   if (id === 0) {
     return '—'
   }
-  const startIndex = ema?.findIndex(amount => {
-    const startId = `${id !== undefined ? ((id - 1) % 10 === 0 ? id : id - 1) : 0}`
-    return amount.id === startId
-  })
-  const trailingValues = ema?.slice(startIndex, startIndex + 14).map(i => i.amount)
+  const trailingValues = ema?.slice(0, 14).map(i => i.amount)
   return trailingValues?.length
     ? trailingValues
         ?.map(value => BigNumber(utils.formatUnits(EthersBN.from(value), 'ether')))
