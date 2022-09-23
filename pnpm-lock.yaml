@@ -16,7 +16,7 @@ specifiers:
   '@types/react-dom': 18.0.6
   autoprefixer: ^10.4.7
   bignumber.js: ^9.1.0
-  chrome-aws-lambda: ^10.1.0
+  chrome-aws-lambda: 6.0.0
   eslint: 8.19.0
   eslint-config-next: 12.2.2
   ethers: ^5.6.9
@@ -46,10 +46,10 @@ dependencies:
   '@tanstack/react-query': 4.0.10_biqbaboplfbrettd7655fr4n2y
   autoprefixer: 10.4.7_postcss@8.4.14
   bignumber.js: 9.1.0
-  chrome-aws-lambda: 10.1.0
+  chrome-aws-lambda: 6.0.0
   ethers: 5.6.9
   next: 12.2.2_biqbaboplfbrettd7655fr4n2y
-  next-api-og-image: 4.3.0_tx5iz522v6nrcbaqjfvdvlbc5q
+  next-api-og-image: 4.3.0_2tsyvsuxtbkixetjpxdd3q45uq
   postcss: 8.4.14
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -3828,11 +3828,11 @@ packages:
     resolution: {integrity: sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==}
     dev: false
 
-  /chrome-aws-lambda/10.1.0:
-    resolution: {integrity: sha512-NZQVf+J4kqG4sVhRm3WNmOfzY0OtTSm+S8rg77pwePa9RCYHzhnzRs8YvNI6L9tALIW6RpmefWiPURt3vURXcw==}
+  /chrome-aws-lambda/6.0.0:
+    resolution: {integrity: sha512-XnFo6AaE5ZYpHYmOmMoj1yCYFeRTx6uFCpJnVuDREWzXevzZvo3gzkyQ6qSKsPW91VGWeQI7wQgnOpW50e+Dzg==}
     engines: {node: '>= 10.16'}
     peerDependencies:
-      puppeteer-core: ^10.1.0
+      puppeteer-core: 6.0.x
     dependencies:
       lambdafs: 2.1.1
     dev: false
@@ -5603,7 +5603,7 @@ packages:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
 
-  /next-api-og-image/4.3.0_tx5iz522v6nrcbaqjfvdvlbc5q:
+  /next-api-og-image/4.3.0_2tsyvsuxtbkixetjpxdd3q45uq:
     resolution: {integrity: sha512-6ezI7gswtqchLqmBsr1VmZzQBMopqLHGIvRaRgmOucQaAU9MyXpBXjTafqEnV9JAfSqHFyMcifpofkfwMlGUgQ==}
     peerDependencies:
       chrome-aws-lambda: '>=1.6.3'
@@ -5611,7 +5611,7 @@ packages:
       react: '>=16.0.0'
       react-dom: '>=16.0.0'
     dependencies:
-      chrome-aws-lambda: 10.1.0
+      chrome-aws-lambda: 6.0.0
       deepmerge: 4.2.2
       is-lambda: 1.0.1
       next: 12.2.2_biqbaboplfbrettd7655fr4n2y
