@@ -173,7 +173,7 @@ const Home: NextPage = () => {
             time={time}
           />
         </Layout.Section>
-        <Layout.Section className="hidden lg:block" width={4}>
+        <Layout.Section width={4}>
           <Auction
             noun={noun}
             status={nounStatus}

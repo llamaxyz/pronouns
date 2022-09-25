@@ -14,6 +14,7 @@ type PanelMetricsProps = {
   latestId?: number
   id?: number
   isNounder: boolean
+  className?: string
 }
 
 const metrics = [
@@ -70,7 +71,7 @@ const calcPriceVsFloor = (isNounder: boolean, amount?: string, floor?: number) =
   return formattedPct
 }
 
-const PanelMetrics = ({ amount, latestId, id, isNounder }: PanelMetricsProps) => {
+const PanelMetrics = ({ amount, latestId, id, isNounder, className = '' }: PanelMetricsProps) => {
   const [loading, setLoading] = React.useState(true)
   const { data: ema, status: emaStatus } = useAmounts()
   const { data: osData, status: osDataStatus } = useOpenseaData()
@@ -98,7 +99,7 @@ const PanelMetrics = ({ amount, latestId, id, isNounder }: PanelMetricsProps) =>
   }, [latestId, ethBalanceData, stethBalanceData])
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className={`grid grid-cols-2 gap-4 ${className}`}>
       <div className="xxs:col-auto col-span-full">
         <Metric
           border

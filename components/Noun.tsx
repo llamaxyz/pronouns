@@ -9,6 +9,7 @@ type NounProps = {
   id: number | undefined
   status: Status
   isSmall?: boolean
+  className?: string
 }
 
 const renderNoun = (seed: NounSeed) => {
@@ -16,11 +17,11 @@ const renderNoun = (seed: NounSeed) => {
   return `data:image/svg+xml;base64,${window.btoa(buildSVG(parts, ImageData.palette, background))}`
 }
 
-const Noun = ({ seed, status, id, isSmall = false }: NounProps) => (
+const Noun = ({ seed, status, id, isSmall = false, className = '' }: NounProps) => (
   <div
     className={`${isSmall ? '' : seed?.background.toString() === '0' ? 'bg-cool' : 'bg-warm'} flex justify-center ${
       isSmall ? 'h-6 w-6' : 'h-64 rounded-lg'
-    } text-black`}
+    } text-black ${className}`}
   >
     <Image
       {...(isSmall ? { style: { borderRadius: '50%' } } : {})}

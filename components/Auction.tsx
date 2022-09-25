@@ -60,7 +60,7 @@ const Auction = ({
       )
     }
 
-    return <Account address={isNounder ? NOUNDERS_ENS : noun?.bidder?.id} isEns={isNounder} />
+    return <Account textHoverColor="hover:text-ui-black/80" address={isNounder ? NOUNDERS_ENS : noun?.bidder?.id} isEns={isNounder} />
   }
   const countdownText = showCountdown ? 'Time Left' : `Ends on ${endTime[0]} at`
   return (
@@ -92,6 +92,7 @@ const Auction = ({
           <Statistic
             status={isPercentChangeLoading ? 'loading' : status}
             className="bg-ui-space col-span-1 w-full"
+            contentClass="animate-fade-in-2 opacity-0 ease-in-out"
             title="% Change"
             content={
               isNounder ? (
