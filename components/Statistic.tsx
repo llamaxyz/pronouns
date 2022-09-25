@@ -10,13 +10,14 @@ type StatisticProps = {
   title: string
   status: Status
   content: string | React.ReactNode
+  onClick?: () => void
 }
 
-const Statistic = ({ className = '', title, status, contentClass = '', content, titleClass }: StatisticProps) => {
+const Statistic = ({ className = '', title, status, contentClass = '', content, titleClass, onClick }: StatisticProps) => {
   return (
-    <div className={`py-3 px-1 text-center rounded-lg ${className}`}>
+    <div onClick={onClick} className={`py-3 px-1 text-center rounded-lg ${className}`}>
       <div>
-        <Paragraph className={`opacity-70 font-medium text-sm ${titleClass}`}>{title}</Paragraph>
+        <Paragraph className={`opacity-70 font-medium text-sm truncate ${titleClass}`}>{title}</Paragraph>
       </div>
       <Skeleton
         hasParentElement

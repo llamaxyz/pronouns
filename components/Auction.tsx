@@ -4,7 +4,7 @@ import { utils, BigNumber as EthersBN } from 'ethers'
 import { Address } from 'components/Address'
 import Account from 'components/Account'
 import Statistic from 'components/Statistic'
-import { getBidCount } from 'utils/index'
+import { getBidCount, formatAuctionDate } from 'utils/index'
 import { NOUNDERS_ENS } from 'utils/constants'
 import { AuctionState, Status, NounType } from 'utils/types'
 
@@ -33,13 +33,19 @@ const Auction = ({
   noun,
   className,
 }: AuctionProps) => {
+  const [showCountdown, setShowCountdown] = React.useState(true)
   const isAuctionLive = id === latestId && auctionState === 'live'
+  const endTime = formatAuctionDate(noun?.endTime).split(', ')
   const renderTopBid = () =>
     isNounder
       ? 'N/A'
       : `Ξ ${new BigNumber(utils.formatEther(EthersBN.from((noun?.amount || 0).toString()))).toFixed(2, BigNumber.ROUND_CEIL)}`
+
   const renderAuctionStatus = () => {
     if (id === latestId && !isNounder && Date.now() < Number(noun?.endTime) * 1000) {
+      if (!showCountdown) {
+        return <>{endTime[1]}</>
+      }
       const hours = Math.floor(((Number(noun?.endTime) * 1000 - timeRemaining) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
       const minutes = Math.floor(((Number(noun?.endTime) * 1000 - timeRemaining) % (1000 * 60 * 60)) / (1000 * 60))
       const seconds = Math.floor(((Number(noun?.endTime) * 1000 - timeRemaining) % (1000 * 60)) / 1000)
@@ -56,7 +62,7 @@ const Auction = ({
 
     return <Account address={isNounder ? NOUNDERS_ENS : noun?.bidder?.id} isEns={isNounder} />
   }
-
+  const countdownText = showCountdown ? 'Time Left' : `Ends on ${endTime[0]} at`
   return (
     <div
       className={`border border-white/10 rounded-xl min-h-[26rem] lg:h-[calc(100vh_-_143px)] p-4 flex flex-col ${
@@ -65,11 +71,14 @@ const Auction = ({
     >
       <div className="grid grid-cols-2 gap-2 sticky">
         <Statistic
+          onClick={() => setShowCountdown(showCountdown => !showCountdown)}
           status={status}
           titleClass="text-ui-black"
           contentClass="text-ui-black tabular-nums animate-fade-in-1 opacity-0 ease-in-out truncate"
-          className={`${isAuctionLive ? 'bg-ui-sulphur' : 'bg-ui-green'} w-full ${id === latestId ? 'col-span-1' : 'col-span-full'}`}
-          title={isAuctionLive ? 'Time Left' : 'Winner'}
+          className={`${isAuctionLive ? 'bg-ui-sulphur' : 'bg-ui-green'} w-full cursor-pointer ${
+            id === latestId ? 'col-span-1' : 'col-span-full'
+          }`}
+          title={isAuctionLive ? countdownText : 'Winner'}
           content={renderAuctionStatus()}
         />
         <Statistic

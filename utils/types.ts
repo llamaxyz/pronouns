@@ -33,7 +33,7 @@ export type ToastData = {
 
 export type NounType = {
   amount: string
-  endTime: string
+  endTime: number
   bidder: Bidder
   settled: boolean
   bids: Bid[]

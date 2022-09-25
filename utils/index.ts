@@ -18,6 +18,15 @@ export const formatDate = (date: number | Date, displayTime?: boolean): string =
     timeZone: 'UTC',
   }).format(date ? new Date(date) : new Date())
 
+export const formatAuctionDate = (date?: number): string =>
+  new Intl.DateTimeFormat(typeof window !== 'undefined' ? window?.navigator?.language : 'default', {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+  }).format(date ? new Date(date * 1000) : new Date())
+
 export const formatNumber = (num: number): string =>
   new Intl.NumberFormat(typeof window !== 'undefined' ? window?.navigator?.language : 'default', {
     minimumFractionDigits: 2,

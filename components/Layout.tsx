@@ -15,7 +15,7 @@ const columnWidths = ['lg:col-span-1', 'lg:col-span-2', 'lg:col-span-3', 'lg:col
 
 const Layout = ({ className = '', children }: LayoutProps) => {
   return (
-    <div className={`grid grid-cols-12 gap-x-6 px-10 md:mx-auto max-w-none md:max-w-3xl lg:max-w-[2200px] ${className}`}>{children}</div>
+    <div className={`grid grid-cols-12 gap-x-6 px-10 md:mx-auto max-w-none md:max-w-3xl lg:max-w-[1800px] ${className}`}>{children}</div>
   )
 }
 
