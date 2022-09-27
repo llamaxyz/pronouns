@@ -154,6 +154,7 @@ const Home: NextPage = () => {
         <meta name="title" content="Auction | Pronouns" />
         <meta property="og:title" content="Auction | Pronouns" />
         <title>Auction | Pronouns</title>
+        <meta property="og:image" content="https://inthepocket.tech/api/og-image?name=Next.js&stage=adopt" />
       </Head>
       <Nav latestId={latestId} />
       <Layout>
