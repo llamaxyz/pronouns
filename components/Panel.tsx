@@ -49,9 +49,9 @@ const Panel = ({
   time,
 }: PanelProps) => (
   <div className="lg:h-[calc(100vh_-_143px)] min-h-[26rem] flex">
-    <div className="overflow-y-auto w-full">
+    <div className="lg:overflow-y-auto w-full">
       <div className="flex flex-col gap-4">
-        <div className="flex items-center xs:flex-nowrap flex-wrap gap-4">
+        <div className="flex items-center xs:flex-nowrap flex-wrap gap-4 lg:static sticky top-0 z-50 bg-ui-black py-4 lg:py-0 shadow-lg">
           <div className="flex gap-2 ml-0.5">
             <Button
               ariaLabel="Previous Noun"
