@@ -1,18 +1,11 @@
 import { withOGImage } from 'next-api-og-image'
+import Image from 'next/image'
 import { ImageData, getNounData } from '@nouns/assets'
 import { buildSVG } from '@nouns/sdk'
 import { NounSeed } from 'utils/types'
 
 interface QueryParams {
   background: string
-}
-
-function someLongRunningValueGetter() {
-  return new Promise((resolve: (value: string) => void) => {
-    setTimeout(() => {
-      resolve("Value in setTimeout's (500ms) callback")
-    }, 500)
-  })
 }
 
 const style = `
@@ -37,14 +30,24 @@ const renderNoun = (seed: NounSeed) => {
 export default withOGImage<'query', QueryParams>({
   template: {
     react: async ({ background, body, accessory, head, glasses }) => {
-      const noun = { background, body, accessory, head, glasses }
-      console.log(renderNoun(noun))
-      const value = await someLongRunningValueGetter()
+      const noun = {
+        background: parseInt(background),
+        body: parseInt(body),
+        accessory: parseInt(accessory),
+        head: parseInt(head),
+        glasses: parseInt(glasses),
+      }
       return (
         <html>
+          <head>
+            <style dangerouslySetInnerHTML={{ __html: style }} />
+            <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet" />
+          </head>
           <body>
             <div className="container">
-              <img src={renderNoun(noun)} height={50} width={50} alt="" />
+              <div className="flex justify-center h-64 rounded-lg text-black bg-black">
+                <Image width={256} height={256} src={renderNoun(noun)} />
+              </div>
               <h1>{background}</h1>
               <h1>{body}</h1>
               <h1>{accessory}</h1>
