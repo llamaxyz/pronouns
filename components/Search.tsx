@@ -6,6 +6,7 @@ import Input from 'components/Input'
 import Noun from 'components/Noun'
 import Loader from 'components/Loader'
 import { useSeeds } from 'utils/hooks/index'
+import useFocus from 'utils/hooks/useFocus'
 
 type Seed = {
   id: string
@@ -24,12 +25,44 @@ type Seed = {
 const searchItemStyle =
   'px-6 py-4 border-b border-b-white/10 hover:bg-white/10 border-l-2 border-l-transparent hover:border-l-2 hover:border-l-white transition ease-in-out flex'
 
+const SearchItem = ({ setFocus, focus, index, setValue, setOpen, seeds, id, seedStatus }) => {
+  const ref = React.useRef(null)
+
+  React.useEffect(() => {
+    if (focus) {
+      ref.current.focus()
+    }
+  }, [focus])
+
+  return (
+    <div tabIndex={focus ? 0 : -1} ref={ref} className="text-white">
+      <Link href={`/noun/${id}`}>
+        <a
+          onClick={() => {
+            setValue('')
+            setOpen(false)
+          }}
+        >
+          <div className={searchItemStyle}>
+            <div className="mr-2">
+              <Noun isSmall seed={seeds?.find((seed: Seed) => seed.id === id?.toString())?.seed} status={seedStatus} id={id} />
+            </div>
+            Noun {id}
+          </div>
+        </a>
+      </Link>
+    </div>
+  )
+}
+
 const Search = ({ latestId }: { latestId?: number }) => {
   const [typing, setTyping] = React.useState(false)
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState<string>('')
   const node = React.useRef<HTMLDivElement>(null)
   const inputNode = React.useRef<HTMLInputElement>(null)
+  const [focus, setFocus] = useFocus(8)
+
   const { data: seeds, status: seedStatus } = useSeeds()
 
   const idArray = [...Array.from(Array(latestId || 0).keys()), latestId]
@@ -133,29 +166,18 @@ const Search = ({ latestId }: { latestId?: number }) => {
               idArray
                 .filter(id => value && id?.toString().includes(value))
                 .slice(0, 8)
-                .map(id => (
-                  <div className="text-white" key={id}>
-                    <Link href={`/noun/${id}`}>
-                      <a
-                        onClick={() => {
-                          setValue('')
-                          setOpen(false)
-                        }}
-                      >
-                        <div className={searchItemStyle}>
-                          <div className="mr-2">
-                            <Noun
-                              isSmall
-                              seed={seeds?.find((seed: Seed) => seed.id === id?.toString())?.seed}
-                              status={seedStatus}
-                              id={id}
-                            />
-                          </div>
-                          Noun {id}
-                        </div>
-                      </a>
-                    </Link>
-                  </div>
+                .map((id, index) => (
+                  <SearchItem
+                    setValue={setValue}
+                    setOpen={setOpen}
+                    seeds={seeds}
+                    id={id}
+                    seedStatus={seedStatus}
+                    key={id}
+                    setFocus={setFocus}
+                    focus={focus === index}
+                    index={index}
+                  />
                 ))
             )}
             <div className="py-1" />

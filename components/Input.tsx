@@ -15,6 +15,7 @@ type InputProps = {
   hasClickableSuffix?: boolean
   isCommandInput?: boolean
   autoFocus?: boolean
+  tabIndex?: number
 }
 
 const inputClass =
@@ -33,11 +34,13 @@ const Input = ({
   parentClassName = '',
   hasClickableSuffix = false,
   autoFocus,
+  tabIndex,
 }: InputProps) => {
   return prefix || suffix ? (
     <div className={`relative ${parentClassName}`}>
       {prefix && <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">{prefix}</div>}
       <input
+        tabIndex={tabIndex}
         onChange={onChange}
         autoFocus={autoFocus}
         placeholder={placeholder}
@@ -54,6 +57,7 @@ const Input = ({
     </div>
   ) : (
     <input
+      tabIndex={tabIndex}
       autoFocus={autoFocus}
       onChange={onChange}
       placeholder={placeholder}
