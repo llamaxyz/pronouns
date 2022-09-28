@@ -51,7 +51,7 @@ const Panel = ({
   <div className="lg:h-[calc(100vh_-_143px)] min-h-[26rem] flex">
     <div className="lg:overflow-y-auto w-full">
       <div className="flex flex-col gap-4">
-        <div className="flex items-center xs:flex-nowrap flex-wrap gap-4 lg:static sticky top-0 z-50 bg-ui-black py-4 lg:py-0 shadow-lg">
+        <div className="flex items-center xs:flex-nowrap flex-wrap gap-4 lg:static sticky top-0 z-20 bg-ui-black py-4 lg:py-0 shadow-lg">
           <div className="flex gap-2 ml-0.5">
             <Button
               ariaLabel="Previous Noun"
@@ -124,7 +124,7 @@ const Panel = ({
           id={id}
           latestId={latestId}
         />
-        <PanelMetrics amount={noun?.amount} id={id} latestId={latestId} isNounder={isNounder} />
+        <PanelMetrics seed={noun?.noun?.seed} amount={noun?.amount} id={id} latestId={latestId} isNounder={isNounder} />
         <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">
           <Title level={5} weight="normal">
             Current Rarity

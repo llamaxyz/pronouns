@@ -3,11 +3,12 @@ import { useBalance, useContractRead } from 'wagmi'
 import BigNumber from 'bignumber.js'
 import { utils, BigNumber as EthersBN } from 'ethers'
 import Metric from 'components/Metric'
-import { useAmounts, useOpenseaData } from 'utils/hooks'
+import { useAmounts, useOpenseaData, useTraitStats } from 'utils/hooks'
 import diamond from 'public/icons/diamond.svg'
 import crosshair from 'public/icons/crosshair.svg'
 import stars from 'public/icons/stars.svg'
 import fraction from 'public/icons/fraction.svg'
+import { NounSeed } from 'utils/types'
 
 type PanelMetricsProps = {
   amount?: string
@@ -15,6 +16,7 @@ type PanelMetricsProps = {
   id?: number
   isNounder: boolean
   className?: string
+  seed?: NounSeed
 }
 
 const metrics = [
@@ -31,7 +33,12 @@ const metrics = [
     icon: fraction,
     tooltipText: 'Percentage difference between auction price (or current bid) and the secondary floor price.',
   },
-  { description: 'Weight', bgColor: 'bg-ui-purple/5', icon: stars, tooltipText: '' },
+  {
+    description: 'Head Market Value',
+    bgColor: 'bg-ui-purple/5',
+    icon: stars,
+    tooltipText: 'The median winning bid of auctions with this head.',
+  },
 ]
 
 const calculateBookValue = (latestId?: number, eth?: string, steth?: string) =>
@@ -71,11 +78,12 @@ const calcPriceVsFloor = (isNounder: boolean, amount?: string, floor?: number) =
   return formattedPct
 }
 
-const PanelMetrics = ({ amount, latestId, id, isNounder, className = '' }: PanelMetricsProps) => {
+const PanelMetrics = ({ amount, latestId, id, isNounder, className = '', seed }: PanelMetricsProps) => {
   const [loading, setLoading] = React.useState(true)
   const { data: ema, status: emaStatus } = useAmounts()
   const { data: osData, status: osDataStatus } = useOpenseaData()
   const [bookValue, setBookValue] = React.useState('0')
+  const { data: seedData, status: seedStatus } = useTraitStats(seed as unknown as Record<string, string>, id)
 
   const { data: ethBalanceData } = useBalance({
     addressOrName: '0x0BC3807Ec262cB779b38D65b38158acC3bfedE10',
@@ -132,6 +140,24 @@ const PanelMetrics = ({ amount, latestId, id, isNounder, className = '' }: Panel
           description={metrics[2].description}
           icon={metrics[2].icon}
           tooltipText={metrics[2].tooltipText}
+        />
+      </div>
+      <div className="xxs:col-auto col-span-full">
+        <Metric
+          border
+          statClass="tabular-nums"
+          bgColor={metrics[3].bgColor}
+          stat={
+            seedData?.body?.head?.median_mint_price ? (
+              `Ξ ${new BigNumber(seedData?.body?.head?.median_mint_price).toFixed(2, BigNumber.ROUND_CEIL).toString()}`
+            ) : (
+              <span className="text-ui-green">Only Nounders</span>
+            )
+          }
+          status={seedStatus}
+          description={metrics[3].description}
+          icon={metrics[3].icon}
+          tooltipText={metrics[3].tooltipText}
         />
       </div>
     </div>

@@ -85,7 +85,6 @@ const Auction = ({
         />
         <Statistic
           status={status}
-          contentClass="animate-fade-in-2 opacity-0 ease-in-out"
           className="bg-ui-space col-span-1 w-full"
           title={isAuctionLive ? 'Top Bid' : 'Winning Bid'}
           content={<span className="tabular-nums">{renderTopBid()}</span>}
@@ -94,7 +93,6 @@ const Auction = ({
           <Statistic
             status={isPercentChangeLoading ? 'loading' : status}
             className="bg-ui-space col-span-1 w-full"
-            contentClass="animate-fade-in-2 opacity-0 ease-in-out"
             title="% Change"
             content={
               isNounder ? (
