@@ -4,7 +4,7 @@ type LoaderProps = {
 
 const Loader = ({ className }: LoaderProps) => (
   <svg
-    className={`${className} motion-safe:animate-spin h-8 w-8 text-white`}
+    className={`${className} motion-safe:animate-spin text-white`}
     viewBox="0 0 1024 1024"
     focusable="false"
     data-icon="loading"

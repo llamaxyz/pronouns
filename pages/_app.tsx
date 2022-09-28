@@ -1,6 +1,31 @@
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { RainbowKitProvider, getDefaultWallets, darkTheme } from '@rainbow-me/rainbowkit'
+import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
+import { alchemyProvider } from 'wagmi/providers/alchemy'
+import { publicProvider } from 'wagmi/providers/public'
+import resolveConfig from 'tailwindcss/resolveConfig'
+import tailwindConfig from '../tailwind.config.js'
 import 'styles/globals.css'
+import '@rainbow-me/rainbowkit/styles.css'
+
+const queryClient = new QueryClient()
+const styleConfig = resolveConfig(tailwindConfig)
+const { chains, provider, webSocketProvider } = configureChains(
+  [chain.mainnet],
+  [alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY }), publicProvider()]
+)
+const { connectors } = getDefaultWallets({
+  appName: 'Pronouns',
+  chains,
+})
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors,
+  provider,
+  webSocketProvider,
+})
 
 const App = ({ Component, pageProps }: AppProps) => (
   <>
@@ -10,11 +35,11 @@ const App = ({ Component, pageProps }: AppProps) => (
       <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
       <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       <meta name="theme-color" content="#ffffff" />
-      <meta name="title" content="Pronouns | Nouns for Power Users" />
+      <meta name="title" content="Pronouns | The Nouns interface for power users" />
       <meta name="description" content="The Nouns interface for power users." />
       <meta property="og:type" content="website" />
       <meta property="og:url" content="https://pronouns.gg/" />
-      <meta property="og:title" content="Pronouns | Nouns for Power Users" />
+      <meta property="og:title" content="Pronouns | The Nouns interface for power users" />
       <meta property="og:description" content="The Nouns interface for power users." />
       <meta property="og:image" content="https://pronouns.gg/pronouns-header.png" />
       <meta property="twitter:card" content="summary_large_image" />
@@ -22,10 +47,25 @@ const App = ({ Component, pageProps }: AppProps) => (
       <meta property="twitter:title" content="The Nouns interface for power users." />
       <meta property="twitter:description" content="The Nouns interface for power users." />
       <meta property="twitter:image" content="https://pronouns.gg/pronouns-header.png" />
-      <title>Pronouns | Nouns for Power Users</title>
+      <title>Pronouns | The Nouns interface for power users</title>
       <link rel="shortcut icon" href="/favicon.ico" />
     </Head>
-    <Component {...pageProps} />
+    <QueryClientProvider client={queryClient}>
+      <WagmiConfig client={wagmiClient}>
+        <RainbowKitProvider
+          theme={darkTheme({
+            // @ts-ignore
+            accentColor: styleConfig?.theme?.colors?.white,
+            // @ts-ignore
+            accentColorForeground: styleConfig?.theme?.colors?.ui?.black,
+            fontStack: 'system',
+          })}
+          chains={chains}
+        >
+          <Component {...pageProps} />
+        </RainbowKitProvider>
+      </WagmiConfig>
+    </QueryClientProvider>
   </>
 )
 

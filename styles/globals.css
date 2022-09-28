@@ -4,20 +4,40 @@
 
 @layer base {
     @font-face {
-        font-family: 'Judera-Ring';
+        font-family: 'Aeonik';
         font-display: fallback;
-        font-weight: 400;
-        src: url('/fonts/Judera-Ring.ttf');
+        font-weight: 300;
+        src: url('/fonts/Aeonik-Light.otf');
     }
 
     @font-face {
-        font-family: 'VCR-OSD-MONO';
+        font-family: 'Aeonik';
         font-display: fallback;
         font-weight: 400;
-        src: url('/fonts/VCR-OSD-MONO.ttf');
+        src: url('/fonts/Aeonik-Regular.otf');
+    }
+    
+    @font-face {
+        font-family: 'Aeonik';
+        font-display: fallback;
+        font-weight: 500;
+        src: url('/fonts/Aeonik-Medium.otf');
+    }
+
+    @font-face {
+        font-family: 'Aeonik';
+        font-display: fallback;
+        font-weight: 600;
+        src: url('/fonts/Aeonik-Bold.otf');
     }
 
     html {
-        background-color: #000;
+        background-color: theme('colors.ui.black');
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
     }
 }
