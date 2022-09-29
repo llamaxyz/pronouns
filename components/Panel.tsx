@@ -101,7 +101,7 @@ const Panel = ({
               <div className="xs:border-l xs:pl-4 xs:border-white/10 overflow-x-auto">
                 <Paragraph className="text-ui-silver">Held By</Paragraph>
                 <Title weight="bold" level={4}>
-                  <Account address={isNounder ? NOUNDERS_ENS : ownerAddress} isEns={isNounder} />
+                  <Account address={ownerAddress} />
                 </Title>
               </div>
             ) : (
