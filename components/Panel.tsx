@@ -10,7 +10,6 @@ import Tag from 'components/Tag'
 import Title from 'components/Title'
 import Skeleton from 'components/Skeleton'
 import { AuctionState, Status, NounType } from 'utils/types'
-import { NOUNDERS_ENS } from 'utils/constants'
 import { formatDate } from 'utils/index'
 
 type PanelProps = {
@@ -48,11 +47,11 @@ const Panel = ({
   pct,
   time,
 }: PanelProps) => (
-  <div className="lg:h-[calc(100vh_-_143px)] min-h-[26rem] flex">
-    <div className="lg:overflow-y-auto w-full">
+  <div className="flex min-h-[26rem] lg:h-[calc(100vh_-_143px)]">
+    <div className="w-full lg:overflow-y-auto">
       <div className="flex flex-col gap-4">
-        <div className="flex items-center xs:flex-nowrap flex-wrap gap-4 lg:static sticky top-0 z-20 bg-ui-black py-4 lg:py-0 shadow-lg">
-          <div className="flex gap-2 ml-0.5">
+        <div className="sticky top-0 z-20 flex flex-wrap items-center gap-4 bg-ui-black py-4 shadow-lg lg:static lg:py-0 xs:flex-nowrap">
+          <div className="ml-0.5 flex gap-2">
             <Button
               ariaLabel="Previous Noun"
               className=""
@@ -74,13 +73,13 @@ const Panel = ({
             </Button>
           </div>
           <Skeleton
-            className="px-1 whitespace-nowrap"
+            className="whitespace-nowrap px-1"
             hasParentElement
             loading={status === 'loading'}
             loadingElement={
               <>
-                <div className="animate-pulse h-5 w-[124px] mb-1 bg-white/20 rounded col-span-2" />
-                <div className="animate-pulse h-8 bg-white/20 rounded col-span-2" />
+                <div className="col-span-2 mb-1 h-5 w-[124px] animate-pulse rounded bg-white/20" />
+                <div className="col-span-2 h-8 animate-pulse rounded bg-white/20" />
               </>
             }
           >
@@ -92,20 +91,20 @@ const Panel = ({
           <Skeleton
             loading={status === 'loading'}
             loadingElement={
-              <div className="animate-pulse w-[108px] overflow-hidden animate-pulse mt-auto h-8 text-white/20 bg-white/20 py-1.5 px-3 tracking-wider text-xs xxs:text-sm rounded-full">
+              <div className="mt-auto h-8 w-[108px] animate-pulse animate-pulse overflow-hidden rounded-full bg-white/20 py-1.5 px-3 text-xs tracking-wider text-white/20 xxs:text-sm">
                 {'           '}
               </div>
             }
           >
             {auctionState === 'settled' ? (
-              <div className="xs:border-l xs:pl-4 xs:border-white/10 overflow-x-auto">
+              <div className="overflow-x-auto xs:border-l xs:border-white/10 xs:pl-4">
                 <Paragraph className="text-ui-silver">Held By</Paragraph>
                 <Title weight="bold" level={4}>
                   <Account address={ownerAddress} />
                 </Title>
               </div>
             ) : (
-              <Tag state={auctionState} className="mt-auto hidden xxxs:block truncate">
+              <Tag state={auctionState} className="mt-auto hidden truncate xxxs:block">
                 {auctionStateToTag[auctionState]}
               </Tag>
             )}
@@ -125,7 +124,7 @@ const Panel = ({
           latestId={latestId}
         />
         <PanelMetrics seed={noun?.noun?.seed} amount={noun?.amount} id={id} latestId={latestId} isNounder={isNounder} />
-        <div className="border border-white/10 rounded-xl p-4 flex flex-col gap-y-4">
+        <div className="flex flex-col gap-y-4 rounded-xl border border-white/10 p-4">
           <Title level={5} weight="normal">
             Current Rarity
           </Title>

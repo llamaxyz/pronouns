@@ -108,7 +108,7 @@ const PanelMetrics = ({ amount, latestId, id, isNounder, className = '', seed }:
 
   return (
     <div className={`grid grid-cols-2 gap-4 ${className}`}>
-      <div className="xxs:col-auto col-span-full">
+      <div className="col-span-full xxs:col-auto">
         <Metric
           border
           bgColor={metrics[0].bgColor}
@@ -119,7 +119,7 @@ const PanelMetrics = ({ amount, latestId, id, isNounder, className = '', seed }:
           tooltipText={metrics[0].tooltipText}
         />
       </div>
-      <div className="xxs:col-auto col-span-full">
+      <div className="col-span-full xxs:col-auto">
         <Metric
           border
           bgColor={metrics[1].bgColor}
@@ -130,7 +130,7 @@ const PanelMetrics = ({ amount, latestId, id, isNounder, className = '', seed }:
           tooltipText={metrics[1].tooltipText}
         />
       </div>
-      <div className="xxs:col-auto col-span-full">
+      <div className="col-span-full xxs:col-auto">
         <Metric
           border
           statClass="tabular-nums"
@@ -142,7 +142,7 @@ const PanelMetrics = ({ amount, latestId, id, isNounder, className = '', seed }:
           tooltipText={metrics[2].tooltipText}
         />
       </div>
-      <div className="xxs:col-auto col-span-full">
+      <div className="col-span-full xxs:col-auto">
         <Metric
           border
           statClass="tabular-nums"
@@ -150,6 +150,8 @@ const PanelMetrics = ({ amount, latestId, id, isNounder, className = '', seed }:
           stat={
             seedData?.body?.head?.median_mint_price ? (
               `Ξ ${new BigNumber(seedData?.body?.head?.median_mint_price).toFixed(2, BigNumber.ROUND_CEIL).toString()}`
+            ) : seedData?.body?.head?.total_occurrence === 1 ? (
+              <span className="text-ui-green">First Mint</span>
             ) : (
               <span className="text-ui-green">Only Nounders</span>
             )
