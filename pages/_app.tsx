@@ -1,5 +1,6 @@
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
+import PlausibleProvider from 'next-plausible'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { RainbowKitProvider, getDefaultWallets, darkTheme } from '@rainbow-me/rainbowkit'
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
@@ -50,22 +51,24 @@ const App = ({ Component, pageProps }: AppProps) => (
       <title>Pronouns | The Nouns interface for power users</title>
       <link rel="shortcut icon" href="/favicon.ico" />
     </Head>
-    <QueryClientProvider client={queryClient}>
-      <WagmiConfig client={wagmiClient}>
-        <RainbowKitProvider
-          theme={darkTheme({
-            // @ts-ignore
-            accentColor: styleConfig?.theme?.colors?.white,
-            // @ts-ignore
-            accentColorForeground: styleConfig?.theme?.colors?.ui?.black,
-            fontStack: 'system',
-          })}
-          chains={chains}
-        >
-          <Component {...pageProps} />
-        </RainbowKitProvider>
-      </WagmiConfig>
-    </QueryClientProvider>
+    <PlausibleProvider domain="pronouns.gg">
+      <QueryClientProvider client={queryClient}>
+        <WagmiConfig client={wagmiClient}>
+          <RainbowKitProvider
+            theme={darkTheme({
+              // @ts-ignore
+              accentColor: styleConfig?.theme?.colors?.white,
+              // @ts-ignore
+              accentColorForeground: styleConfig?.theme?.colors?.ui?.black,
+              fontStack: 'system',
+            })}
+            chains={chains}
+          >
+            <Component {...pageProps} />
+          </RainbowKitProvider>
+        </WagmiConfig>
+      </QueryClientProvider>
+    </PlausibleProvider>
   </>
 )
 
