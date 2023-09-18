@@ -91,6 +91,7 @@ const generateImage = (parts: EncodedImage[], background: string, id: number) =>
 
 const renderNounParts = (seed: NounSeed) => {
   const { parts, background } = getNounData(seed)
+
   return [
     {
       name: background === 'e1d7d5' ? 'Warm' : 'Cool',
@@ -123,10 +124,10 @@ const Table = ({ seed, status, id, latestId }: TableProps) => {
   const tableData = generateTableData(data?.body, dataStatus, latestId, nounParts)
 
   return (
-    <div className="min-w-[480px] grid grid-cols-[40px_repeat(3,_minmax(0,_1fr))_auto] gap-4">
+    <div className="grid min-w-[480px] grid-cols-[40px_repeat(3,_minmax(0,_1fr))_auto] gap-4">
       {tableData.map((row, i) => (
         <React.Fragment key={i}>
-          <div className={`${bg} flex w-10 h-10 rounded text-black`}>
+          <div className={`${bg} flex h-10 w-10 rounded text-black`}>
             <Image
               className="rounded"
               alt={`Noun`}
@@ -140,12 +141,12 @@ const Table = ({ seed, status, id, latestId }: TableProps) => {
               {data.name ? (
                 <Skeleton
                   loading={dataStatus !== 'success'}
-                  loadingElement={<div className="animate-pulse h-3 mb-1 bg-white/20 rounded" />}
+                  loadingElement={<div className="mb-1 h-3 animate-pulse rounded bg-white/20" />}
                 >
                   {React.isValidElement(data.name) ? (
                     data.name
                   ) : (
-                    <div className="uppercase text-white/60 font-light tracking-wider text-xs">{data.name}</div>
+                    <div className="text-xs font-light uppercase tracking-wider text-white/60">{data.name}</div>
                   )}
                 </Skeleton>
               ) : null}
@@ -153,8 +154,8 @@ const Table = ({ seed, status, id, latestId }: TableProps) => {
               {React.isValidElement(data.value) ? (
                 data.value
               ) : (
-                <Skeleton loading={dataStatus !== 'success'} loadingElement={<div className="animate-pulse h-6 bg-white/20 rounded" />}>
-                  <div className="font-medium text-md truncate">{data.value}</div>
+                <Skeleton loading={dataStatus !== 'success'} loadingElement={<div className="h-6 animate-pulse rounded bg-white/20" />}>
+                  <div className="text-md truncate font-medium">{data.value}</div>
                 </Skeleton>
               )}
             </div>

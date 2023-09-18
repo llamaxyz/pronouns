@@ -289,9 +289,8 @@ export const getAmounts = async () => {
 }
 
 export const getOpenseaData = async () => {
-  const response = await fetch(NOUNS_OPENSEA_URL, {
-    method: 'get',
-  })
+  const options = { method: 'GET', headers: { accept: 'application/json', 'X-API-KEY': process.env.NEXT_PUBLIC_OPENSEA_API_KEY ?? '' } }
+  const response = await fetch(NOUNS_OPENSEA_URL, options)
   const responseData = await response?.json()
   return responseData
 }

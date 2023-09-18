@@ -86,7 +86,7 @@ const PanelMetrics = ({ amount, latestId, id, isNounder, className = '', seed }:
   const { data: seedData, status: seedStatus } = useTraitStats(seed as unknown as Record<string, string>, id)
 
   const { data: ethBalanceData } = useBalance({
-    addressOrName: '0x0BC3807Ec262cB779b38D65b38158acC3bfedE10',
+    addressOrName: '0xb1a32FC9F9D8b2cf86C068Cae13108809547ef71',
     formatUnits: 'ether',
     watch: true,
   })
@@ -95,7 +95,7 @@ const PanelMetrics = ({ amount, latestId, id, isNounder, className = '', seed }:
     addressOrName: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
     contractInterface: stethAbi,
     functionName: 'balanceOf',
-    args: '0x0BC3807Ec262cB779b38D65b38158acC3bfedE10',
+    args: '0xb1a32FC9F9D8b2cf86C068Cae13108809547ef71',
   })
 
   React.useEffect(() => {

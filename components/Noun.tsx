@@ -14,6 +14,7 @@ type NounProps = {
 
 const renderNoun = (seed: NounSeed) => {
   const { parts, background } = getNounData(seed)
+
   return `data:image/svg+xml;base64,${window.btoa(buildSVG(parts, ImageData.palette, background))}`
 }
 
